@@ -12,7 +12,7 @@ const PART_LABELS: Record<string, string> = {
   B: 'AI 활용도',
   C: '강점영역',
   D: '실행속도',
-  E: '퇴근 보너스',
+  E: '퇴근',
 }
 
 const PART_ICONS: Record<string, string> = {
