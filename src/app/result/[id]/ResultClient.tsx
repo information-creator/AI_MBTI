@@ -347,7 +347,7 @@ export default function ResultClient({
                 <p className="text-slate-500 text-sm">{bc.description}</p>
               </div>
               <a
-                href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodingschool.com'}
+                href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodes.co.kr/'}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, job_type: jobType })}
