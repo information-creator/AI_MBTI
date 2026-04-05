@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               strategy="afterInteractive"
             />
             <Script id="kakao-init" strategy="afterInteractive">
-              {`if (window.Kakao && !window.Kakao.isInitialized()) { window.Kakao.init('${KAKAO_KEY}'); }`}
+              {`(function tryInit(){if(window.Kakao){if(!window.Kakao.isInitialized())window.Kakao.init('${KAKAO_KEY}');}else{setTimeout(tryInit,50);}})();`}
             </Script>
           </>
         )}
