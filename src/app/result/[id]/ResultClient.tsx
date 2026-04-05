@@ -2,8 +2,14 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image, { StaticImageData } from 'next/image'
 import { JobType, jobTypeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
+import aiPioneerImg from '@/assets/ai_pioneer.png'
+
+const typeImages: Partial<Record<JobType, StaticImageData>> = {
+  AI_PIONEER: aiPioneerImg,
+}
 
 type Props = {
   mbtiType: string
@@ -181,18 +187,18 @@ export default function ResultClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a]">
+    <div className="min-h-screen bg-white">
       {/* 히든 캔버스 */}
       <canvas ref={canvasRef} className="hidden" />
 
       {/* 상단 헤더 */}
-      <header className="px-5 py-4 flex items-center justify-between">
-        <Link href="/" className="text-white font-bold text-lg">
-          AI<span className="text-indigo-400">mbti</span>
+      <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
+        <Link href="/" className="text-slate-900 font-bold text-lg">
+          AI<span className="text-indigo-600">mbti</span>
         </Link>
         <Link
           href="/test"
-          className="text-sm text-gray-400 hover:text-white transition-colors"
+          className="text-sm text-slate-400 hover:text-slate-700 transition-colors"
         >
           다시 테스트 →
         </Link>
@@ -203,55 +209,63 @@ export default function ResultClient({
         <div
           className="rounded-3xl p-8 animate-fade-in-up"
           style={{
-            background: `linear-gradient(135deg, ${info.color}20 0%, rgba(15,15,26,0.8) 100%)`,
-            border: `1px solid ${info.color}40`,
+            background: `linear-gradient(135deg, ${info.color}12 0%, #ffffff 100%)`,
+            border: `1px solid ${info.color}30`,
           }}
         >
           <div className="flex items-start gap-4">
-            <div className="text-6xl float-animation">{info.emoji}</div>
+            <div className="float-animation shrink-0">
+              {typeImages[jobType] ? (
+                <Image
+                  src={typeImages[jobType]!}
+                  alt={info.title}
+                  width={80}
+                  height={80}
+                  className="rounded-2xl object-cover"
+                />
+              ) : (
+                <span className="text-6xl">{info.emoji}</span>
+              )}
+            </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: info.color + '30', color: info.color }}
+                  style={{ background: info.color + '20', color: info.color }}
                 >
                   {mbtiType}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white mb-1">{info.title}</h1>
-              <p className="text-gray-300 text-sm">{info.subtitle}</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-1">{info.title}</h1>
+              <p className="text-slate-600 text-sm">{info.subtitle}</p>
+              <p className="text-xs text-slate-400 mt-1">
                 {info.celebrity} · {info.company}
               </p>
             </div>
           </div>
 
-          <p className="mt-6 text-gray-300 leading-relaxed text-sm sm:text-base">
+          <p className="mt-6 text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-line">
             {info.description}
           </p>
         </div>
 
         {/* AI 대체 점수 */}
         <div
-          className="rounded-3xl p-6 space-y-4 animate-fade-in-up"
-          style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            animationDelay: '0.1s',
-          }}
+          className="rounded-3xl p-6 space-y-4 animate-fade-in-up bg-white border border-slate-200"
+          style={{ animationDelay: '0.1s' }}
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-white font-bold text-lg">AI 대체 가능성</h2>
+            <h2 className="text-slate-900 font-bold text-lg">AI 대체 가능성</h2>
             <div className="text-right">
               <span className="text-3xl font-black" style={{ color: scoreColor }}>
                 {aiScore}%
               </span>
-              <p className="text-xs text-gray-400">{scoreLabel}</p>
+              <p className="text-xs text-slate-400">{scoreLabel}</p>
             </div>
           </div>
 
           {/* 게이지 바 */}
-          <div className="relative h-4 bg-gray-800 rounded-full overflow-hidden">
+          <div className="relative h-4 bg-slate-100 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-1000"
               style={{
@@ -261,25 +275,21 @@ export default function ResultClient({
             />
           </div>
 
-          <p className="text-gray-400 text-sm">{info.scoreComment(aiScore)}</p>
+          <p className="text-slate-500 text-sm">{info.scoreComment(aiScore)}</p>
         </div>
 
         {/* 직업 추천 */}
         <div
-          className="rounded-3xl p-6 animate-fade-in-up"
-          style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            animationDelay: '0.2s',
-          }}
+          className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
+          style={{ animationDelay: '0.2s' }}
         >
-          <h2 className="text-white font-bold text-lg mb-4">추천 직업 / 직무</h2>
+          <h2 className="text-slate-900 font-bold text-lg mb-4">추천 직업 / 직무</h2>
           <div className="grid grid-cols-2 gap-3">
             {info.jobs.map((job) => (
               <div
                 key={job}
-                className="rounded-2xl p-4 text-center text-sm font-semibold text-white"
-                style={{ background: info.color + '20', border: `1px solid ${info.color}30` }}
+                className="rounded-2xl p-4 text-center text-sm font-semibold"
+                style={{ background: info.color + '12', border: `1px solid ${info.color}25`, color: info.color }}
               >
                 {job}
               </div>
@@ -291,18 +301,18 @@ export default function ResultClient({
         <div
           className="rounded-3xl p-6 animate-fade-in-up"
           style={{
-            background: 'rgba(99,102,241,0.08)',
-            border: '1px solid rgba(99,102,241,0.2)',
+            background: 'rgba(99,102,241,0.05)',
+            border: '1px solid rgba(99,102,241,0.15)',
             animationDelay: '0.3s',
           }}
         >
-          <h2 className="text-white font-bold text-lg mb-3">
+          <h2 className="text-slate-900 font-bold text-lg mb-3">
             💡 나만의 AI 자동화 가이드
           </h2>
-          <p className="text-gray-300 text-sm leading-relaxed">{info.aiTip}</p>
+          <p className="text-slate-600 text-sm leading-relaxed">{info.aiTip}</p>
           <Link
             href="/guide"
-            className="inline-block mt-4 text-indigo-400 text-sm font-semibold hover:text-indigo-300 transition-colors"
+            className="inline-block mt-4 text-indigo-600 text-sm font-semibold hover:text-indigo-500 transition-colors"
           >
             전체 자동화 가이드 보기 →
           </Link>
@@ -313,29 +323,28 @@ export default function ResultClient({
           const bc = bootcampInfo[info.bootcamp]
           return (
             <div
-              className="rounded-3xl p-6 animate-fade-in-up"
+              className="rounded-3xl p-6 animate-fade-in-up bg-white"
               style={{
-                background: `linear-gradient(135deg, ${bc.color}15, rgba(15,15,26,0.9))`,
-                border: `1px solid ${bc.color}40`,
+                border: `1px solid ${bc.color}30`,
                 animationDelay: '0.4s',
               }}
             >
               <div className="flex items-center gap-2 mb-1">
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: bc.color + '25', color: bc.color }}
+                  style={{ background: bc.color + '15', color: bc.color }}
                 >
                   {bc.tag}
                 </span>
               </div>
-              <h2 className="text-white font-bold text-lg mt-2 mb-1">🎯 당신의 다음 스텝</h2>
-              <p className="text-gray-400 text-sm mb-4">{info.bootcampReason}</p>
+              <h2 className="text-slate-900 font-bold text-lg mt-2 mb-1">🎯 당신의 다음 스텝</h2>
+              <p className="text-slate-500 text-sm mb-4">{info.bootcampReason}</p>
               <div
-                className="rounded-2xl p-4 mb-4"
-                style={{ background: 'rgba(0,0,0,0.3)' }}
+                className="rounded-2xl p-4 mb-4 border border-slate-100"
+                style={{ background: bc.color + '08' }}
               >
-                <p className="font-bold text-white mb-1">{bc.label}</p>
-                <p className="text-gray-400 text-sm">{bc.description}</p>
+                <p className="font-bold text-slate-900 mb-1">{bc.label}</p>
+                <p className="text-slate-500 text-sm">{bc.description}</p>
               </div>
               <a
                 href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodingschool.com'}
@@ -354,24 +363,19 @@ export default function ResultClient({
         {/* 무료 쿠폰 */}
         {couponCode && (
           <div
-            className="rounded-3xl p-6 animate-fade-in-up"
-            style={{
-              background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(249,115,22,0.1))',
-              border: '1px solid rgba(245,158,11,0.3)',
-              animationDelay: '0.4s',
-            }}
+            className="rounded-3xl p-6 animate-fade-in-up bg-amber-50 border border-amber-200"
+            style={{ animationDelay: '0.4s' }}
           >
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🎁</span>
-              <h2 className="text-white font-bold text-lg">무료 쿠폰 발급 완료!</h2>
+              <h2 className="text-slate-900 font-bold text-lg">무료 쿠폰 발급 완료!</h2>
             </div>
-            <p className="text-gray-300 text-sm mb-4">
+            <p className="text-slate-600 text-sm mb-4">
               오픈채팅방 입장 시 아래 코드를 제시하면 특별 혜택을 드립니다.
             </p>
             <div className="flex items-center gap-3">
               <div
-                className="flex-1 font-mono font-bold text-xl text-amber-300 px-4 py-3 rounded-xl text-center tracking-widest"
-                style={{ background: 'rgba(0,0,0,0.3)' }}
+                className="flex-1 font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200"
               >
                 {couponCode}
               </div>
@@ -400,15 +404,11 @@ export default function ResultClient({
 
         {/* 공유 섹션 */}
         <div
-          className="rounded-3xl p-6 animate-fade-in-up"
-          style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            animationDelay: '0.5s',
-          }}
+          className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
+          style={{ animationDelay: '0.5s' }}
         >
-          <h2 className="text-white font-bold text-lg mb-2">결과 공유하기</h2>
-          <p className="text-gray-400 text-sm mb-5">
+          <h2 className="text-slate-900 font-bold text-lg mb-2">결과 공유하기</h2>
+          <p className="text-slate-500 text-sm mb-5">
             친구도 AI 대체 가능성이 궁금하지 않을까요? 😏
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -423,9 +423,9 @@ export default function ResultClient({
               onClick={handleCopyLink}
               className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
               style={{
-                background: copied ? '#10b981' : 'rgba(255,255,255,0.1)',
-                color: '#fff',
-                border: '1px solid rgba(255,255,255,0.15)',
+                background: copied ? '#10b981' : '#f1f5f9',
+                color: copied ? '#fff' : '#334155',
+                border: '1px solid #e2e8f0',
               }}
             >
               {copied ? '✅ 복사됨!' : '🔗 링크 복사'}
@@ -448,7 +448,7 @@ export default function ResultClient({
         <div className="text-center pb-8">
           <Link
             href="/test"
-            className="inline-block text-gray-400 hover:text-white text-sm transition-colors"
+            className="inline-block text-slate-400 hover:text-slate-700 text-sm transition-colors"
           >
             ← 테스트 다시 하기
           </Link>

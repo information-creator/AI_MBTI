@@ -27,7 +27,7 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className="h-full">
-      <body className="min-h-full bg-[#111827] text-white">
+      <body className="min-h-full bg-slate-100 text-slate-900">
         {GA_ID && (
           <>
             <Script
@@ -50,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </Suspense>
         )}
         {/* 데스크탑에서도 모바일 폭으로 중앙 정렬 */}
-        <div className="min-h-screen mx-auto w-full max-w-[480px] bg-[#0f0f1a] shadow-2xl shadow-black/50">
+        <div className="min-h-screen mx-auto w-full max-w-[480px] bg-white shadow-xl shadow-slate-200">
           {children}
         </div>
       </body>

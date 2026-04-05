@@ -58,13 +58,13 @@ const steps = [
 
 export default function GuidePage() {
   return (
-    <div className="min-h-screen bg-[#0f0f1a]">
+    <div className="min-h-screen bg-white">
       {/* 헤더 */}
-      <header className="px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
-        <Link href="/" className="text-white font-bold text-lg">
-          AI<span className="text-indigo-400">mbti</span>
+      <header className="px-6 py-4 flex items-center justify-between border-b border-slate-100">
+        <Link href="/" className="text-slate-900 font-bold text-lg">
+          AI<span className="text-indigo-600">mbti</span>
         </Link>
-        <Link href="/test" className="text-sm text-gray-400 hover:text-white transition-colors">
+        <Link href="/test" className="text-sm text-slate-400 hover:text-slate-700 transition-colors">
           테스트 하기 →
         </Link>
       </header>
@@ -72,23 +72,22 @@ export default function GuidePage() {
       <main className="px-6 py-8 max-w-3xl mx-auto space-y-10">
         {/* 히어로 */}
         <div className="text-center space-y-4 py-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-white">
-            AI 시대 <span className="text-indigo-400">자동화 가이드</span>
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
+            AI 시대 <span className="text-indigo-600">자동화 가이드</span>
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-slate-500 text-lg">
             지금 당장 업무에 적용할 수 있는 AI 툴 & 전략
           </p>
         </div>
 
         {/* 5단계 가이드 */}
         <section>
-          <h2 className="text-xl font-bold text-white mb-5">🗺️ AI 시대 생존 5단계</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-5">🗺️ AI 시대 생존 5단계</h2>
           <div className="space-y-3">
             {steps.map((s) => (
               <div
                 key={s.step}
-                className="flex items-start gap-4 p-4 rounded-2xl"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200"
               >
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
@@ -97,8 +96,8 @@ export default function GuidePage() {
                   {s.step}
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm">{s.title}</p>
-                  <p className="text-gray-400 text-sm mt-0.5">{s.desc}</p>
+                  <p className="text-slate-900 font-semibold text-sm">{s.title}</p>
+                  <p className="text-slate-500 text-sm mt-0.5">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -107,22 +106,20 @@ export default function GuidePage() {
 
         {/* AI 툴 소개 */}
         <section>
-          <h2 className="text-xl font-bold text-white mb-5">🛠️ 지금 바로 써야 할 AI 툴</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-5">🛠️ 지금 바로 써야 할 AI 툴</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {tools.map((tool) => (
               <div
                 key={tool.name}
-                className="p-5 rounded-2xl space-y-2"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                className="p-5 rounded-2xl space-y-2 bg-white border border-slate-200"
               >
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">{tool.icon}</span>
-                  <span className="text-white font-bold">{tool.name}</span>
+                  <span className="text-slate-900 font-bold">{tool.name}</span>
                 </div>
-                <p className="text-gray-300 text-sm">{tool.use}</p>
+                <p className="text-slate-600 text-sm">{tool.use}</p>
                 <div
-                  className="text-xs text-indigo-300 p-2 rounded-lg leading-relaxed"
-                  style={{ background: 'rgba(99,102,241,0.1)' }}
+                  className="text-xs text-indigo-600 p-2 rounded-lg leading-relaxed bg-indigo-50"
                 >
                   💡 {tool.tip}
                 </div>
@@ -133,15 +130,11 @@ export default function GuidePage() {
 
         {/* 오픈채팅방 CTA */}
         <section
-          className="rounded-3xl p-8 text-center space-y-4"
-          style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.15))',
-            border: '1px solid rgba(99,102,241,0.3)',
-          }}
+          className="rounded-3xl p-8 text-center space-y-4 bg-indigo-50 border border-indigo-100"
         >
           <div className="text-4xl">💬</div>
-          <h2 className="text-2xl font-black text-white">같은 유형끼리 모여요</h2>
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <h2 className="text-2xl font-black text-slate-900">같은 유형끼리 모여요</h2>
+          <p className="text-slate-600 text-sm leading-relaxed">
             AI 시대를 함께 헤쳐나갈 커뮤니티에 입장하세요.
             <br />
             무료 쿠폰 코드로 특별 혜택도 받을 수 있어요!
@@ -155,10 +148,10 @@ export default function GuidePage() {
           >
             카카오 오픈채팅 입장하기 →
           </a>
-          <p className="text-gray-500 text-xs">아직 결과가 없다면 테스트 먼저 해주세요!</p>
+          <p className="text-slate-400 text-xs">아직 결과가 없다면 테스트 먼저 해주세요!</p>
           <Link
             href="/test"
-            className="inline-block text-indigo-400 text-sm hover:text-indigo-300 transition-colors"
+            className="inline-block text-indigo-600 text-sm hover:text-indigo-500 transition-colors"
           >
             AI 대체 가능성 테스트 →
           </Link>
@@ -166,17 +159,13 @@ export default function GuidePage() {
 
         {/* 전자책 섹션 */}
         <section
-          className="rounded-3xl p-8 space-y-4"
-          style={{
-            background: 'rgba(245,158,11,0.08)',
-            border: '1px solid rgba(245,158,11,0.2)',
-          }}
+          className="rounded-3xl p-8 space-y-4 bg-amber-50 border border-amber-100"
         >
           <div className="flex items-center gap-3">
             <span className="text-3xl">📚</span>
-            <h2 className="text-xl font-black text-white">AI 시대 자동화 완전 정복 전자책</h2>
+            <h2 className="text-xl font-black text-slate-900">AI 시대 자동화 완전 정복 전자책</h2>
           </div>
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="text-slate-600 text-sm leading-relaxed">
             직무별 AI 자동화 케이스 50가지를 담은 실전 가이드.
             오픈채팅방 멤버에게 무료 제공됩니다.
           </p>
@@ -185,8 +174,7 @@ export default function GuidePage() {
               (tag) => (
                 <span
                   key={tag}
-                  className="text-xs px-3 py-1 rounded-full"
-                  style={{ background: 'rgba(245,158,11,0.15)', color: '#fbbf24' }}
+                  className="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-700"
                 >
                   {tag}
                 </span>
@@ -196,10 +184,10 @@ export default function GuidePage() {
         </section>
       </main>
 
-      <footer className="px-6 py-8 border-t border-white/5 text-center text-gray-600 text-sm mt-10">
+      <footer className="px-6 py-8 border-t border-slate-100 text-center text-slate-400 text-sm mt-10">
         <p>
           © 2026 AImBTI ·{' '}
-          <a href="https://metacode.kr" className="hover:text-gray-400 transition-colors">
+          <a href="https://metacode.kr" className="hover:text-slate-600 transition-colors">
             metacode.kr
           </a>
         </p>

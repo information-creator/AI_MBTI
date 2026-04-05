@@ -89,12 +89,12 @@ export default function TestPage() {
 
   if (submitting) {
     return (
-      <div className="min-h-screen bg-[#0f0f1a] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="text-6xl float-animation">🤖</div>
-          <p className="text-white text-xl font-bold">AI가 분석 중...</p>
-          <p className="text-gray-400">잠시만 기다려주세요</p>
-          <div className="w-48 h-1.5 bg-gray-800 rounded-full mx-auto overflow-hidden">
+          <p className="text-slate-900 text-xl font-bold">AI가 분석 중...</p>
+          <p className="text-slate-400">잠시만 기다려주세요</p>
+          <div className="w-48 h-1.5 bg-slate-200 rounded-full mx-auto overflow-hidden">
             <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full animate-pulse w-3/4"></div>
           </div>
         </div>
@@ -103,9 +103,9 @@ export default function TestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* 상단 진행 바 */}
-      <div className="w-full h-1.5 bg-gray-800">
+      <div className="w-full h-1.5 bg-slate-200">
         <div
           className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
           style={{ width: `${progress}%` }}
@@ -117,12 +117,12 @@ export default function TestPage() {
         <button
           onClick={handleBack}
           disabled={current === 0}
-          className="text-gray-400 hover:text-white disabled:opacity-30 transition-colors text-sm flex items-center gap-1"
+          className="text-slate-400 hover:text-slate-700 disabled:opacity-30 transition-colors text-sm flex items-center gap-1"
         >
           ← 이전
         </button>
         <div className="text-center">
-          <span className="text-gray-400 text-sm">
+          <span className="text-slate-400 text-sm">
             {current + 1} / {questions.length}
           </span>
         </div>
@@ -157,7 +157,7 @@ export default function TestPage() {
           </div>
 
           {/* 질문 */}
-          <h2 className="text-xl sm:text-2xl font-bold text-white text-center mb-8 leading-relaxed whitespace-pre-line">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 text-center mb-8 leading-relaxed whitespace-pre-line">
             {question.text}
           </h2>
 
@@ -169,19 +169,19 @@ export default function TestPage() {
                 onClick={() => handleAnswer(opt.value)}
                 className="w-full text-left px-6 py-4 rounded-2xl border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
                 style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(99,102,241,0.15)'
+                  e.currentTarget.style.background = 'rgba(99,102,241,0.08)'
                   e.currentTarget.style.border = '1px solid rgba(99,102,241,0.4)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-                  e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)'
+                  e.currentTarget.style.background = '#f8fafc'
+                  e.currentTarget.style.border = '1px solid #e2e8f0'
                 }}
               >
-                <span className="text-white text-sm sm:text-base leading-relaxed">
+                <span className="text-slate-800 text-sm sm:text-base leading-relaxed">
                   {opt.label}
                 </span>
               </button>
