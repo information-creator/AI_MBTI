@@ -95,14 +95,14 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-2 gap-2.5">
           {[
-            { emoji: '🚀', title: 'AI 개척자형', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)' },
-            { emoji: '🏢', title: '대기업 생존자형', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)' },
-            { emoji: '🎨', title: '창의적 반란자형', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)' },
-            { emoji: '📊', title: '데이터 수호자형', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
-            { emoji: '🤝', title: '사람 연결자형', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)' },
-            { emoji: '♟️', title: '전략 마스터형', bg: 'rgba(139,92,246,0.1)', border: 'rgba(139,92,246,0.3)' },
-            { emoji: '⚙️', title: '침묵의 실행자형', bg: 'rgba(100,116,139,0.1)', border: 'rgba(100,116,139,0.3)' },
-            { emoji: '🃏', title: '와일드카드형', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)' },
+            { emoji: '🚀', title: 'AI를 부려먹는 사람', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.3)' },
+            { emoji: '🏢', title: '조직에서 살아남는 사람', bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.3)' },
+            { emoji: '🎨', title: 'AI가 절대 못 베끼는 사람', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)' },
+            { emoji: '📊', title: '숫자로 모든 걸 증명하는 사람', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
+            { emoji: '🤝', title: '사람이 곧 스펙인 사람', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)' },
+            { emoji: '♟️', title: '3수 앞을 보는 사람', bg: 'rgba(139,92,246,0.1)', border: 'rgba(139,92,246,0.3)' },
+            { emoji: '⚙️', title: '말 없이 다 해버리는 사람', bg: 'rgba(100,116,139,0.1)', border: 'rgba(100,116,139,0.3)' },
+            { emoji: '🃏', title: 'AI도 예측 못 하는 사람', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)' },
           ].map((type) => (
             <div
               key={type.title}
