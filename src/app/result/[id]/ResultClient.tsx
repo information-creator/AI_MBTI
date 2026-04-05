@@ -286,7 +286,7 @@ export default function ResultClient({
   }
 
   function handleKakaoShare() {
-    const BASE = 'https://aimbti-seven.vercel.app'
+    const BASE = 'https://aimbti.vercel.app'
     const shareUrl = `${BASE}/result/${resultId}`
     if (typeof window !== 'undefined' && (window as any).Kakao?.isInitialized?.()) {
       ;(window as any).Kakao.Share.sendDefault({
