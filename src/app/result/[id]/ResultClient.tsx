@@ -332,8 +332,8 @@ export default function ResultClient({
           <Image
             src={`/characters/${typeCode}.svg`}
             alt={info.title}
-            width={160}
-            height={160}
+            width={240}
+            height={240}
             className="object-contain"
             unoptimized
           />
