@@ -1,0 +1,101 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<rect width="512" height="512" fill="#f8fafc"/>
+<!-- Background subtle office grid lines -->
+<line x1="0" y1="60" x2="512" y2="60" stroke="#cbd5e1" stroke-width="0.7" opacity="0.4"/>
+<line x1="0" y1="120" x2="512" y2="120" stroke="#cbd5e1" stroke-width="0.7" opacity="0.4"/>
+<line x1="0" y1="180" x2="512" y2="180" stroke="#cbd5e1" stroke-width="0.7" opacity="0.4"/>
+<line x1="0" y1="240" x2="512" y2="240" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<line x1="0" y1="300" x2="512" y2="300" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<line x1="0" y1="360" x2="512" y2="360" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<line x1="0" y1="420" x2="512" y2="420" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<line x1="60" y1="0" x2="60" y2="512" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<line x1="180" y1="0" x2="180" y2="512" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<line x1="300" y1="0" x2="300" y2="512" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<line x1="420" y1="0" x2="420" y2="512" stroke="#cbd5e1" stroke-width="0.5" opacity="0.3"/>
+<!-- Shadow -->
+<ellipse cx="256" cy="478" rx="80" ry="10" fill="#00000012"/>
+<!-- Shoes very dark -->
+<polygon points="178,455 214,453 216,468 175,470" fill="#0f172a"/>
+<polygon points="175,470 216,468 214,476 173,478" fill="#060c18"/>
+<polygon points="242,453 278,455 282,476 240,478" fill="#0f172a"/>
+<polygon points="240,478 282,476 280,484 238,484" fill="#060c18"/>
+<!-- Legs navy -->
+<polygon points="184,370 210,370 208,455 180,455" fill="#1e3a5f"/>
+<polygon points="180,455 208,455 206,468 178,468" fill="#152a45"/>
+<polygon points="246,370 272,370 278,455 248,455" fill="#1e3a5f"/>
+<polygon points="248,455 278,455 280,468 246,468" fill="#152a45"/>
+<!-- Body main navy -->
+<polygon points="175,210 338,210 348,374 162,374" fill="#1e3a5f"/>
+<polygon points="175,210 200,210 182,374 162,374" fill="#152a45"/>
+<polygon points="312,210 338,210 348,374 325,374" fill="#152a45"/>
+<polygon points="208,210 304,210 298,318 214,318" fill="#254b78"/>
+<!-- Body lapels -->
+<polygon points="210,210 256,255 200,308 182,228" fill="#0a1628"/>
+<polygon points="302,210 256,255 312,308 330,228" fill="#081020"/>
+<!-- Gold tie on chest -->
+<polygon points="250,210 262,210 260,290 256,300 252,290" fill="#d97706"/>
+<polygon points="252,220 260,220 259,282 256,290 253,282" fill="#b45309"/>
+<polygon points="246,208 266,208 264,216 248,216" fill="#f59e0b"/>
+<!-- Chest buttons -->
+<circle cx="256" cy="270" r="3" fill="#0a1628"/>
+<circle cx="256" cy="285" r="3" fill="#0a1628"/>
+<!-- Collar -->
+<polygon points="214,208 256,232 298,208 288,200 256,218 224,200" fill="#f8fafc"/>
+<!-- Left arm holding folder stack -->
+<polygon points="175,216 148,222 132,305 160,315" fill="#1e3a5f"/>
+<polygon points="148,222 126,228 108,305 132,308" fill="#152a45"/>
+<polygon points="108,305 135,308 133,325 106,322" fill="#f8fafc"/>
+<!-- Giant stack of colorful folders -->
+<polygon points="100,262 165,260 165,272 100,274" fill="#ef4444"/>
+<polygon points="100,272 165,270 165,282 100,284" fill="#f97316"/>
+<polygon points="100,282 165,280 165,292 100,294" fill="#eab308"/>
+<polygon points="100,292 165,290 165,302 100,304" fill="#22c55e"/>
+<polygon points="100,302 165,300 165,312 100,314" fill="#3b82f6"/>
+<polygon points="100,312 165,310 165,322 100,324" fill="#a855f7"/>
+<polygon points="100,322 165,320 165,332 100,334" fill="#ec4899"/>
+<polygon points="100,332 165,330 165,342 100,344" fill="#f59e0b"/>
+<!-- Folder tabs -->
+<polygon points="104,256 118,256 118,262 104,262" fill="#ef4444"/>
+<polygon points="118,266 132,266 132,272 118,272" fill="#f97316"/>
+<polygon points="104,276 118,276 118,282 104,282" fill="#eab308"/>
+<!-- Right arm with presentation clicker -->
+<polygon points="338,216 364,225 382,312 354,320" fill="#152a45"/>
+<polygon points="364,225 388,232 406,308 382,312" fill="#1e3a5f"/>
+<polygon points="382,312 408,306 410,322 384,328" fill="#f8fafc"/>
+<polygon points="406,295 424,287 430,270 412,276" fill="#f5c87a"/>
+<polygon points="424,287 434,278 438,261 427,268" fill="#e8b85a"/>
+<!-- Presentation clicker in right hand -->
+<polygon points="415,270 424,268 428,290 419,292" fill="#374151"/>
+<polygon points="417,268 422,266 426,278 421,280" fill="#6b7280"/>
+<circle cx="421" cy="264" r="3" fill="#ef4444"/>
+<!-- Neck -->
+<polygon points="228,172 284,172 288,210 224,210" fill="#f5c87a"/>
+<polygon points="238,172 274,172 276,192 236,192" fill="#e8b85a"/>
+<!-- Head -->
+<polygon points="192,88 320,88 328,172 184,172" fill="#f8d48e"/>
+<polygon points="192,88 216,88 208,172 184,172" fill="#ecc070"/>
+<polygon points="296,88 320,88 328,172 306,172" fill="#e0aa50"/>
+<polygon points="216,88 296,88 290,120 222,120" fill="#fce4a8"/>
+<!-- Hair neat dark -->
+<polygon points="188,88 320,88 314,70 194,70" fill="#111827"/>
+<polygon points="194,70 314,70 308,54 200,54" fill="#1f2937"/>
+<polygon points="200,54 308,54 302,40 206,40" fill="#111827"/>
+<polygon points="206,40 302,40 296,30 212,30" fill="#060c18"/>
+<polygon points="188,88 200,54 180,100 174,130" fill="#111827"/>
+<polygon points="320,88 308,54 328,102 334,132" fill="#060c18"/>
+<!-- Eyes -->
+<polygon points="210,118 230,114 232,121 212,124" fill="#111827"/>
+<polygon points="280,114 300,118 298,124 278,121" fill="#111827"/>
+<polygon points="213,126 229,124 231,138 215,140" fill="#060c18"/>
+<polygon points="280,124 296,126 294,138 278,136" fill="#060c18"/>
+<polygon points="215,127 221,126 222,131 216,132" fill="#fff" opacity="0.8"/>
+<polygon points="282,126 288,127 287,132 281,131" fill="#fff" opacity="0.8"/>
+<!-- Nose -->
+<polygon points="246,148 266,148 270,162 256,165 242,162" fill="#e0aa50"/>
+<!-- Mouth focused -->
+<polygon points="228,164 284,162 286,169 256,172 226,169" fill="#c0392b"/>
+<polygon points="226,169 286,167 284,174 228,174" fill="#922b21"/>
+<!-- Label -->
+<rect x="150" y="490" width="212" height="18" rx="9" fill="#1e3a5f"/>
+<text x="256" y="503" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">TSLP · 신중한 팀 전략가</text>
+</svg>

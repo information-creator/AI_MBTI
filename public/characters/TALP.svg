@@ -1,0 +1,116 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<rect width="512" height="512" fill="#f0f9ff"/>
+<!-- Blueprint grid background -->
+<line x1="0" y1="40" x2="512" y2="40" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="80" x2="512" y2="80" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="120" x2="512" y2="120" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="160" x2="512" y2="160" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="200" x2="512" y2="200" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="240" x2="512" y2="240" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="280" x2="512" y2="280" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="320" x2="512" y2="320" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="360" x2="512" y2="360" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="400" x2="512" y2="400" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="0" y1="440" x2="512" y2="440" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="40" y1="0" x2="40" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="80" y1="0" x2="80" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="120" y1="0" x2="120" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="160" y1="0" x2="160" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="200" y1="0" x2="200" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="240" y1="0" x2="240" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="280" y1="0" x2="280" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="320" y1="0" x2="320" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="360" y1="0" x2="360" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="400" y1="0" x2="400" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="440" y1="0" x2="440" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<line x1="480" y1="0" x2="480" y2="512" stroke="#7dd3fc" stroke-width="0.5" opacity="0.35"/>
+<!-- Shadow -->
+<ellipse cx="256" cy="478" rx="80" ry="10" fill="#00000012"/>
+<!-- Shoes -->
+<polygon points="178,455 214,453 216,468 175,470" fill="#075985"/>
+<polygon points="175,470 216,468 214,476 173,478" fill="#0c4a6e"/>
+<polygon points="242,453 278,455 282,476 240,478" fill="#075985"/>
+<polygon points="240,478 282,476 280,484 238,484" fill="#0c4a6e"/>
+<!-- Legs -->
+<polygon points="184,370 210,370 208,455 180,455" fill="#0369a1"/>
+<polygon points="180,455 208,455 206,468 178,468" fill="#075985"/>
+<polygon points="246,370 272,370 278,455 248,455" fill="#0369a1"/>
+<polygon points="248,455 278,455 280,468 246,468" fill="#075985"/>
+<!-- Body main -->
+<polygon points="175,210 338,210 348,374 162,374" fill="#0369a1"/>
+<polygon points="175,210 200,210 182,374 162,374" fill="#075985"/>
+<polygon points="312,210 338,210 348,374 325,374" fill="#075985"/>
+<polygon points="208,210 304,210 298,318 214,318" fill="#0284c7"/>
+<!-- Body lapels -->
+<polygon points="210,210 256,255 200,308 182,228" fill="#0c4a6e"/>
+<polygon points="302,210 256,255 312,308 330,228" fill="#083b58"/>
+<!-- Chest detail -->
+<polygon points="248,250 264,250 268,310 256,320 244,310" fill="#e0f2fe"/>
+<polygon points="252,262 260,262 264,308 256,315 248,308" fill="#7dd3fc"/>
+<!-- Collar -->
+<polygon points="214,208 256,232 298,208 288,200 256,218 224,200" fill="#f0f9ff"/>
+<!-- Left arm beckoning outward -->
+<polygon points="175,216 145,225 125,318 156,326" fill="#0369a1"/>
+<polygon points="145,225 120,230 98,312 125,318" fill="#075985"/>
+<polygon points="98,312 126,316 124,332 96,328" fill="#f0f9ff"/>
+<polygon points="93,326 128,330 126,348 90,342" fill="#f5c87a"/>
+<polygon points="88,342 100,330 106,316 97,322" fill="#f5c87a"/>
+<polygon points="100,330 110,320 114,306 105,313" fill="#e8b85a"/>
+<!-- Right arm holding marker -->
+<polygon points="338,216 364,225 382,312 354,320" fill="#075985"/>
+<polygon points="364,225 388,232 406,308 382,312" fill="#0369a1"/>
+<polygon points="382,312 408,306 410,322 384,328" fill="#f0f9ff"/>
+<polygon points="406,295 424,287 430,270 412,276" fill="#f5c87a"/>
+<!-- Marker in right hand -->
+<polygon points="412,275 420,272 432,300 424,303" fill="#1d4ed8"/>
+<polygon points="424,300 432,297 436,310 428,313" fill="#60a5fa"/>
+<polygon points="428,310 434,308 436,318 430,320" fill="#e0f2fe"/>
+<!-- Large whiteboard left side -->
+<rect x="18" y="98" width="122" height="152" rx="4" fill="#f0f9ff" stroke="#0369a1" stroke-width="3"/>
+<rect x="22" y="102" width="114" height="144" rx="2" fill="#fff" opacity="0.9"/>
+<!-- Diagram lines on whiteboard -->
+<polygon points="30,120 80,118 80,125 30,127" fill="#0369a1" opacity="0.5"/>
+<polygon points="30,132 90,130 90,137 30,139" fill="#0369a1" opacity="0.4"/>
+<polygon points="30,144 70,142 70,149 30,151" fill="#7dd3fc" opacity="0.6"/>
+<!-- Boxes on whiteboard -->
+<rect x="30" y="155" width="30" height="22" rx="2" fill="none" stroke="#0369a1" stroke-width="1.5" opacity="0.7"/>
+<rect x="70" y="155" width="30" height="22" rx="2" fill="none" stroke="#0284c7" stroke-width="1.5" opacity="0.7"/>
+<line x1="60" y1="166" x2="70" y2="166" stroke="#0369a1" stroke-width="1.5" opacity="0.7"/>
+<!-- Arrow on whiteboard -->
+<polygon points="85,185 95,178 105,185 95,192" fill="#0369a1" opacity="0.5"/>
+<polygon points="30,195 80,193 80,200 30,202" fill="#7dd3fc" opacity="0.5"/>
+<polygon points="30,207 60,205 60,212 30,214" fill="#0284c7" opacity="0.4"/>
+<!-- Connector from whiteboard to character -->
+<line x1="140" y1="175" x2="162" y2="240" stroke="#0369a1" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+<!-- Neck -->
+<polygon points="228,172 284,172 288,210 224,210" fill="#f5c87a"/>
+<polygon points="238,172 274,172 276,192 236,192" fill="#e8b85a"/>
+<!-- Head -->
+<polygon points="192,88 320,88 328,172 184,172" fill="#f8d48e"/>
+<polygon points="192,88 216,88 208,172 184,172" fill="#ecc070"/>
+<polygon points="296,88 320,88 328,172 306,172" fill="#e0aa50"/>
+<polygon points="216,88 296,88 290,120 222,120" fill="#fce4a8"/>
+<!-- Hair dark -->
+<polygon points="188,88 320,88 314,70 194,70" fill="#1a1a2e"/>
+<polygon points="194,70 314,70 308,54 200,54" fill="#2a2a40"/>
+<polygon points="200,54 308,54 302,40 206,40" fill="#1a1a2e"/>
+<polygon points="206,40 302,40 296,30 212,30" fill="#0d0d1e"/>
+<polygon points="188,88 200,54 180,100 174,130" fill="#1a1a2e"/>
+<polygon points="320,88 308,54 328,102 334,132" fill="#0d0d1e"/>
+<!-- Eyes -->
+<polygon points="210,118 230,114 232,121 212,124" fill="#1a1a2e"/>
+<polygon points="280,114 300,118 298,124 278,121" fill="#1a1a2e"/>
+<polygon points="213,126 229,124 231,138 215,140" fill="#0d0d1e"/>
+<polygon points="280,124 296,126 294,138 278,136" fill="#0d0d1e"/>
+<polygon points="215,127 221,126 222,131 216,132" fill="#fff" opacity="0.8"/>
+<polygon points="282,126 288,127 287,132 281,131" fill="#fff" opacity="0.8"/>
+<!-- Nose -->
+<polygon points="246,148 266,148 270,162 256,165 242,162" fill="#e0aa50"/>
+<!-- Mouth -->
+<polygon points="226,163 286,161 290,169 256,174 222,170" fill="#c0392b"/>
+<polygon points="222,170 290,168 288,175 224,175" fill="#922b21"/>
+<polygon points="228,164 284,162 282,169 230,169" fill="#f5e6e6"/>
+<!-- Label -->
+<rect x="148" y="490" width="216" height="18" rx="9" fill="#0369a1"/>
+<text x="256" y="503" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">TALP · 함께 만드는 AI 설계자</text>
+</svg>

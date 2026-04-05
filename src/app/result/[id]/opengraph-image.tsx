@@ -17,7 +17,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     try {
       const db = getSupabaseServer()
       if (db) {
-        const { data } = await db.from('results').select('*').eq('id', id).single()
+        const { data } = await db.from('results_v2').select('*').eq('id', id).single()
         if (data) {
           typeCode = (data.type_code as TypeCode) ?? 'TSLF'
           aiScore = data.ai_score
@@ -29,6 +29,20 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const info = typeInfo[typeCode]
   const scoreColor = aiScore >= 70 ? '#ef4444' : aiScore >= 40 ? '#f59e0b' : '#10b981'
   const scoreLabel = aiScore >= 70 ? '⚠️ AI 대체 위험' : aiScore >= 40 ? '🟡 주의 필요' : '✅ 안전 구간'
+
+  const pngTypes = new Set(['HACF', 'HACP', 'HALF', 'HALP'])
+  const BASE = 'https://aimbti-jet.vercel.app'
+  const imgUrl = pngTypes.has(typeCode)
+    ? `${BASE}/character/${typeCode}.png`
+    : `${BASE}/characters/${typeCode}.svg`
+
+  let charImgSrc = ''
+  try {
+    const res = await fetch(imgUrl)
+    const buf = await res.arrayBuffer()
+    const mime = pngTypes.has(typeCode) ? 'image/png' : 'image/svg+xml'
+    charImgSrc = `data:${mime};base64,${Buffer.from(buf).toString('base64')}`
+  } catch {}
 
   return new ImageResponse(
     (
@@ -78,10 +92,15 @@ export default async function Image({ params }: { params: Promise<{ id: string }
 
         {/* 메인 콘텐츠 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 60 }}>
-          {/* 이모지 */}
-          <div style={{ fontSize: 140, lineHeight: 1, display: 'flex' }}>
-            {info.emoji}
-          </div>
+          {/* 캐릭터 이미지 */}
+          {charImgSrc && (
+            <img
+              src={charImgSrc}
+              width={200}
+              height={200}
+              style={{ display: 'flex' }}
+            />
+          )}
 
           {/* 텍스트 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

@@ -1,18 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import CTAButton from '@/components/CTAButton'
-import halfImg from '@/assets/half.png'
-import tscfImg from '@/assets/tscf.png'
-import hslfImg from '@/assets/hslf.png'
-import tscpImg from '@/assets/tscp.png'
-
-const typeImgs: Record<string, StaticImageData> = {
-  'AI 시대 지휘관': halfImg,
-  '감성으로 팀 살리는 사람': tscfImg,
-  '조용한 논리 장인': hslfImg,
-  '완벽한 팀의 완성자': tscpImg,
-}
 
 export const metadata: Metadata = {
   title: 'AI 시대 생존력 진단 | 나는 AI에 대체될까?',
@@ -127,11 +116,10 @@ export default function LandingPage() {
               style={{ border: `1px solid ${type.border}`, background: type.bg }}
             >
               <div className="mb-1 flex justify-center">
-                {typeImgs[type.title] ? (
-                  <Image src={typeImgs[type.title]} alt={type.title} width={48} height={48} className="rounded-xl object-cover" />
-                ) : (
-                  <span className="text-2xl">{type.emoji}</span>
-                )}
+                <Image
+                  src={['HACF','HACP','HALF','HALP'].includes(type.code) ? `/character/${type.code}.png` : `/characters/${type.code}.svg`}
+                  alt={type.title} width={48} height={48} className="object-contain" unoptimized
+                />
               </div>
               <div className="text-slate-800 text-xs font-semibold leading-tight">{type.title}</div>
               <div className="text-slate-400 text-xs mt-0.5 font-mono">{type.code}</div>

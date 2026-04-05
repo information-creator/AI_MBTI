@@ -2,20 +2,9 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
-import halfImg from '@/assets/half.png'
-import tscfImg from '@/assets/tscf.png'
-import hslfImg from '@/assets/hslf.png'
-import tscpImg from '@/assets/tscp.png'
-
-const typeImages: Partial<Record<TypeCode, StaticImageData>> = {
-  HALF: halfImg,
-  TSCF: tscfImg,
-  HSLF: hslfImg,
-  TSCP: tscpImg,
-}
 
 type Props = {
   typeCode: TypeCode
@@ -46,6 +35,20 @@ export default function ResultClient({
   const [couponCopied, setCouponCopied] = useState(false)
   const [shareLoading, setShareLoading] = useState(false)
 
+  // 부트캠프 모달 (옵션 A)
+  const [showBootcampModal, setShowBootcampModal] = useState(false)
+  const [bootcampPhone, setBootcampPhone] = useState('')
+  const [bootcampConsent, setBootcampConsent] = useState(false)
+  const [bootcampPhoneError, setBootcampPhoneError] = useState('')
+  const [bootcampLoading, setBootcampLoading] = useState(false)
+
+  // 쿠폰 전화번호 게이트 (옵션 C)
+  const [couponUnlocked, setCouponUnlocked] = useState(false)
+  const [couponPhone, setCouponPhone] = useState('')
+  const [couponConsent, setCouponConsent] = useState(false)
+  const [couponPhoneError, setCouponPhoneError] = useState('')
+  const [couponPhoneLoading, setCouponPhoneLoading] = useState(false)
+
   const scoreLabel =
     aiScore >= 70
       ? '⚠️ AI 대체 위험'
@@ -54,6 +57,64 @@ export default function ResultClient({
       : '✅ 안전 구간'
 
   const scoreColor = aiScore >= 70 ? '#ef4444' : aiScore >= 40 ? '#f59e0b' : '#10b981'
+
+  async function submitLead(phone: string, source: 'bootcamp' | 'coupon'): Promise<string | null> {
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, type_code: typeCode, result_id: resultId, source }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return data.error ?? '오류가 발생했습니다.'
+    }
+    return null
+  }
+
+  async function handleBootcampSubmit() {
+    const cleaned = bootcampPhone.replace(/\D/g, '')
+    if (cleaned.length < 9 || cleaned.length > 11) {
+      setBootcampPhoneError('올바른 전화번호를 입력해주세요.')
+      return
+    }
+    if (!bootcampConsent) {
+      setBootcampPhoneError('개인정보 수집에 동의해주세요.')
+      return
+    }
+    setBootcampPhoneError('')
+    setBootcampLoading(true)
+    const err = await submitLead(cleaned, 'bootcamp')
+    setBootcampLoading(false)
+    if (err) {
+      setBootcampPhoneError(err)
+      return
+    }
+    gtagEvent('lead_submit', { source: 'bootcamp', type_code: typeCode })
+    setShowBootcampModal(false)
+    window.open(process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodes.co.kr/', '_blank')
+  }
+
+  async function handleCouponSubmit() {
+    const cleaned = couponPhone.replace(/\D/g, '')
+    if (cleaned.length < 9 || cleaned.length > 11) {
+      setCouponPhoneError('올바른 전화번호를 입력해주세요.')
+      return
+    }
+    if (!couponConsent) {
+      setCouponPhoneError('개인정보 수집에 동의해주세요.')
+      return
+    }
+    setCouponPhoneError('')
+    setCouponPhoneLoading(true)
+    const err = await submitLead(cleaned, 'coupon')
+    setCouponPhoneLoading(false)
+    if (err) {
+      setCouponPhoneError(err)
+      return
+    }
+    gtagEvent('lead_submit', { source: 'coupon', type_code: typeCode })
+    setCouponUnlocked(true)
+  }
 
   function drawShareCard(): string {
     const canvas = canvasRef.current
@@ -194,6 +255,65 @@ export default function ResultClient({
     <div className="min-h-screen bg-white">
       <canvas ref={canvasRef} className="hidden" />
 
+      {/* 부트캠프 모달 */}
+      {showBootcampModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowBootcampModal(false) }}
+        >
+          <div className="w-full max-w-sm bg-white rounded-3xl p-6 space-y-4">
+            <div>
+              <h3 className="text-slate-900 font-bold text-lg">잠깐, 무료 상담도 받으세요!</h3>
+              <p className="text-slate-500 text-sm mt-1">전화번호를 남기시면 전문가가 직접 연락드려요.</p>
+            </div>
+
+            <div className="space-y-2">
+              <input
+                type="tel"
+                value={bootcampPhone}
+                onChange={(e) => setBootcampPhone(e.target.value)}
+                placeholder="010-0000-0000"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
+              />
+              {bootcampPhoneError && (
+                <p className="text-red-500 text-xs">{bootcampPhoneError}</p>
+              )}
+              <label className="flex items-start gap-2 text-xs text-slate-500 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={bootcampConsent}
+                  onChange={(e) => setBootcampConsent(e.target.checked)}
+                  className="mt-0.5 flex-shrink-0"
+                />
+                <span>
+                  개인정보 수집·이용에 동의합니다.{' '}
+                  <Link href="/privacy" className="underline" target="_blank">개인정보처리방침</Link>
+                </span>
+              </label>
+            </div>
+
+            <button
+              onClick={handleBootcampSubmit}
+              disabled={bootcampLoading}
+              className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
+              style={{ background: bc.color, color: '#000' }}
+            >
+              {bootcampLoading ? '신청 중...' : '신청하고 커리큘럼 받기'}
+            </button>
+
+            <a
+              href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodes.co.kr/'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-center text-slate-400 text-sm hover:text-slate-600 transition-colors"
+              onClick={() => setShowBootcampModal(false)}
+            >
+              건너뛰고 이동 →
+            </a>
+          </div>
+        </div>
+      )}
+
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <Link href="/" className="text-slate-900 font-bold text-lg">
           AI<span className="text-indigo-600">mbti</span>
@@ -207,19 +327,16 @@ export default function ResultClient({
       </header>
 
       <main className="px-5 py-6 space-y-5">
-        {/* 캐릭터 이미지 or 이모지 */}
+        {/* 캐릭터 이미지 */}
         <div className="flex justify-center float-animation">
-          {typeImages[typeCode] ? (
-            <Image
-              src={typeImages[typeCode]!}
-              alt={info.title}
-              width={160}
-              height={160}
-              className="rounded-3xl object-cover"
-            />
-          ) : (
-            <span className="text-9xl">{info.emoji}</span>
-          )}
+          <Image
+            src={`/characters/${typeCode}.svg`}
+            alt={info.title}
+            width={160}
+            height={160}
+            className="object-contain"
+            unoptimized
+          />
         </div>
 
         {/* 결과 카드 */}
@@ -338,16 +455,16 @@ export default function ResultClient({
             <p className="font-bold text-slate-900 mb-1">{bc.title}</p>
             <p className="text-slate-500 text-sm">{bc.reason}</p>
           </div>
-          <a
-            href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodes.co.kr/'}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, type_code: typeCode })}
-            className="block text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+          <button
+            onClick={() => {
+              gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, type_code: typeCode })
+              setShowBootcampModal(true)
+            }}
+            className="block w-full text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
             style={{ background: bc.color, color: '#000' }}
           >
             무료 커리큘럼 받아보기 →
-          </a>
+          </button>
         </div>
 
         {/* 퇴근 보너스 */}
@@ -365,7 +482,7 @@ export default function ResultClient({
           </div>
         </div>
 
-        {/* 무료 쿠폰 */}
+        {/* 무료 쿠폰 — 전화번호 게이트 */}
         {couponCode && (
           <div
             className="rounded-3xl p-6 animate-fade-in-up bg-amber-50 border border-amber-200"
@@ -373,35 +490,87 @@ export default function ResultClient({
           >
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🎁</span>
-              <h2 className="text-slate-900 font-bold text-lg">무료 쿠폰 발급 완료!</h2>
+              <h2 className="text-slate-900 font-bold text-lg">무료 쿠폰 받기</h2>
             </div>
             <p className="text-slate-600 text-sm mb-4">
-              오픈채팅방 입장 시 아래 코드를 제시하면 특별 혜택을 드립니다.
+              전화번호를 남기시면 쿠폰 코드 + 오픈채팅 특별 혜택을 드립니다.
             </p>
-            <div className="flex items-center gap-3">
-              <div className="flex-1 font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200">
-                {couponCode}
+
+            {couponUnlocked ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200">
+                    {couponCode}
+                  </div>
+                  <button
+                    onClick={handleCopyCoupon}
+                    className="px-4 py-3 rounded-xl font-semibold text-sm transition-colors"
+                    style={{
+                      background: couponCopied ? '#10b981' : '#f59e0b',
+                      color: '#000',
+                    }}
+                  >
+                    {couponCopied ? '복사됨!' : '복사'}
+                  </button>
+                </div>
+                <a
+                  href={process.env.NEXT_PUBLIC_OPENCHAT_URL ?? '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center py-3 rounded-xl font-bold text-sm transition-colors"
+                  style={{ background: '#FEE500', color: '#3C1E1E' }}
+                >
+                  카카오 오픈채팅 입장하기 →
+                </a>
               </div>
-              <button
-                onClick={handleCopyCoupon}
-                className="px-4 py-3 rounded-xl font-semibold text-sm transition-colors"
-                style={{
-                  background: couponCopied ? '#10b981' : '#f59e0b',
-                  color: '#000',
-                }}
-              >
-                {couponCopied ? '복사됨!' : '복사'}
-              </button>
-            </div>
-            <a
-              href={process.env.NEXT_PUBLIC_OPENCHAT_URL ?? '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block mt-4 text-center py-3 rounded-xl font-bold text-sm transition-colors"
-              style={{ background: '#FEE500', color: '#3C1E1E' }}
-            >
-              카카오 오픈채팅 입장하기 →
-            </a>
+            ) : (
+              <div className="space-y-3">
+                <div className="relative">
+                  <div className="font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200 blur-sm select-none pointer-events-none">
+                    AIMBTI-XXXX
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full">
+                      🔒 전화번호 입력 후 공개
+                    </span>
+                  </div>
+                </div>
+
+                <input
+                  type="tel"
+                  value={couponPhone}
+                  onChange={(e) => setCouponPhone(e.target.value)}
+                  placeholder="010-0000-0000"
+                  className="w-full border border-amber-200 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:border-amber-400"
+                />
+
+                {couponPhoneError && (
+                  <p className="text-red-500 text-xs">{couponPhoneError}</p>
+                )}
+
+                <label className="flex items-start gap-2 text-xs text-slate-500 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={couponConsent}
+                    onChange={(e) => setCouponConsent(e.target.checked)}
+                    className="mt-0.5 flex-shrink-0"
+                  />
+                  <span>
+                    개인정보 수집·이용에 동의합니다.{' '}
+                    <Link href="/privacy" className="underline" target="_blank">개인정보처리방침</Link>
+                  </span>
+                </label>
+
+                <button
+                  onClick={handleCouponSubmit}
+                  disabled={couponPhoneLoading}
+                  className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
+                  style={{ background: '#f59e0b', color: '#000' }}
+                >
+                  {couponPhoneLoading ? '확인 중...' : '🎁 쿠폰 코드 확인하기'}
+                </button>
+              </div>
+            )}
           </div>
         )}
 

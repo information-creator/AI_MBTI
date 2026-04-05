@@ -1,0 +1,89 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<rect width="512" height="512" fill="#eff6ff"/>
+<!-- Background speed lines radiating from center -->
+<line x1="256" y1="256" x2="40" y2="40" stroke="#3b82f6" stroke-width="1" opacity="0.15"/>
+<line x1="256" y1="256" x2="256" y2="20" stroke="#3b82f6" stroke-width="1" opacity="0.15"/>
+<line x1="256" y1="256" x2="472" y2="40" stroke="#3b82f6" stroke-width="1" opacity="0.15"/>
+<line x1="256" y1="256" x2="500" y2="256" stroke="#3b82f6" stroke-width="1" opacity="0.12"/>
+<line x1="256" y1="256" x2="12" y2="256" stroke="#3b82f6" stroke-width="1" opacity="0.12"/>
+<line x1="256" y1="256" x2="130" y2="30" stroke="#2563eb" stroke-width="1" opacity="0.12"/>
+<line x1="256" y1="256" x2="382" y2="30" stroke="#2563eb" stroke-width="1" opacity="0.12"/>
+<line x1="256" y1="256" x2="28" y2="380" stroke="#1d4ed8" stroke-width="0.8" opacity="0.1"/>
+<line x1="256" y1="256" x2="484" y2="380" stroke="#1d4ed8" stroke-width="0.8" opacity="0.1"/>
+<!-- Energy sparkles -->
+<polygon points="80,60 84,68 92,68 86,74 88,82 80,78 72,82 74,74 68,68 76,68" fill="#3b82f6" opacity="0.5"/>
+<polygon points="432,58 436,66 444,66 438,72 440,80 432,76 424,80 426,72 420,66 428,66" fill="#2563eb" opacity="0.5"/>
+<polygon points="50,180 53,186 59,186 55,190 56,196 50,193 44,196 45,190 41,186 47,186" fill="#60a5fa" opacity="0.4"/>
+<polygon points="462,175 465,181 471,181 467,185 468,191 462,188 456,191 457,185 453,181 459,181" fill="#60a5fa" opacity="0.4"/>
+<!-- Shadow -->
+<ellipse cx="256" cy="478" rx="80" ry="10" fill="#00000012"/>
+<!-- Shoes -->
+<polygon points="178,455 214,453 216,468 175,470" fill="#1e40af"/>
+<polygon points="175,470 216,468 214,476 173,478" fill="#1e3a8a"/>
+<polygon points="242,453 278,455 282,476 240,478" fill="#1e40af"/>
+<polygon points="240,478 282,476 280,484 238,484" fill="#1e3a8a"/>
+<!-- Legs -->
+<polygon points="184,370 210,370 208,455 180,455" fill="#1d4ed8"/>
+<polygon points="180,455 208,455 206,468 178,468" fill="#1e40af"/>
+<polygon points="246,370 272,370 278,455 248,455" fill="#1d4ed8"/>
+<polygon points="248,455 278,455 280,468 246,468" fill="#1e40af"/>
+<!-- Body main -->
+<polygon points="175,210 338,210 348,374 162,374" fill="#1d4ed8"/>
+<polygon points="175,210 200,210 182,374 162,374" fill="#1e40af"/>
+<polygon points="312,210 338,210 348,374 325,374" fill="#1e40af"/>
+<polygon points="208,210 304,210 298,318 214,318" fill="#2563eb"/>
+<!-- Body lapels -->
+<polygon points="210,210 256,255 200,308 182,228" fill="#1e3a8a"/>
+<polygon points="302,210 256,255 312,308 330,228" fill="#172b6e"/>
+<!-- Chest detail -->
+<polygon points="248,250 264,250 268,310 256,320 244,310" fill="#dbeafe"/>
+<polygon points="252,262 260,262 264,308 256,315 248,308" fill="#93c5fd"/>
+<!-- Collar -->
+<polygon points="214,208 256,232 298,208 288,200 256,218 224,200" fill="#eff6ff"/>
+<!-- Left arm stretched wide up-left -->
+<polygon points="175,216 120,200 80,270 120,285" fill="#1d4ed8"/>
+<polygon points="120,200 80,195 55,258 80,270" fill="#1e40af"/>
+<polygon points="55,258 82,265 78,282 52,274" fill="#eff6ff"/>
+<polygon points="48,272 80,282 76,300 44,288" fill="#f5c87a"/>
+<!-- AI tablet strapped to left forearm -->
+<rect x="58" y="258" width="36" height="26" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+<polygon points="62,263 88,261 88,269 62,271" fill="#3b82f6" opacity="0.6"/>
+<polygon points="62,273 84,271 84,279 62,281" fill="#60a5fa" opacity="0.5"/>
+<circle cx="91" cy="271" r="3" fill="#93c5fd"/>
+<!-- Right arm stretched wide up-right -->
+<polygon points="338,216 392,200 432,270 392,285" fill="#1e40af"/>
+<polygon points="392,200 432,195 458,258 432,270" fill="#1d4ed8"/>
+<polygon points="432,255 460,262 456,280 428,272" fill="#eff6ff"/>
+<polygon points="432,270 464,278 460,296 428,286" fill="#f5c87a"/>
+<!-- Neck -->
+<polygon points="228,172 284,172 288,210 224,210" fill="#f5c87a"/>
+<polygon points="238,172 274,172 276,192 236,192" fill="#e8b85a"/>
+<!-- Head -->
+<polygon points="192,88 320,88 328,172 184,172" fill="#f8d48e"/>
+<polygon points="192,88 216,88 208,172 184,172" fill="#ecc070"/>
+<polygon points="296,88 320,88 328,172 306,172" fill="#e0aa50"/>
+<polygon points="216,88 296,88 290,120 222,120" fill="#fce4a8"/>
+<!-- Hair dark -->
+<polygon points="188,88 320,88 314,70 194,70" fill="#0f172a"/>
+<polygon points="194,70 314,70 308,54 200,54" fill="#1e293b"/>
+<polygon points="200,54 308,54 302,40 206,40" fill="#0f172a"/>
+<polygon points="206,40 302,40 296,30 212,30" fill="#060c18"/>
+<polygon points="188,88 200,54 180,100 174,130" fill="#0f172a"/>
+<polygon points="320,88 308,54 328,102 334,132" fill="#060c18"/>
+<!-- Eyes -->
+<polygon points="210,118 230,114 232,121 212,124" fill="#0f172a"/>
+<polygon points="280,114 300,118 298,124 278,121" fill="#0f172a"/>
+<polygon points="213,126 229,124 231,138 215,140" fill="#060c18"/>
+<polygon points="280,124 296,126 294,138 278,136" fill="#060c18"/>
+<polygon points="215,127 221,126 222,131 216,132" fill="#fff" opacity="0.8"/>
+<polygon points="282,126 288,127 287,132 281,131" fill="#fff" opacity="0.8"/>
+<!-- Nose -->
+<polygon points="246,148 266,148 270,162 256,165 242,162" fill="#e0aa50"/>
+<!-- Mouth confident smile -->
+<polygon points="222,163 290,161 294,170 256,176 218,172" fill="#c0392b"/>
+<polygon points="218,172 294,170 292,178 220,178" fill="#922b21"/>
+<polygon points="224,164 288,162 286,170 226,170" fill="#f5e6e6"/>
+<!-- Label -->
+<rect x="148" y="490" width="216" height="18" rx="9" fill="#1d4ed8"/>
+<text x="256" y="503" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">TALF · 팀 이끄는 AI 선봉장</text>
+</svg>

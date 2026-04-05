@@ -1,0 +1,95 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<rect width="512" height="512" fill="#f0fdfa"/>
+<!-- Background teal circle decorations top corners -->
+<circle cx="80" cy="60" r="44" fill="none" stroke="#5eead4" stroke-width="3" opacity="0.3"/>
+<circle cx="80" cy="60" r="28" fill="#5eead4" opacity="0.1"/>
+<circle cx="432" cy="60" r="44" fill="none" stroke="#0d9488" stroke-width="3" opacity="0.3"/>
+<circle cx="432" cy="60" r="28" fill="#0d9488" opacity="0.1"/>
+<!-- Orbiting geometric shapes corners -->
+<polygon points="52,50 68,50 60,66" fill="#5eead4" opacity="0.7"/>
+<polygon points="448,36 464,36 456,54" fill="#14b8a6" opacity="0.6"/>
+<circle cx="430" cy="74" r="9" fill="none" stroke="#0d9488" stroke-width="2" opacity="0.7"/>
+<polygon points="462,128 474,118 478,136" fill="#0d9488" opacity="0.5"/>
+<circle cx="50" cy="155" r="7" fill="#5eead4" opacity="0.4"/>
+<polygon points="466,168 479,160 481,176" fill="#5eead4" opacity="0.4"/>
+<circle cx="64" cy="104" r="6" fill="#14b8a6" opacity="0.5"/>
+<circle cx="460" cy="110" r="5" fill="#5eead4" opacity="0.4"/>
+<polygon points="44,78 54,68 58,82" fill="#0d9488" opacity="0.3"/>
+<!-- Shadow -->
+<ellipse cx="256" cy="478" rx="80" ry="10" fill="#00000012"/>
+<!-- Shoes -->
+<polygon points="178,455 214,453 216,468 175,470" fill="#065f46"/>
+<polygon points="175,470 216,468 214,476 173,478" fill="#034a36"/>
+<polygon points="242,453 278,455 282,476 240,478" fill="#065f46"/>
+<polygon points="240,478 282,476 280,484 238,484" fill="#034a36"/>
+<!-- Legs -->
+<polygon points="184,370 210,370 208,455 180,455" fill="#0d9488"/>
+<polygon points="180,455 208,455 206,468 178,468" fill="#0a7a70"/>
+<polygon points="246,370 272,370 278,455 248,455" fill="#0d9488"/>
+<polygon points="248,455 278,455 280,468 246,468" fill="#0a7a70"/>
+<!-- Body main -->
+<polygon points="175,210 338,210 348,374 162,374" fill="#0d9488"/>
+<polygon points="175,210 200,210 182,374 162,374" fill="#0b8077"/>
+<polygon points="312,210 338,210 348,374 325,374" fill="#0b8077"/>
+<polygon points="208,210 304,210 298,318 214,318" fill="#14b8a6"/>
+<!-- Body lapels -->
+<polygon points="210,210 256,255 200,308 182,228" fill="#065f46"/>
+<polygon points="302,210 256,255 312,308 330,228" fill="#064e3b"/>
+<!-- Chest gem -->
+<polygon points="248,250 264,250 268,310 256,320 244,310" fill="#ccfbf1"/>
+<polygon points="252,262 260,262 264,308 256,315 248,308" fill="#5eead4"/>
+<!-- Collar -->
+<polygon points="214,208 256,232 298,208 288,200 256,218 224,200" fill="#f0fdfa"/>
+<!-- Left arm -->
+<polygon points="175,216 145,225 125,318 156,326" fill="#0d9488"/>
+<polygon points="145,225 120,230 98,312 125,318" fill="#0b8077"/>
+<polygon points="98,312 126,316 124,332 96,328" fill="#f0fdfa"/>
+<polygon points="93,326 128,330 126,348 90,342" fill="#f5c87a"/>
+<!-- Right arm -->
+<polygon points="338,216 364,225 382,312 354,320" fill="#0b8077"/>
+<polygon points="364,225 388,232 406,308 382,312" fill="#0d9488"/>
+<polygon points="382,312 408,306 410,322 384,328" fill="#f0fdfa"/>
+<polygon points="406,295 424,287 430,270 412,276" fill="#f5c87a"/>
+<polygon points="424,287 434,278 438,261 427,268" fill="#e8b85a"/>
+<!-- Floating glowing tablet right hand -->
+<rect x="316" y="236" width="82" height="112" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5" opacity="0.95"/>
+<rect x="320" y="240" width="74" height="84" rx="3" fill="#93c5fd" opacity="0.6"/>
+<polygon points="323,250 390,247 390,257 323,260" fill="#3b82f6" opacity="0.7"/>
+<polygon points="323,262 386,259 386,267 323,270" fill="#60a5fa" opacity="0.5"/>
+<polygon points="323,274 378,271 378,279 323,282" fill="#93c5fd" opacity="0.6"/>
+<polygon points="323,286 382,283 382,291 323,294" fill="#3b82f6" opacity="0.4"/>
+<polygon points="323,298 372,295 372,303 323,306" fill="#60a5fa" opacity="0.4"/>
+<circle cx="358" cy="332" r="5" fill="#5eead4"/>
+<circle cx="316" cy="236" r="8" fill="#dbeafe" opacity="0.5"/>
+<!-- Neck -->
+<polygon points="228,172 284,172 288,210 224,210" fill="#f5c87a"/>
+<polygon points="238,172 274,172 276,192 236,192" fill="#e8b85a"/>
+<!-- Head -->
+<polygon points="192,88 320,88 328,172 184,172" fill="#f8d48e"/>
+<polygon points="192,88 216,88 208,172 184,172" fill="#ecc070"/>
+<polygon points="296,88 320,88 328,172 306,172" fill="#e0aa50"/>
+<polygon points="216,88 296,88 290,120 222,120" fill="#fce4a8"/>
+<!-- Hair dark -->
+<polygon points="188,88 320,88 314,70 194,70" fill="#1a1a2e"/>
+<polygon points="194,70 314,70 308,54 200,54" fill="#2a2a42"/>
+<polygon points="200,54 308,54 302,40 206,40" fill="#1a1a2e"/>
+<polygon points="206,40 302,40 296,30 212,30" fill="#0d0d1e"/>
+<polygon points="188,88 200,54 180,100 174,130" fill="#1a1a2e"/>
+<polygon points="320,88 308,54 328,102 334,132" fill="#0d0d1e"/>
+<!-- Eyes -->
+<polygon points="210,118 230,114 232,121 212,124" fill="#1a1a2e"/>
+<polygon points="280,114 300,118 298,124 278,121" fill="#1a1a2e"/>
+<polygon points="213,126 229,124 231,138 215,140" fill="#0d0d1e"/>
+<polygon points="280,124 296,126 294,138 278,136" fill="#0d0d1e"/>
+<polygon points="215,127 221,126 222,131 216,132" fill="#fff" opacity="0.8"/>
+<polygon points="282,126 288,127 287,132 281,131" fill="#fff" opacity="0.8"/>
+<!-- Nose -->
+<polygon points="246,148 266,148 270,162 256,165 242,162" fill="#e0aa50"/>
+<!-- Mouth -->
+<polygon points="224,162 288,160 292,168 256,174 220,170" fill="#c0392b"/>
+<polygon points="220,170 292,168 290,175 222,175" fill="#922b21"/>
+<polygon points="226,163 286,161 284,168 228,168" fill="#f5e6e6"/>
+<!-- Label -->
+<rect x="134" y="490" width="244" height="18" rx="9" fill="#0d9488"/>
+<text x="256" y="503" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">HACP · 느린 듯 정확한 AI 예술가</text>
+</svg>
