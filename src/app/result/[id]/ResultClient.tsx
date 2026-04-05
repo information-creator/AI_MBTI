@@ -2,8 +2,20 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image, { StaticImageData } from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
+import halfImg from '@/assets/half.png'
+import tscfImg from '@/assets/tscf.png'
+import hslfImg from '@/assets/hslf.png'
+import tscpImg from '@/assets/tscp.png'
+
+const typeImages: Partial<Record<TypeCode, StaticImageData>> = {
+  HALF: halfImg,
+  TSCF: tscfImg,
+  HSLF: hslfImg,
+  TSCP: tscpImg,
+}
 
 type Props = {
   typeCode: TypeCode
@@ -188,9 +200,19 @@ export default function ResultClient({
       </header>
 
       <main className="px-5 py-6 space-y-5">
-        {/* 캐릭터 이모지 */}
+        {/* 캐릭터 이미지 or 이모지 */}
         <div className="flex justify-center float-animation">
-          <span className="text-9xl">{info.emoji}</span>
+          {typeImages[typeCode] ? (
+            <Image
+              src={typeImages[typeCode]!}
+              alt={info.title}
+              width={160}
+              height={160}
+              className="rounded-3xl object-cover"
+            />
+          ) : (
+            <span className="text-9xl">{info.emoji}</span>
+          )}
         </div>
 
         {/* 결과 카드 */}
