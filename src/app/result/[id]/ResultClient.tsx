@@ -169,15 +169,22 @@ export default function ResultClient({
 
   function handleKakaoShare() {
     const url = window.location.href
-    const text = `나는 ${info.title} (${typeCode})! AI 대체 가능성 ${aiScore}%\n${info.subtitle}\n\n당신의 유형은? → ${url}`
+    const BASE = 'https://aimbti-jet.vercel.app'
     if (typeof window !== 'undefined' && (window as any).Kakao?.isInitialized?.()) {
       ;(window as any).Kakao.Share.sendDefault({
-        objectType: 'text',
-        text,
-        link: { mobileWebUrl: url, webUrl: url },
+        objectType: 'feed',
+        content: {
+          title: `나는 "${info.title}" (${typeCode}) — AI 대체 가능성 ${aiScore}%`,
+          description: info.subtitle,
+          imageUrl: `${BASE}/result/${resultId}/opengraph-image`,
+          link: { mobileWebUrl: url, webUrl: url },
+        },
+        buttons: [
+          { title: '내 유형 확인하기', link: { mobileWebUrl: BASE, webUrl: BASE } },
+        ],
       })
     } else {
-      navigator.clipboard.writeText(text)
+      navigator.clipboard.writeText(url)
       alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
     }
     gtagEvent('share_click', { method: 'kakao' })
@@ -280,11 +287,11 @@ export default function ResultClient({
           style={{ animationDelay: '0.2s' }}
         >
           <h2 className="text-slate-900 font-bold text-lg mb-4">추천 직업 / 직무</h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {info.jobs.map((job) => (
               <div
                 key={job}
-                className="rounded-2xl p-4 text-center text-sm font-semibold"
+                className="rounded-2xl p-4 text-center text-sm font-semibold leading-snug"
                 style={{ background: info.color + '12', border: `1px solid ${info.color}25`, color: info.color }}
               >
                 {job}
