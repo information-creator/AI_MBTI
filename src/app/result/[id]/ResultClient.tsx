@@ -37,17 +37,34 @@ export default function ResultClient({
 
   // 부트캠프 모달 (옵션 A)
   const [showBootcampModal, setShowBootcampModal] = useState(false)
+  const [bootcampName, setBootcampName] = useState('')
   const [bootcampPhone, setBootcampPhone] = useState('')
+  const [bootcampEmail, setBootcampEmail] = useState('')
   const [bootcampConsent, setBootcampConsent] = useState(false)
+
   const [bootcampPhoneError, setBootcampPhoneError] = useState('')
   const [bootcampLoading, setBootcampLoading] = useState(false)
 
   // 쿠폰 전화번호 게이트 (옵션 C)
+  const [showCouponModal, setShowCouponModal] = useState(false)
   const [couponUnlocked, setCouponUnlocked] = useState(false)
+  const [couponName, setCouponName] = useState('')
   const [couponPhone, setCouponPhone] = useState('')
+  const [couponEmail, setCouponEmail] = useState('')
   const [couponConsent, setCouponConsent] = useState(false)
+
   const [couponPhoneError, setCouponPhoneError] = useState('')
   const [couponPhoneLoading, setCouponPhoneLoading] = useState(false)
+
+  // 전자책 신청
+  const [showEbookModal, setShowEbookModal] = useState(false)
+  const [ebookDone, setEbookDone] = useState(false)
+  const [ebookName, setEbookName] = useState('')
+  const [ebookPhone, setEbookPhone] = useState('')
+  const [ebookEmail, setEbookEmail] = useState('')
+  const [ebookConsent, setEbookConsent] = useState(false)
+  const [ebookError, setEbookError] = useState('')
+  const [ebookLoading, setEbookLoading] = useState(false)
 
   const scoreLabel =
     aiScore >= 70
@@ -58,11 +75,11 @@ export default function ResultClient({
 
   const scoreColor = aiScore >= 70 ? '#ef4444' : aiScore >= 40 ? '#f59e0b' : '#10b981'
 
-  async function submitLead(phone: string, source: 'bootcamp' | 'coupon'): Promise<string | null> {
+  async function submitLead(name: string, phone: string, source: 'bootcamp' | 'coupon', email?: string): Promise<string | null> {
     const res = await fetch('/api/leads', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, type_code: typeCode, result_id: resultId, source }),
+      body: JSON.stringify({ name, phone, email: email || null, type_code: typeCode, result_id: resultId, source }),
     })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
@@ -72,6 +89,10 @@ export default function ResultClient({
   }
 
   async function handleBootcampSubmit() {
+    if (!bootcampName.trim()) {
+      setBootcampPhoneError('이름을 입력해주세요.')
+      return
+    }
     const cleaned = bootcampPhone.replace(/\D/g, '')
     if (cleaned.length < 9 || cleaned.length > 11) {
       setBootcampPhoneError('올바른 전화번호를 입력해주세요.')
@@ -83,7 +104,7 @@ export default function ResultClient({
     }
     setBootcampPhoneError('')
     setBootcampLoading(true)
-    const err = await submitLead(cleaned, 'bootcamp')
+    const err = await submitLead(bootcampName.trim(), cleaned, 'bootcamp', bootcampEmail.trim() || undefined)
     setBootcampLoading(false)
     if (err) {
       setBootcampPhoneError(err)
@@ -91,10 +112,14 @@ export default function ResultClient({
     }
     gtagEvent('lead_submit', { source: 'bootcamp', type_code: typeCode })
     setShowBootcampModal(false)
-    window.open(process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodes.co.kr/', '_blank')
+    window.open('https://metacodes.co.kr/', '_blank')
   }
 
   async function handleCouponSubmit() {
+    if (!couponName.trim()) {
+      setCouponPhoneError('이름을 입력해주세요.')
+      return
+    }
     const cleaned = couponPhone.replace(/\D/g, '')
     if (cleaned.length < 9 || cleaned.length > 11) {
       setCouponPhoneError('올바른 전화번호를 입력해주세요.')
@@ -106,7 +131,7 @@ export default function ResultClient({
     }
     setCouponPhoneError('')
     setCouponPhoneLoading(true)
-    const err = await submitLead(cleaned, 'coupon')
+    const err = await submitLead(couponName.trim(), cleaned, 'coupon', couponEmail.trim() || undefined)
     setCouponPhoneLoading(false)
     if (err) {
       setCouponPhoneError(err)
@@ -114,6 +139,7 @@ export default function ResultClient({
     }
     gtagEvent('lead_submit', { source: 'coupon', type_code: typeCode })
     setCouponUnlocked(true)
+    setShowCouponModal(false)
   }
 
   function drawShareCard(): string {
@@ -204,11 +230,18 @@ export default function ResultClient({
   async function handleDownloadCard() {
     setShareLoading(true)
     gtagEvent('share_click', { method: 'card' })
-    const dataUrl = drawShareCard()
-    const a = document.createElement('a')
-    a.href = dataUrl
-    a.download = `aimbti_${typeCode}.png`
-    a.click()
+    try {
+      const res = await fetch(`/result/${resultId}/opengraph-image`)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `aimbti_${typeCode}.png`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      alert('이미지 저장에 실패했습니다. 다시 시도해주세요.')
+    }
     setShareLoading(false)
   }
 
@@ -228,9 +261,33 @@ export default function ResultClient({
     setTimeout(() => setCouponCopied(false), 2000)
   }
 
+  async function handleEbookSubmit() {
+    if (!ebookName.trim()) { setEbookError('이름을 입력해주세요.'); return }
+    const cleaned = ebookPhone.replace(/\D/g, '')
+    if (cleaned.length < 9 || cleaned.length > 11) { setEbookError('올바른 전화번호를 입력해주세요.'); return }
+    if (!ebookEmail.includes('@')) { setEbookError('올바른 이메일을 입력해주세요.'); return }
+    if (!ebookConsent) { setEbookError('개인정보 수집에 동의해주세요.'); return }
+    setEbookError('')
+    setEbookLoading(true)
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: ebookName.trim(), phone: cleaned, email: ebookEmail.trim(), type_code: typeCode, result_id: resultId, source: 'ebook' }),
+    })
+    setEbookLoading(false)
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      setEbookError(data.error ?? '오류가 발생했습니다.')
+      return
+    }
+    gtagEvent('ebook_submit', { type_code: typeCode })
+    setEbookDone(true)
+    setShowEbookModal(false)
+  }
+
   function handleKakaoShare() {
-    const url = window.location.href
-    const BASE = 'https://aimbti-jet.vercel.app'
+    const BASE = 'https://aimbti-seven.vercel.app'
+    const shareUrl = `${BASE}/result/${resultId}`
     if (typeof window !== 'undefined' && (window as any).Kakao?.isInitialized?.()) {
       ;(window as any).Kakao.Share.sendDefault({
         objectType: 'feed',
@@ -238,14 +295,16 @@ export default function ResultClient({
           title: `나는 "${info.title}" (${typeCode}) — AI 대체 가능성 ${aiScore}%`,
           description: info.subtitle,
           imageUrl: `${BASE}/result/${resultId}/opengraph-image`,
-          link: { mobileWebUrl: url, webUrl: url },
+          imageWidth: 900,
+          imageHeight: 900,
+          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
         },
         buttons: [
           { title: '내 유형 확인하기', link: { mobileWebUrl: BASE, webUrl: BASE } },
         ],
       })
     } else {
-      navigator.clipboard.writeText(url)
+      navigator.clipboard.writeText(shareUrl)
       alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
     }
     gtagEvent('share_click', { method: 'kakao' })
@@ -263,16 +322,30 @@ export default function ResultClient({
         >
           <div className="w-full max-w-sm bg-white rounded-3xl p-6 space-y-4">
             <div>
-              <h3 className="text-slate-900 font-bold text-lg">잠깐, 무료 상담도 받으세요!</h3>
-              <p className="text-slate-500 text-sm mt-1">전화번호를 남기시면 전문가가 직접 연락드려요.</p>
+              <h3 className="text-slate-900 font-bold text-lg">무료 상담 받아보기</h3>
+              <p className="text-slate-500 text-sm mt-1">이름과 연락처를 남기시면 전문가가 직접 연락드려요.</p>
             </div>
 
             <div className="space-y-2">
               <input
+                type="text"
+                value={bootcampName}
+                onChange={(e) => setBootcampName(e.target.value)}
+                placeholder="이름"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
+              />
+              <input
                 type="tel"
                 value={bootcampPhone}
                 onChange={(e) => setBootcampPhone(e.target.value)}
-                placeholder="010-0000-0000"
+                placeholder="01000000000"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
+              />
+              <input
+                type="email"
+                value={bootcampEmail}
+                onChange={(e) => setBootcampEmail(e.target.value)}
+                placeholder="이메일 주소 (선택)"
                 className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
               />
               {bootcampPhoneError && (
@@ -355,12 +428,75 @@ export default function ResultClient({
               {typeCode}
             </span>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-3 mb-1">{info.title}</h1>
-            <p className="text-slate-600 text-sm">{info.subtitle}</p>
+            <p className="text-slate-600 text-base">{info.subtitle}</p>
+
+            {/* 코드 설명 */}
+            <div className="grid grid-cols-2 gap-2 mt-4 text-left">
+              {[
+                {
+                  letter: typeCode[0],
+                  label: typeCode[0] === 'H' ? '혼자형' : '함께형',
+                  desc: typeCode[0] === 'H' ? '혼자 집중할 때 최고의 결과를 냅니다' : '협업에서 시너지가 폭발합니다',
+                  color: typeCode[0] === 'H' ? '#6366f1' : '#0ea5e9',
+                },
+                {
+                  letter: typeCode[1],
+                  label: typeCode[1] === 'A' ? 'AI 활용' : '사람 감각',
+                  desc: typeCode[1] === 'A' ? 'AI 도구를 적극적으로 씁니다' : '사람의 감각과 직관을 중시합니다',
+                  color: typeCode[1] === 'A' ? '#8b5cf6' : '#10b981',
+                },
+                {
+                  letter: typeCode[2],
+                  label: typeCode[2] === 'L' ? '논리형' : '창의형',
+                  desc: typeCode[2] === 'L' ? '데이터와 분석으로 판단합니다' : '직관과 아이디어로 돌파합니다',
+                  color: typeCode[2] === 'L' ? '#475569' : '#f59e0b',
+                },
+                {
+                  letter: typeCode[3],
+                  label: typeCode[3] === 'F' ? '빠른 실행' : '완벽 준비',
+                  desc: typeCode[3] === 'F' ? '일단 실행하고 수정합니다' : '완벽히 준비한 뒤 움직입니다',
+                  color: typeCode[3] === 'F' ? '#f97316' : '#14b8a6',
+                },
+              ].map(({ letter, label, desc, color }) => (
+                <div key={letter + label} className="rounded-2xl p-3" style={{ background: color + '10', border: `1px solid ${color}20` }}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-lg font-black" style={{ color }}>{letter}</span>
+                    <span className="text-xs font-bold text-slate-700">{label}</span>
+                  </div>
+                  <p className="text-sm text-slate-500 leading-snug">{desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <p className="mt-5 text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-line text-center">
+          <p className="mt-5 text-slate-700 leading-relaxed text-base whitespace-pre-line text-center">
             {info.description}
           </p>
+
+          {/* 강점 → 위기 → 방향 */}
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex gap-2.5 items-start rounded-2xl p-3 border border-emerald-100" style={{ background: '#f0fdf4' }}>
+              <span className="text-sm mt-0.5 flex-shrink-0">💪</span>
+              <div>
+                <p className="text-xs font-bold text-emerald-700 mb-0.5">당신의 강점</p>
+                <p className="text-xs text-emerald-800 leading-snug">{info.insight.strength}</p>
+              </div>
+            </div>
+            <div className="flex gap-2.5 items-start rounded-2xl p-3 border border-red-200" style={{ background: '#fff1f1' }}>
+              <span className="text-sm mt-0.5 flex-shrink-0">🚨</span>
+              <div>
+                <p className="text-xs font-bold text-red-600 mb-0.5">지금 당신의 현실</p>
+                <p className="text-xs text-red-700 leading-snug font-medium">{info.insight.crisis}</p>
+              </div>
+            </div>
+            <div className="flex gap-2.5 items-start rounded-2xl p-3 border" style={{ background: info.color + '08', borderColor: info.color + '30' }}>
+              <span className="text-sm mt-0.5 flex-shrink-0">🎯</span>
+              <div>
+                <p className="text-xs font-bold mb-0.5" style={{ color: info.color }}>지금 해야 할 것</p>
+                <p className="text-xs leading-snug font-medium" style={{ color: info.color }}>{info.insight.direction}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* AI 대체 점수 */}
@@ -369,7 +505,7 @@ export default function ResultClient({
           style={{ animationDelay: '0.1s' }}
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-slate-900 font-bold text-lg">AI 대체 가능성</h2>
+            <h2 className="text-slate-900 font-bold text-xl">AI 대체 가능성</h2>
             <div className="text-right">
               <span className="text-3xl font-black" style={{ color: scoreColor }}>
                 {aiScore}%
@@ -388,7 +524,7 @@ export default function ResultClient({
             />
           </div>
 
-          <p className="text-slate-500 text-sm">{info.scoreComment(aiScore)}</p>
+          <p className="text-slate-500 text-base">{info.scoreComment(aiScore)}</p>
 
           <div
             className="rounded-xl p-3 text-sm font-semibold"
@@ -403,39 +539,70 @@ export default function ResultClient({
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
           style={{ animationDelay: '0.2s' }}
         >
-          <h2 className="text-slate-900 font-bold text-lg mb-4">추천 직업 / 직무</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {info.jobs.map((job) => (
-              <div
-                key={job}
-                className="rounded-2xl p-4 text-center text-sm font-semibold leading-snug"
-                style={{ background: info.color + '12', border: `1px solid ${info.color}25`, color: info.color }}
-              >
-                {job}
-              </div>
-            ))}
+          {/* 경고 메시지 */}
+          <div className="rounded-2xl p-4 mb-5" style={{ background: '#fef2f2', border: '1px solid #fecaca' }}>
+            <p className="text-sm font-bold text-red-600 mb-0.5">⚠️ 지금 당신이 하는 일</p>
+            <p className="text-sm text-red-500 whitespace-pre-line">{info.jobSection.warning}</p>
+          </div>
+
+          {/* 업무별 AI 대체율 바 */}
+          <div className="flex flex-col gap-3 mb-5">
+            {info.jobSection.tasks.map((task) => {
+              const isDangerous = task.rate >= 70
+              return (
+                <div key={task.name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className={`text-sm font-medium ${isDangerous ? 'text-red-500' : 'text-slate-700'}`}>
+                      {isDangerous ? `🤖 ${task.name}` : `✅ ${task.name}`}
+                    </span>
+                    <span className={`text-xs font-bold ${isDangerous ? 'text-red-500' : 'text-emerald-500'}`}>
+                      {isDangerous ? `AI 대체 ${task.rate}%` : '아직 안전'}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{
+                        width: `${task.rate}%`,
+                        background: isDangerous
+                          ? 'linear-gradient(to right, #f87171, #ef4444)'
+                          : 'linear-gradient(to right, #6ee7b7, #10b981)',
+                      }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* 살아남는 방법 */}
+          <div className="rounded-2xl p-4" style={{ background: info.color + '08', border: `1px solid ${info.color}20` }}>
+            <p className="text-sm font-bold mb-2" style={{ color: info.color }}>살아남는 사람의 전환 루트</p>
+            <div className="flex flex-col gap-2">
+              {info.jobSection.transitions.map((t) => (
+                <div key={t.from} className="flex items-center gap-2 text-sm">
+                  <span className="text-slate-400 text-sm">{t.from}</span>
+                  <span className="text-slate-400 text-sm">→</span>
+                  <span className="font-bold" style={{ color: info.color }}>{t.to}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* AI 자동화 가이드 */}
+        {/* 퇴근 보너스 */}
         <div
-          className="rounded-3xl p-6 animate-fade-in-up"
-          style={{
-            background: 'rgba(99,102,241,0.05)',
-            border: '1px solid rgba(99,102,241,0.15)',
-            animationDelay: '0.3s',
-          }}
+          className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
+          style={{ animationDelay: '0.38s' }}
         >
-          <h2 className="text-slate-900 font-bold text-lg mb-3">
-            💡 나만의 AI 자동화 가이드
-          </h2>
-          <p className="text-slate-600 text-sm leading-relaxed">{info.aiTip}</p>
-          <Link
-            href="/guide"
-            className="inline-block mt-4 text-indigo-600 text-sm font-semibold hover:text-indigo-500 transition-colors"
+          <h2 className="text-slate-900 font-bold text-xl mb-2">😴 퇴근</h2>
+          <div
+            className="rounded-xl p-4"
+            style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.15)' }}
           >
-            전체 자동화 가이드 보기 →
-          </Link>
+            <p className="font-bold text-orange-600 text-lg mb-1">{overtimeLevel}</p>
+            <p className="text-slate-600 text-sm whitespace-pre-line">{overtimeComment}</p>
+          </div>
         </div>
 
         {/* 부트캠프 추천 */}
@@ -446,13 +613,13 @@ export default function ResultClient({
             animationDelay: '0.4s',
           }}
         >
-          <h2 className="text-slate-900 font-bold text-lg mt-2 mb-1">🎯 당신의 다음 스텝</h2>
-          <p className="text-slate-500 text-sm mb-4">{info.bootcampReason}</p>
+          <h2 className="text-slate-900 font-bold text-xl mt-2 mb-1">🎯 당신의 다음 스텝</h2>
+          <p className="text-slate-500 text-base mb-4">{info.bootcampReason}</p>
           <div
             className="rounded-2xl p-4 mb-4 border border-slate-100"
             style={{ background: bc.color + '08' }}
           >
-            <p className="font-bold text-slate-900 mb-1">{bc.title}</p>
+            <p className="font-bold text-slate-900 text-base mb-1">{bc.title}</p>
             <p className="text-slate-500 text-sm">{bc.reason}</p>
           </div>
           <button
@@ -463,96 +630,49 @@ export default function ResultClient({
             className="block w-full text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
             style={{ background: bc.color, color: '#000' }}
           >
-            무료 커리큘럼 받아보기 →
+            무료 상담 받기 →
           </button>
         </div>
 
-        {/* 퇴근 보너스 */}
-        <div
-          className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
-          style={{ animationDelay: '0.45s' }}
-        >
-          <h2 className="text-slate-900 font-bold text-lg mb-2">😴 퇴근</h2>
+        {/* 전자책 신청 */}
+        {showEbookModal && (
           <div
-            className="rounded-xl p-4"
-            style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.15)' }}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
+            onClick={(e) => { if (e.target === e.currentTarget) setShowEbookModal(false) }}
           >
-            <p className="font-bold text-orange-600 text-lg mb-1">{overtimeLevel}</p>
-            <p className="text-slate-600 text-sm">{overtimeComment}</p>
-          </div>
-        </div>
-
-        {/* 무료 쿠폰 — 전화번호 게이트 */}
-        {couponCode && (
-          <div
-            className="rounded-3xl p-6 animate-fade-in-up bg-amber-50 border border-amber-200"
-            style={{ animationDelay: '0.5s' }}
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🎁</span>
-              <h2 className="text-slate-900 font-bold text-lg">무료 쿠폰 받기</h2>
-            </div>
-            <p className="text-slate-600 text-sm mb-4">
-              전화번호를 남기시면 쿠폰 코드 + 오픈채팅 특별 혜택을 드립니다.
-            </p>
-
-            {couponUnlocked ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200">
-                    {couponCode}
-                  </div>
-                  <button
-                    onClick={handleCopyCoupon}
-                    className="px-4 py-3 rounded-xl font-semibold text-sm transition-colors"
-                    style={{
-                      background: couponCopied ? '#10b981' : '#f59e0b',
-                      color: '#000',
-                    }}
-                  >
-                    {couponCopied ? '복사됨!' : '복사'}
-                  </button>
-                </div>
-                <a
-                  href={process.env.NEXT_PUBLIC_OPENCHAT_URL ?? '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center py-3 rounded-xl font-bold text-sm transition-colors"
-                  style={{ background: '#FEE500', color: '#3C1E1E' }}
-                >
-                  카카오 오픈채팅 입장하기 →
-                </a>
+            <div className="w-full max-w-sm bg-white rounded-3xl p-6 space-y-4">
+              <div>
+                <h3 className="text-slate-900 font-bold text-lg">📖 AI 생존 전자책 받기</h3>
+                <p className="text-slate-500 text-sm mt-1">정보를 남기시면 이메일로 전자책을 보내드려요.</p>
               </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="relative">
-                  <div className="font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200 blur-sm select-none pointer-events-none">
-                    AIMBTI-XXXX
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full">
-                      🔒 전화번호 입력 후 공개
-                    </span>
-                  </div>
-                </div>
-
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={ebookName}
+                  onChange={(e) => setEbookName(e.target.value)}
+                  placeholder="이름"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
+                />
                 <input
                   type="tel"
-                  value={couponPhone}
-                  onChange={(e) => setCouponPhone(e.target.value)}
-                  placeholder="010-0000-0000"
-                  className="w-full border border-amber-200 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:border-amber-400"
+                  value={ebookPhone}
+                  onChange={(e) => setEbookPhone(e.target.value)}
+                  placeholder="01000000000"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
                 />
-
-                {couponPhoneError && (
-                  <p className="text-red-500 text-xs">{couponPhoneError}</p>
-                )}
-
+                <input
+                  type="email"
+                  value={ebookEmail}
+                  onChange={(e) => setEbookEmail(e.target.value)}
+                  placeholder="이메일 주소"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
+                />
+                {ebookError && <p className="text-red-500 text-xs">{ebookError}</p>}
                 <label className="flex items-start gap-2 text-xs text-slate-500 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={couponConsent}
-                    onChange={(e) => setCouponConsent(e.target.checked)}
+                    checked={ebookConsent}
+                    onChange={(e) => setEbookConsent(e.target.checked)}
                     className="mt-0.5 flex-shrink-0"
                   />
                   <span>
@@ -560,18 +680,178 @@ export default function ResultClient({
                     <Link href="/privacy" className="underline" target="_blank">개인정보처리방침</Link>
                   </span>
                 </label>
+              </div>
+              <button
+                onClick={handleEbookSubmit}
+                disabled={ebookLoading}
+                className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
+                style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
+              >
+                {ebookLoading ? '신청 중...' : '전자책 받기'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowEbookModal(false)}
+                className="block w-full text-center text-slate-400 text-sm hover:text-slate-600 transition-colors"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        )}
+        <div
+          className="rounded-3xl p-6 animate-fade-in-up bg-white"
+          style={{ border: '1px solid rgba(99,102,241,0.25)', animationDelay: '0.45s' }}
+        >
+          <h2 className="text-slate-900 font-bold text-xl mt-2 mb-1">📖 AI 생존 전자책</h2>
+          <p className="text-slate-500 text-base mb-4">AI 시대에도 살아남는 법을 정리한 무료 전자책이에요.</p>
+          <div className="rounded-2xl p-4 mb-4 border border-slate-100" style={{ background: 'rgba(99,102,241,0.05)' }}>
+            <p className="font-bold text-slate-900 mb-1">AI 시대 생존 전략 가이드</p>
+            <p className="text-slate-500 text-sm">내 유형에 맞는 AI 활용법과 커리어 전환 로드맵</p>
+          </div>
+          {ebookDone ? (
+            <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+              <p className="text-indigo-600 font-bold text-sm">✅ 신청 완료!</p>
+              <p className="text-slate-500 text-xs mt-1">곧 이메일로 전자책을 보내드릴게요.</p>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowEbookModal(true)}
+              className="block w-full text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
+            >
+              무료 전자책 받기 →
+            </button>
+          )}
+        </div>
 
-                <button
-                  onClick={handleCouponSubmit}
-                  disabled={couponPhoneLoading}
-                  className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
-                  style={{ background: '#f59e0b', color: '#000' }}
-                >
-                  {couponPhoneLoading ? '확인 중...' : '🎁 쿠폰 코드 확인하기'}
-                </button>
+        {/* 단톡방 */}
+        <div
+          className="rounded-3xl p-6 animate-fade-in-up"
+          style={{ background: '#FFFDE7', border: '1px solid #FEE500', animationDelay: '0.48s' }}
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-2xl">💬</span>
+            <div>
+              <p className="font-bold text-slate-900 text-lg">AI 생존 단톡방</p>
+              <p className="text-slate-500 text-sm">같은 유형 사람들과 이야기해요</p>
+            </div>
+          </div>
+          <a
+            href={process.env.NEXT_PUBLIC_OPENCHAT_URL ?? '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => gtagEvent('openchat_click', { type_code: typeCode })}
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+            style={{ background: '#FEE500', color: '#3C1E1E' }}
+          >
+            카카오 오픈채팅 입장하기 →
+          </a>
+        </div>
+
+        {/* 무료 쿠폰 — 전화번호 게이트 */}
+        {couponCode && (
+          <>
+            {showCouponModal && (
+              <div
+                className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-4 sm:pb-0"
+                onClick={(e) => { if (e.target === e.currentTarget) setShowCouponModal(false) }}
+              >
+                <div className="w-full max-w-sm bg-white rounded-3xl p-6 space-y-4">
+                  <div>
+                    <h3 className="text-slate-900 font-bold text-lg">🎁 무료 쿠폰 받기</h3>
+                    <p className="text-slate-500 text-sm mt-1">이름과 연락처를 남기시면 쿠폰 코드를 드립니다.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={couponName}
+                      onChange={(e) => setCouponName(e.target.value)}
+                      placeholder="이름"
+                      className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400"
+                    />
+                    <input
+                      type="tel"
+                      value={couponPhone}
+                      onChange={(e) => setCouponPhone(e.target.value)}
+                      placeholder="01000000000"
+                      className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400"
+                    />
+                    <input
+                      type="email"
+                      value={couponEmail}
+                      onChange={(e) => setCouponEmail(e.target.value)}
+                      placeholder="이메일 주소 (선택)"
+                      className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400"
+                    />
+                    {couponPhoneError && <p className="text-red-500 text-xs">{couponPhoneError}</p>}
+                    <label className="flex items-start gap-2 text-xs text-slate-500 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={couponConsent}
+                        onChange={(e) => setCouponConsent(e.target.checked)}
+                        className="mt-0.5 flex-shrink-0"
+                      />
+                      <span>
+                        개인정보 수집·이용에 동의합니다.{' '}
+                        <Link href="/privacy" className="underline" target="_blank">개인정보처리방침</Link>
+                      </span>
+                    </label>
+                  </div>
+                  <button
+                    onClick={handleCouponSubmit}
+                    disabled={couponPhoneLoading}
+                    className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
+                    style={{ background: '#f59e0b', color: '#000' }}
+                  >
+                    {couponPhoneLoading ? '확인 중...' : '쿠폰 받기'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowCouponModal(false)}
+                    className="block w-full text-center text-slate-400 text-sm hover:text-slate-600 transition-colors"
+                  >
+                    닫기
+                  </button>
+                </div>
               </div>
             )}
-          </div>
+            <div
+              className="rounded-3xl p-6 animate-fade-in-up bg-amber-50"
+              style={{ border: '1px solid #fde68a', animationDelay: '0.5s' }}
+            >
+              <h2 className="text-slate-900 font-bold text-xl mt-2 mb-1">🎁 무료 쿠폰</h2>
+              <p className="text-slate-500 text-base mb-4">이름과 연락처를 남기시면 쿠폰 코드를 드립니다.</p>
+              <div className="rounded-2xl p-4 mb-4 border border-amber-100" style={{ background: 'rgba(245,158,11,0.06)' }}>
+                <p className="font-bold text-slate-900 mb-1">수강료 할인 쿠폰</p>
+                <p className="text-slate-500 text-sm">부트캠프 등록 시 즉시 사용 가능</p>
+              </div>
+              {couponUnlocked ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200">
+                      {couponCode}
+                    </div>
+                    <button
+                      onClick={handleCopyCoupon}
+                      className="px-4 py-3 rounded-xl font-semibold text-sm transition-colors"
+                      style={{ background: couponCopied ? '#10b981' : '#f59e0b', color: '#000' }}
+                    >
+                      {couponCopied ? '복사됨!' : '복사'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowCouponModal(true)}
+                  className="block w-full text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+                  style={{ background: '#f59e0b', color: '#000' }}
+                >
+                  무료 쿠폰 받기 →
+                </button>
+              )}
+            </div>
+          </>
         )}
 
         {/* 공유 섹션 */}
@@ -579,8 +859,8 @@ export default function ResultClient({
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
           style={{ animationDelay: '0.55s' }}
         >
-          <h2 className="text-slate-900 font-bold text-lg mb-2">결과 공유하기</h2>
-          <p className="text-slate-500 text-sm mb-5">
+          <h2 className="text-slate-900 font-bold text-xl mb-2">결과 공유하기</h2>
+          <p className="text-slate-500 text-base mb-5">
             친구도 AI 대체 가능성이 궁금하지 않을까요? 😏
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

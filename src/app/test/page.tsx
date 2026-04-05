@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { questions, calculateResult } from '@/lib/quiz'
 import { supabase } from '@/lib/supabase'
@@ -44,6 +44,21 @@ export default function TestPage() {
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [submitting, setSubmitting] = useState(false)
+  const [loadingPct, setLoadingPct] = useState(0)
+
+  useEffect(() => {
+    if (!submitting) { setLoadingPct(0); return }
+    setLoadingPct(0)
+    // 0→85% 빠르게, 85% 이후 느리게 (실제 완료 전 멈춤)
+    const interval = setInterval(() => {
+      setLoadingPct((prev) => {
+        if (prev < 85) return prev + 4
+        if (prev < 95) return prev + 0.5
+        return prev
+      })
+    }, 80)
+    return () => clearInterval(interval)
+  }, [submitting])
 
   const question = questions[current]
   const progress = (current / questions.length) * 100
@@ -96,6 +111,8 @@ export default function TestPage() {
         result_id: resultId,
       })
 
+      setLoadingPct(100)
+      await new Promise((r) => setTimeout(r, 300))
       router.push(`/result/${resultId}`)
     } catch (err) {
       const detail =
@@ -119,14 +136,31 @@ export default function TestPage() {
   }
 
   if (submitting) {
+    const pct = Math.round(loadingPct)
+    const label =
+      pct < 30 ? '답변 수집 중...' :
+      pct < 60 ? 'AI 패턴 분석 중...' :
+      pct < 85 ? '유형 계산 중...' :
+      pct < 100 ? '결과 생성 중...' : '완료!'
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-5 w-64">
           <div className="text-6xl float-animation">🤖</div>
-          <p className="text-slate-900 text-xl font-bold">AI가 분석 중...</p>
-          <p className="text-slate-400">잠시만 기다려주세요</p>
-          <div className="w-48 h-1.5 bg-slate-200 rounded-full mx-auto overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full animate-pulse w-3/4"></div>
+          <div>
+            <p className="text-slate-900 text-xl font-bold">AI가 분석 중...</p>
+            <p className="text-slate-400 text-sm mt-1">{label}</p>
+          </div>
+          <div className="space-y-2">
+            <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-150"
+                style={{
+                  width: `${pct}%`,
+                  background: 'linear-gradient(to right, #6366f1, #a855f7)',
+                }}
+              />
+            </div>
+            <p className="text-right text-xs font-semibold text-indigo-500">{pct}%</p>
           </div>
         </div>
       </div>

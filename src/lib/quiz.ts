@@ -211,7 +211,7 @@ export type TypeCode =
   | 'TALF' | 'TALP' | 'TACF' | 'TACP'
   | 'TSLF' | 'TSLP' | 'TSCF' | 'TSCP'
 
-export type BootcampType = 'AI LLM' | '데이터 분석' | '데이터 엔지니어' | 'AI 서비스'
+export type BootcampType = 'AI LLM' | '데이터 분석' | '데이터 엔지니어' | 'AI 서비스 개발자'
 
 export type ResultData = {
   typeCode: TypeCode
@@ -239,11 +239,20 @@ export const bootcampInfo: Record<
     color: '#10b981',
     reason: 'AI가 대체 못 하는 파이프라인 설계자로 전환하세요',
   },
-  'AI 서비스': {
-    title: 'AI 서비스 부트캠프',
+  'AI 서비스 개발자': {
+    title: 'AI 서비스 개발자 부트캠프',
     color: '#f59e0b',
     reason: 'AI 서비스를 만드는 사람이 AI에 대체되지 않습니다',
   },
+}
+
+export type Insight = { strength: string; crisis: string; direction: string }
+export type JobTask = { name: string; rate: number }
+export type JobTransition = { from: string; to: string }
+export type JobSection = {
+  tasks: JobTask[]
+  transitions: JobTransition[]
+  warning: string
 }
 
 export const typeInfo: Record<
@@ -261,6 +270,8 @@ export const typeInfo: Record<
     jobs: [string, string, string]
     threat: string
     scoreComment: (score: number) => string
+    jobSection: JobSection
+    insight: Insight
   }
 > = {
   HALF: {
@@ -269,10 +280,10 @@ export const typeInfo: Record<
     emoji: '🚀',
     color: '#6366f1',
     aiScore: 28,
-    bootcamp: 'AI LLM',
-    bootcampReason: 'AI를 이미 쓰는 당신, LLM을 직접 다루면 경쟁자가 없어집니다.',
+    bootcamp: 'AI 서비스 개발자',
+    bootcampReason: 'AI를 논리적으로 쓰는 당신, 직접 서비스를 만들면 대체 불가 포지션이 됩니다.',
     description:
-      'AI를 누구보다 빠르게 씁니다.\n하지만 방향이 없으면 AI도 무기가 아닙니다.\n\nLLM을 직접 설계하면, 당신은 지휘관이 됩니다.',
+      '지금은 앞서 있습니다.\n하지만 ChatGPT 쓰는 사람이 당신 옆자리에도 앉기 시작했습니다.\n\n1년 후, 도구를 쓰는 것만으론 차별점이 없어집니다.\nLLM을 직접 설계하는 사람만 지휘관으로 남습니다.',
     aiTip:
       'ChatGPT + Notion AI로 보고서 자동화, Claude로 코드 리뷰 — 지금 당장 도입하세요. 당신의 직관과 AI의 속도가 합쳐지면 무적입니다.',
     jobs: ['AI 프로덕트 매니저', '전략 컨설턴트', '스타트업 창업자'],
@@ -283,6 +294,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI 활용 방향을 잡으면 무적이 됩니다.'
         : '지금 LLM 과정에 투자하면 역전 가능합니다!',
+    insight: {
+      strength: 'AI를 도구로 쓰는 속도가 남들보다 빠릅니다. 혼자서도 팀 하나 몫을 해냅니다.',
+      crisis: '하지만 ChatGPT 쓰는 사람은 이미 수만명입니다. 도구를 쓰는 것과 설계하는 것은 다릅니다.',
+      direction: 'LLM을 직접 다루는 기획자는 아직 소수입니다. 지금이 선점 타이밍입니다.',
+    },
+    jobSection: {
+      warning: 'ChatGPT 쓰는 기획자는 이미 수만명\nLLM 직접 다루는 기획자는 아직 소수입니다',
+      tasks: [
+        { name: '기획서 작성', rate: 82 },
+        { name: '보고서 작성', rate: 88 },
+        { name: '전략 수립', rate: 58 },
+        { name: 'AI 서비스 설계', rate: 19 },
+      ],
+      transitions: [
+        { from: '기획자', to: 'AI 서비스 기획자' },
+        { from: 'PM', to: 'LLM 제품 설계자' },
+      ],
+    },
   },
   HALP: {
     title: '완벽주의 AI 설계자',
@@ -290,10 +319,10 @@ export const typeInfo: Record<
     emoji: '🔭',
     color: '#0ea5e9',
     aiScore: 25,
-    bootcamp: '데이터 엔지니어',
-    bootcampReason: '꼼꼼함과 AI 활용을 합치면 파이프라인 아키텍트로 전환 가능합니다.',
+    bootcamp: 'AI 서비스 개발자',
+    bootcampReason: 'AI를 검증하며 쓰는 당신, 서비스 설계까지 더하면 AI 시대 핵심 인재가 됩니다.',
     description:
-      'AI를 씁니다. 그것도 제대로 검증하면서 씁니다.\n\n하지만 속도가 느리면 기회를 놓칠 수 있습니다.\n데이터 파이프라인을 설계하는 역량이 당신을 대체 불가로 만듭니다.',
+      '꼼꼼하게 AI를 씁니다. 지금은 강점입니다.\n하지만 GitHub Copilot이 이미 코드를 완성하고 있습니다.\n\n코드 잘 짜는 것은 더 이상 차별점이 아닙니다.\n시스템을 설계하는 사람만 대체되지 않습니다.',
     aiTip:
       'AI 도구를 테스트하는 습관이 강점입니다. 자동화 파이프라인 설계에 이 역량을 쏟으세요.',
     jobs: ['데이터 엔지니어', 'ML 엔지니어', 'AI 아키텍트'],
@@ -304,6 +333,24 @@ export const typeInfo: Record<
         : s <= 60
         ? '파이프라인 설계 역량을 더하면 독보적이 됩니다.'
         : '지금 데이터 엔지니어링 커리어로 전환할 타이밍!',
+    insight: {
+      strength: '꼼꼼하게 검증하면서 AI를 씁니다. 실수가 적고 신뢰도가 높습니다.',
+      crisis: 'GitHub Copilot이 이미 코드를 짭니다. 코드 잘 짜는 것만으론 더 이상 차별점이 안 됩니다.',
+      direction: '시스템을 설계하는 사람은 AI가 대체 못 합니다. 아키텍트로 전환하면 대체 불가입니다.',
+    },
+    jobSection: {
+      warning: '코드는 이미 AI가 짜고 있습니다\n설계할 줄 아는 개발자만 살아남습니다',
+      tasks: [
+        { name: '코드 작성', rate: 76 },
+        { name: '문서화', rate: 91 },
+        { name: '버그 수정', rate: 83 },
+        { name: '시스템 설계', rate: 24 },
+      ],
+      transitions: [
+        { from: '개발자', to: 'AI 시스템 설계자' },
+        { from: '분석가', to: 'ML 아키텍트' },
+      ],
+    },
   },
   HACF: {
     title: '데이터로 판치는 크리에이터',
@@ -314,7 +361,7 @@ export const typeInfo: Record<
     bootcamp: 'AI LLM',
     bootcampReason: '창의력 + AI 도구 조합이 가장 강력합니다. LLM을 조수로 쓰는 법을 배우세요.',
     description:
-      'AI를 쓰고, 논리도 되고, 빠릅니다.\n하지만 창의력은 AI가 흉내 낼 수 없습니다.\n\n지금 LLM을 내 무기로 만들면 경쟁자가 없어집니다.',
+      '창의력과 AI를 동시에 씁니다. 희귀한 조합입니다.\n하지만 Midjourney, Sora, Claude가 초당 수천 개의 콘텐츠를 쏟아냅니다.\n\n만드는 것만으론 살아남을 수 없습니다.\nAI를 지휘하는 디렉터만 시장을 가져갑니다.',
     aiTip:
       'Midjourney로 시각화, Claude로 카피 초안 — AI를 조수로 써서 아이디어 실현 속도를 극대화하세요.',
     jobs: ['크리에이티브 디렉터', 'AI 콘텐츠 전략가', 'UX 리서처'],
@@ -325,6 +372,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'LLM 과정 하나로 슈퍼파워 조합 완성!'
         : 'AI로 반복 줄이고 창의에만 집중하세요.',
+    insight: {
+      strength: 'AI도 쓰고 창의력도 있습니다. 이 조합은 시장에서 가장 희귀한 역량입니다.',
+      crisis: 'Midjourney, Sora, Claude가 콘텐츠를 쏟아냅니다. 만드는 것만으론 살아남기 어렵습니다.',
+      direction: 'AI를 지휘하는 크리에이티브 디렉터가 되세요. 방향을 잡는 사람은 대체되지 않습니다.',
+    },
+    jobSection: {
+      warning: 'AI가 초당 수천 개의 콘텐츠를 만들고 있습니다\n방향을 잡는 사람만 살아남습니다',
+      tasks: [
+        { name: '콘텐츠 초안', rate: 93 },
+        { name: '이미지 제작', rate: 87 },
+        { name: '카피라이팅', rate: 89 },
+        { name: '브랜드 전략', rate: 37 },
+      ],
+      transitions: [
+        { from: '콘텐츠 기획자', to: 'AI 크리에이티브 디렉터' },
+        { from: '마케터', to: 'LLM 마케터' },
+      ],
+    },
   },
   HACP: {
     title: '느린 듯 정확한 AI 예술가',
@@ -335,7 +400,7 @@ export const typeInfo: Record<
     bootcamp: 'AI LLM',
     bootcampReason: '감성 + AI = 아무도 못 따라오는 창작 역량. LLM으로 완성하세요.',
     description:
-      'AI를 씁니다. 창의적이고, 완벽하게 준비합니다.\n\n하지만 느린 실행이 기회를 놓치게 할 수 있습니다.\nAI로 반복을 줄이면, 당신의 감성이 빛납니다.',
+      '감성과 AI가 공존하는 드문 유형입니다.\n하지만 AI가 이미 당신의 스타일을 학습하고 있습니다.\n\n완벽함을 추구하는 동안 시장은 AI를 앞세운 경쟁자에게 넘어갑니다.\n지금 속도를 더하지 않으면 뒤처집니다.',
     aiTip:
       'AI 초안으로 속도를 높이고, 마지막 감성 터치는 당신이 직접. 이 조합이 가장 강합니다.',
     jobs: ['AI 아트 디렉터', '콘텐츠 크리에이터', 'AI 기획자'],
@@ -346,6 +411,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI 반복 자동화로 창의에 더 집중하세요.'
         : 'LLM 과정에서 무기를 찾을 수 있습니다.',
+    insight: {
+      strength: '감성과 AI를 동시에 씁니다. 완성도 높은 결과물을 만드는 능력이 강점입니다.',
+      crisis: '속도가 느리면 AI를 앞세운 경쟁자에게 시장을 빼앗깁니다. 완벽함만 추구하면 기회를 놓칩니다.',
+      direction: 'AI로 반복 작업을 줄이고 감성 디렉션에만 집중하세요. 그 조합이 최강입니다.',
+    },
+    jobSection: {
+      warning: '이미지·영상·글쓰기 모두 AI가 넘봅니다\nAI를 지휘하는 감각만이 살아남습니다',
+      tasks: [
+        { name: '콘텐츠 제작', rate: 87 },
+        { name: '기획서 작성', rate: 79 },
+        { name: '시안 제작', rate: 83 },
+        { name: '아트 디렉션', rate: 31 },
+      ],
+      transitions: [
+        { from: '아트 디렉터', to: 'AI 아트 디렉터' },
+        { from: '크리에이터', to: 'AI 콘텐츠 기획자' },
+      ],
+    },
   },
   HSLF: {
     title: '조용한 논리 장인',
@@ -356,7 +439,7 @@ export const typeInfo: Record<
     bootcamp: '데이터 엔지니어',
     bootcampReason: '논리적이고 꼼꼼한 당신, 파이프라인 설계자로 전환하면 AI가 대체 못 합니다.',
     description:
-      '혼자서 빠르고 정확하게 해냅니다.\n\n하지만 AI를 멀리하는 순간,\n당신의 속도는 AI를 쓰는 경쟁자에게 추월당합니다.',
+      '혼자서 빠르고 정확하게 해냅니다.\n하지만 AI를 쓰는 경쟁자가 당신의 속도를 이미 넘어섰습니다.\n\nAI 없는 실행력은 점점 평균이 됩니다.\n지금 데이터 파이프라인 역량을 더하지 않으면 대체됩니다.',
     aiTip:
       'Copilot으로 코드 자동화, SQL 쿼리 생성 — 당신의 논리 역량에 AI 속도를 더하세요.',
     jobs: ['데이터 엔지니어', '백엔드 개발자', '시스템 분석가'],
@@ -367,6 +450,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI 도구 하나만 더하면 대체 불가 포지션!'
         : '데이터 엔지니어링 역량으로 역전하세요.',
+    insight: {
+      strength: '혼자서 빠르고 정확하게 해냅니다. 논리적 사고력은 어떤 분야에서도 강점입니다.',
+      crisis: 'AI를 안 쓰면 경쟁자에게 속도로 밀립니다. 실력 있는 사람이 AI까지 쓰면 당신 자리가 없어집니다.',
+      direction: '논리력 + 데이터 파이프라인 설계 = 대체 불가 포지션. 지금 전환이 가장 빠른 길입니다.',
+    },
+    jobSection: {
+      warning: 'GitHub Copilot이 이미 코드를 짜고 있습니다\n파이프라인 설계는 아직 인간의 영역입니다',
+      tasks: [
+        { name: '코드 작성', rate: 78 },
+        { name: 'SQL 쿼리', rate: 85 },
+        { name: '데이터 정리', rate: 91 },
+        { name: '파이프라인 설계', rate: 22 },
+      ],
+      transitions: [
+        { from: '개발자', to: '데이터 엔지니어' },
+        { from: '분석가', to: 'ML 파이프라인 엔지니어' },
+      ],
+    },
   },
   HSLP: {
     title: '철저한 혼자형 전략가',
@@ -377,7 +478,7 @@ export const typeInfo: Record<
     bootcamp: '데이터 엔지니어',
     bootcampReason: '꼼꼼한 당신의 분석력 + 파이프라인 설계 = AI 시대 가장 안전한 커리어.',
     description:
-      '혼자서 완벽하게 만들어냅니다.\n\n하지만 AI 도구 없이 완벽을 추구하면\n속도 경쟁에서 밀립니다.',
+      '완벽하게 혼자 만들어냅니다.\n하지만 AI가 완벽한 코드와 문서를 순식간에 완성합니다.\n\n완벽주의만으론 더 이상 차별점이 없습니다.\n설계 역량이 없으면, 당신의 자리가 사라집니다.',
     aiTip:
       'AI 초안으로 시간을 아끼고, 당신의 꼼꼼함으로 완성도를 높이세요. 이 조합이 최강입니다.',
     jobs: ['데이터 엔지니어', '시스템 설계자', '기술 전략가'],
@@ -388,6 +489,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI 자동화 도구 하나 익히면 레벨 업!'
         : '지금 데이터 파이프라인 역량에 투자하세요.',
+    insight: {
+      strength: '꼼꼼하고 체계적으로 혼자 완성합니다. 실수가 거의 없고 신뢰받는 스타일입니다.',
+      crisis: 'AI가 완벽한 코드를 짜는 시대가 왔습니다. 꼼꼼함만으론 더 이상 경쟁력이 아닙니다.',
+      direction: '완벽주의 + 데이터 파이프라인 설계 역량 = 아무도 대체 못 하는 엔지니어가 됩니다.',
+    },
+    jobSection: {
+      warning: '완벽한 코드도 AI가 작성하는 시대\n설계 역량이 없으면 대체됩니다',
+      tasks: [
+        { name: '코드 리뷰', rate: 74 },
+        { name: '문서 작성', rate: 91 },
+        { name: '데이터 분석', rate: 83 },
+        { name: '아키텍처 설계', rate: 21 },
+      ],
+      transitions: [
+        { from: '개발자', to: '데이터 파이프라인 엔지니어' },
+        { from: '시스템 관리자', to: '클라우드 데이터 설계자' },
+      ],
+    },
   },
   HSCF: {
     title: '감성 독립군',
@@ -395,10 +514,10 @@ export const typeInfo: Record<
     emoji: '🎭',
     color: '#f59e0b',
     aiScore: 38,
-    bootcamp: 'AI LLM',
-    bootcampReason: '감성 독립군에게 AI LLM은 가장 강력한 창작 도구입니다.',
+    bootcamp: '데이터 분석',
+    bootcampReason: '감성 + 데이터 분석 조합은 AI 시대 크리에이터의 최강 무기입니다.',
     description:
-      '혼자서 감성적으로 빠르게 창작합니다.\n\n하지만 AI를 안 쓰면\n당신의 창의력은 AI를 활용하는 경쟁자에게 밀립니다.',
+      '감성과 실행력이 동시에 있는 크리에이터입니다.\n하지만 Midjourney가 디자인하고 Claude가 카피를 씁니다.\n\nAI를 외면하는 크리에이터는 이미 시장에서 밀리고 있습니다.\n지금 AI를 조수로 쓰지 않으면 도태됩니다.',
     aiTip:
       'AI를 창작 조수로 써보세요. 당신의 감성 + AI의 속도 = 아무도 못 따라오는 조합입니다.',
     jobs: ['콘텐츠 크리에이터', '브랜드 기획자', 'UX 디자이너'],
@@ -409,6 +528,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI 조수 하나만 들이면 슈퍼파워 조합!'
         : '지금 AI LLM 과정에서 무기를 찾으세요.',
+    insight: {
+      strength: '혼자서 감성적으로 빠르게 만들어냅니다. 실행력과 창의력이 동시에 있는 희귀한 조합입니다.',
+      crisis: 'Midjourney가 디자인하고 Claude가 글을 씁니다. AI를 외면하면 시장에서 밀려납니다.',
+      direction: 'AI를 조수로 쓰세요. 당신의 감성으로 방향을 잡고 AI로 속도를 더하면 무적입니다.',
+    },
+    jobSection: {
+      warning: 'Midjourney가 이미 디자인을 하고 있습니다\nAI를 지휘하는 크리에이터만 살아남습니다',
+      tasks: [
+        { name: '디자인 시안', rate: 81 },
+        { name: '콘텐츠 작성', rate: 89 },
+        { name: 'SNS 운영', rate: 77 },
+        { name: '브랜드 기획', rate: 34 },
+      ],
+      transitions: [
+        { from: '디자이너', to: 'AI 크리에이티브 디렉터' },
+        { from: '콘텐츠 작가', to: 'AI 콘텐츠 전략가' },
+      ],
+    },
   },
   HSCP: {
     title: '나만의 세계 완성형',
@@ -416,10 +553,10 @@ export const typeInfo: Record<
     emoji: '🌸',
     color: '#f97316',
     aiScore: 35,
-    bootcamp: 'AI LLM',
-    bootcampReason: '완벽한 감성 창작자에게 AI는 가장 강력한 조수입니다.',
+    bootcamp: '데이터 분석',
+    bootcampReason: '완벽한 감성 + 데이터 = AI 시대에도 살아남는 크리에이터 조합.',
     description:
-      '나만의 세계를 완벽하게 구현합니다.\n\n하지만 속도 없는 완벽주의는\n시장의 빠른 흐름을 따라가지 못합니다.',
+      '나만의 세계와 감성이 있습니다. 그건 진짜 강점입니다.\n하지만 AI가 이미 당신의 스타일을 학습하고 복제하기 시작했습니다.\n\n독창성만으론 살아남기 어렵습니다.\n먼저 AI를 쓰는 크리에이터가 시장을 가져갑니다.',
     aiTip:
       'AI로 반복 작업을 줄이고, 당신만의 감성 완성에 집중하세요. 그게 가장 강한 포지션입니다.',
     jobs: ['AI 아트 디렉터', '독립 크리에이터', '브랜드 디자이너'],
@@ -430,6 +567,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI 도구 하나로 속도를 더하면 무적!'
         : 'AI LLM 과정에서 돌파구를 찾으세요.',
+    insight: {
+      strength: '나만의 세계와 감성이 있습니다. 이 독창성은 AI가 쉽게 흉내 낼 수 없습니다.',
+      crisis: 'AI가 이미 당신의 스타일을 학습하고 모방합니다. 속도까지 더하지 않으면 따라잡힙니다.',
+      direction: 'AI를 먼저 쓰는 크리에이터가 시장을 가져갑니다. 독창성 + AI 속도가 답입니다.',
+    },
+    jobSection: {
+      warning: 'AI가 이미 당신의 스타일을 학습하고 있습니다\n먼저 AI를 쓰는 크리에이터가 시장을 가져갑니다',
+      tasks: [
+        { name: '콘텐츠 제작', rate: 87 },
+        { name: '디자인', rate: 81 },
+        { name: '기획', rate: 79 },
+        { name: '나만의 감성 디렉션', rate: 27 },
+      ],
+      transitions: [
+        { from: '독립 크리에이터', to: 'AI 아트 디렉터' },
+        { from: '디자이너', to: 'AI 브랜드 전략가' },
+      ],
+    },
   },
   TALF: {
     title: '팀 이끄는 AI 선봉장',
@@ -437,10 +592,10 @@ export const typeInfo: Record<
     emoji: '⚡',
     color: '#3b82f6',
     aiScore: 31,
-    bootcamp: '데이터 분석',
-    bootcampReason: '팀을 이끄는 당신에게 데이터 분석은 의사결정의 무기가 됩니다.',
+    bootcamp: 'AI 서비스 개발자',
+    bootcampReason: 'AI를 쓰는 팀 리더, 직접 서비스를 설계하면 조직에서 독보적이 됩니다.',
     description:
-      'AI를 쓰고 팀도 이끕니다. 빠르고 논리적입니다.\n\n하지만 데이터 없는 빠른 실행은\n방향이 틀릴 때 팀 전체가 흔들립니다.',
+      'AI를 쓰고 팀도 이끌고 빠르게 실행합니다.\n하지만 회의 요약, 업무 배분, 보고서 작성 — 팀 관리의 74%가 이미 자동화 가능합니다.\n\n데이터 없이 빠르게만 달리면 방향을 잃습니다.\n데이터로 의사결정하는 리더만 살아남습니다.',
     aiTip:
       '데이터 분석 + AI 도구로 의사결정 속도를 높이세요. 팀을 이끄는 당신에게 가장 강력한 무기입니다.',
     jobs: ['팀장/리더', '프로덕트 매니저', '데이터 기반 전략가'],
@@ -451,6 +606,24 @@ export const typeInfo: Record<
         : s <= 60
         ? '데이터 역량 더하면 팀에서 독보적이 됩니다.'
         : '지금 데이터 분석 역량에 투자할 타이밍!',
+    insight: {
+      strength: 'AI도 쓰고 팀도 이끕니다. 빠른 실행력까지 있어서 결과를 만들어내는 리더입니다.',
+      crisis: '회의 요약·업무 배분·보고서 작성, 팀 관리 업무의 74%가 이미 자동화 가능합니다.',
+      direction: '데이터로 의사결정하는 리더는 대체되지 않습니다. 지금 데이터 역량을 더하면 독보적입니다.',
+    },
+    jobSection: {
+      warning: '팀 관리 업무의 74%가 자동화 대상입니다\n데이터로 의사결정하는 리더만 살아남습니다',
+      tasks: [
+        { name: '회의 요약', rate: 88 },
+        { name: '업무 배분', rate: 74 },
+        { name: '보고서 작성', rate: 91 },
+        { name: '팀 방향 설정', rate: 23 },
+      ],
+      transitions: [
+        { from: '팀장', to: '데이터 기반 의사결정자' },
+        { from: 'PM', to: 'AI 프로덕트 매니저' },
+      ],
+    },
   },
   TALP: {
     title: '함께 만드는 AI 설계자',
@@ -458,10 +631,10 @@ export const typeInfo: Record<
     emoji: '🏗️',
     color: '#6366f1',
     aiScore: 29,
-    bootcamp: '데이터 분석',
-    bootcampReason: '팀 + AI + 완벽주의에 데이터 분석이 더해지면 최강의 설계자가 됩니다.',
+    bootcamp: 'AI 서비스 개발자',
+    bootcampReason: '팀과 AI로 완벽하게 설계하는 당신, AI 서비스 개발로 커리어를 확장하세요.',
     description:
-      'AI를 쓰고, 팀과 함께, 완벽하게 설계합니다.\n\n하지만 완벽하게 준비하다 기회를 놓치면\n아무리 좋은 설계도 의미가 없습니다.',
+      'AI를 쓰며 팀과 완벽하게 설계합니다.\n하지만 기획서, 회의록, 데이터 정리 — 당신이 하는 일의 82%가 자동화 가능합니다.\n\n완벽하게 준비하다 기회를 놓치고 있을 수 있습니다.\n설계 역량만이 남은 차별점입니다.',
     aiTip:
       'MVP를 빠르게 만들고, 데이터로 검증하고, 팀과 개선하세요. 이 사이클이 가장 강합니다.',
     jobs: ['프로덕트 매니저', '데이터 기반 기획자', 'AI 서비스 기획자'],
@@ -472,6 +645,24 @@ export const typeInfo: Record<
         : s <= 60
         ? '데이터 분석으로 설계에 힘을 더하세요.'
         : '지금 데이터 역량 강화가 필요합니다.',
+    insight: {
+      strength: 'AI를 쓰면서 팀과 함께 완벽하게 설계합니다. 신중한 판단이 팀의 실수를 막습니다.',
+      crisis: '기획서·회의록·데이터 정리, 당신이 하는 일의 82%가 이미 자동화 가능합니다.',
+      direction: '설계 역량과 데이터 해석이 남은 차별점입니다. 지금 이 두 가지에 집중해야 합니다.',
+    },
+    jobSection: {
+      warning: '기획서 작성의 82%는 이미 AI가 가능합니다\n설계 역량이 없으면 대체됩니다',
+      tasks: [
+        { name: '기획서 작성', rate: 82 },
+        { name: '회의록 정리', rate: 91 },
+        { name: '데이터 정리', rate: 88 },
+        { name: '서비스 설계', rate: 26 },
+      ],
+      transitions: [
+        { from: '기획자', to: 'AI 서비스 기획자' },
+        { from: 'PM', to: '데이터 기반 기획자' },
+      ],
+    },
   },
   TACF: {
     title: 'AI 부리는 크리에이터',
@@ -482,7 +673,7 @@ export const typeInfo: Record<
     bootcamp: 'AI LLM',
     bootcampReason: '팀 크리에이터 + AI LLM = 시장에서 가장 강력한 콘텐츠 파워.',
     description:
-      'AI를 쓰고, 팀과 함께, 창의적으로 빠르게.\n\n하지만 AI 활용의 깊이가 없으면\n표면적인 창의력에 그칩니다.',
+      'AI를 쓰고 팀과 함께 창의력을 폭발시킵니다.\n하지만 광고 카피, 콘텐츠, 시장 조사 — 마케팅 업무의 대부분을 AI가 대신합니다.\n\n만드는 것 자체는 더 이상 가치가 없습니다.\nAI를 지휘하는 전략가만 살아남습니다.',
     aiTip:
       'LLM으로 콘텐츠 생산 파이프라인을 만들어보세요. 팀과 AI가 합쳐질 때 창의력이 배가됩니다.',
     jobs: ['AI 콘텐츠 디렉터', '크리에이티브 팀장', 'AI 마케터'],
@@ -493,6 +684,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'LLM 과정으로 AI 활용을 한 단계 올리세요.'
         : '지금 AI LLM 과정에서 돌파구를 찾으세요.',
+    insight: {
+      strength: 'AI도 쓰고 팀과 함께 창의력을 폭발시킵니다. 아이디어를 현실로 만드는 실행력이 있습니다.',
+      crisis: '광고 카피, 콘텐츠, 시장 조사 모두 AI가 합니다. 만드는 것 자체는 더 이상 가치가 없습니다.',
+      direction: 'AI를 지휘하는 마케터가 되세요. 전략과 방향을 잡는 사람은 아무도 대체 못 합니다.',
+    },
+    jobSection: {
+      warning: '광고 카피·콘텐츠 제작 모두 AI가 합니다\nAI를 지휘하는 마케터만 살아남습니다',
+      tasks: [
+        { name: '콘텐츠 제작', rate: 93 },
+        { name: '광고 카피', rate: 89 },
+        { name: '시장 조사', rate: 82 },
+        { name: 'AI 마케팅 전략', rate: 28 },
+      ],
+      transitions: [
+        { from: '마케터', to: 'AI 마케팅 디렉터' },
+        { from: '콘텐츠팀장', to: 'LLM 크리에이티브 디렉터' },
+      ],
+    },
   },
   TACP: {
     title: '협력형 AI 아티스트',
@@ -503,7 +712,7 @@ export const typeInfo: Record<
     bootcamp: 'AI LLM',
     bootcampReason: '협력 + 감성 + AI LLM = 누구도 흉내 낼 수 없는 창작 역량.',
     description:
-      'AI를 쓰고, 팀과 함께, 감성으로 완성합니다.\n\n하지만 완성도를 위한 속도 희생이\n팀 전체의 리듬을 방해할 수 있습니다.',
+      '팀과 함께 AI로 감성 있는 결과물을 만듭니다.\n하지만 아이디어도 콘텐츠도 AI가 만드는 시대가 왔습니다.\n\n만드는 것으로 차별점을 만드는 건 이미 끝났습니다.\n크리에이티브 디렉션만이 살아남는 역할입니다.',
     aiTip:
       'AI로 초안 속도를 높이고, 팀과 감성 터치를 나누세요. 이 조합이 가장 아름답습니다.',
     jobs: ['AI 크리에이티브 디렉터', '협업 아트 디렉터', 'AI 콘텐츠 기획자'],
@@ -514,6 +723,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI 활용 속도를 높이면 팀에서 독보적!'
         : 'LLM 과정에서 새 무기를 찾으세요.',
+    insight: {
+      strength: '팀과 함께 AI를 쓰며 감성 있는 결과물을 완성합니다. 협업 크리에이터로서 희귀한 포지션입니다.',
+      crisis: '아이디어도 콘텐츠도 AI가 만드는 시대입니다. 만드는 것 자체로는 차별점이 사라집니다.',
+      direction: '크리에이티브 디렉션만이 살아남는 역할입니다. LLM을 내 목소리로 만드는 것이 핵심입니다.',
+    },
+    jobSection: {
+      warning: '아이디어도 AI가 내고 콘텐츠도 AI가 만듭니다\n방향을 잡는 디렉터만 살아남습니다',
+      tasks: [
+        { name: '콘텐츠 초안', rate: 91 },
+        { name: '아이디어 발굴', rate: 76 },
+        { name: '시안 작업', rate: 84 },
+        { name: '크리에이티브 디렉션', rate: 29 },
+      ],
+      transitions: [
+        { from: '크리에이터', to: 'AI 크리에이티브 디렉터' },
+        { from: '아트 디렉터', to: '협업 AI 아티스트' },
+      ],
+    },
   },
   TSLF: {
     title: '사람으로 굴러가는 분석가',
@@ -524,7 +751,7 @@ export const typeInfo: Record<
     bootcamp: '데이터 분석',
     bootcampReason: '당신의 강점 + 데이터 = AI 시대 생존 패키지',
     description:
-      '성실한 당신의 관리 업무, AI가 이미 넘보고 있습니다.\n지금 데이터 역량을 더하면 대체 불가능한 존재가 됩니다.',
+      '사람을 읽고 팀을 움직이는 능력이 있습니다.\n하지만 보고서, 데이터 정리, 고객 응대 — 당신이 하는 일을 AI가 이미 하고 있습니다.\n\n관계력만으론 더 이상 안전하지 않습니다.\n데이터로 설득하는 사람만 조직에서 살아남습니다.',
     aiTip:
       '데이터 분석 + AI 리포팅 자동화로 당신의 팀 장악력을 데이터로 증명하세요.',
     jobs: ['데이터 분석가', '비즈니스 분석가', '팀 리더'],
@@ -535,6 +762,24 @@ export const typeInfo: Record<
         : s <= 60
         ? '데이터 역량 더하면 AI 시대 완벽한 생존 패키지!'
         : '지금 데이터 분석 과정에 투자할 타이밍입니다.',
+    insight: {
+      strength: '사람을 읽고 팀을 움직입니다. 관계력과 설득력은 어떤 조직에서도 핵심 역량입니다.',
+      crisis: '보고서, 데이터 정리, 고객 응대. 당신이 하는 일의 대부분을 AI가 이미 합니다.',
+      direction: '데이터로 설득하는 사람만 살아남습니다. 관계력 + 데이터 분석 = AI 시대 생존 공식입니다.',
+    },
+    jobSection: {
+      warning: '보고서·데이터 정리·고객 응대\n이미 AI가 하고 있습니다',
+      tasks: [
+        { name: '보고서 작성', rate: 91 },
+        { name: '데이터 정리', rate: 88 },
+        { name: '고객 응대', rate: 79 },
+        { name: '데이터 기반 의사결정', rate: 18 },
+      ],
+      transitions: [
+        { from: '마케터', to: '데이터 마케터' },
+        { from: '영업', to: '세일즈 애널리스트' },
+      ],
+    },
   },
   TSLP: {
     title: '신중한 팀 전략가',
@@ -545,7 +790,7 @@ export const typeInfo: Record<
     bootcamp: '데이터 분석',
     bootcampReason: '전략 + 데이터 분석 = 조직에서 독보적인 의사결정자.',
     description:
-      '신중하게 준비하고 팀을 이끕니다.\n\n하지만 AI가 분석과 보고서를 대체하는 속도는\n당신의 준비 속도보다 빠릅니다.',
+      '신중하게 준비하고 팀을 이끄는 전략가입니다.\n하지만 전략 보고서, 데이터 분석, 회의 준비 — 핵심 업무 84%가 자동화 가능합니다.\n\n준비하는 동안 AI가 더 빠르게 같은 결과를 냅니다.\n데이터로 설득하는 전략가만 대체되지 않습니다.',
     aiTip:
       '데이터 분석 도구로 준비 시간을 단축하세요. 전략적 판단은 여전히 당신의 몫입니다.',
     jobs: ['전략기획 팀장', '조직개발 전문가', '비즈니스 전략가'],
@@ -556,6 +801,24 @@ export const typeInfo: Record<
         : s <= 60
         ? '데이터 분석 역량 더하면 조직에서 독보적!'
         : '지금 데이터 분석 과정에서 역전하세요.',
+    insight: {
+      strength: '신중하게 준비하고 팀을 이끕니다. 완성도 높은 전략과 깊은 분석이 강점입니다.',
+      crisis: '전략 보고서, 회의 준비, 데이터 분석. 당신의 핵심 업무 84%가 자동화 가능한 시대입니다.',
+      direction: '데이터로 조직을 설득하는 전략가는 대체되지 않습니다. 지금 데이터 역량이 답입니다.',
+    },
+    jobSection: {
+      warning: '전략 보고서 작성의 84%가 자동화 가능합니다\n데이터로 설득하는 전략가만 살아남습니다',
+      tasks: [
+        { name: '전략 보고서', rate: 84 },
+        { name: '회의 준비', rate: 88 },
+        { name: '데이터 분석', rate: 82 },
+        { name: '조직 전략 수립', rate: 21 },
+      ],
+      transitions: [
+        { from: '전략기획', to: '데이터 기반 전략가' },
+        { from: '조직개발', to: '피플 애널리틱스' },
+      ],
+    },
   },
   TSCF: {
     title: '감성으로 팀 살리는 사람',
@@ -566,7 +829,7 @@ export const typeInfo: Record<
     bootcamp: '데이터 분석',
     bootcampReason: '사람 중심 강점 + 데이터 = AI 시대 HR·영업에서 최강.',
     description:
-      '팀을 살리는 당신의 감성 역량, AI가 이미 흉내 내기 시작했습니다.\n지금 데이터 역량을 더하면 AI도 대체 못 하는 존재가 됩니다.',
+      '팀의 에너지를 만들고 사람을 살리는 리더입니다.\n하지만 채용, 교육, 팀 관리 — AI 챗봇이 이미 이 영역을 넘보고 있습니다.\n\n감성만으로는 AI 시대를 버틸 수 없습니다.\n사람을 이해하는 감성 + 데이터 = 대체 불가 조합입니다.',
     aiTip:
       'AI로 미팅 준비 자동화 (상대방 정보 요약, 대화 포인트 생성). 관계 구축 시간에 더 집중하세요.',
     jobs: ['HR 파트너', '커뮤니티 매니저', '세일즈 전략가'],
@@ -577,6 +840,24 @@ export const typeInfo: Record<
         : s <= 60
         ? 'AI + 인간적 감성의 하이브리드 전략이 답!'
         : '지금 데이터 분석 역량에 투자하면 역전 가능.',
+    insight: {
+      strength: '팀의 에너지를 만들고 사람을 움직입니다. 이 감성 리더십은 어느 조직에서나 필요합니다.',
+      crisis: 'HR 채용, 교육, 팀 관리. AI 챗봇이 이미 이 영역에 들어오고 있습니다.',
+      direction: '사람을 이해하는 감성 + 데이터 분석 = AI가 절대 대체 못 하는 조합입니다.',
+    },
+    jobSection: {
+      warning: 'HR 채용·교육·관리 모두 AI가 넘봅니다\n데이터로 사람을 이해하는 HR만 살아남습니다',
+      tasks: [
+        { name: '채용 공고·스크리닝', rate: 83 },
+        { name: '교육 자료 제작', rate: 87 },
+        { name: '팀 관리 보고', rate: 74 },
+        { name: '조직 문화 설계', rate: 19 },
+      ],
+      transitions: [
+        { from: 'HR', to: '피플 애널리틱스' },
+        { from: '교육 담당', to: '러닝 데이터 분석가' },
+      ],
+    },
   },
   TSCP: {
     title: '완벽한 팀의 완성자',
@@ -587,7 +868,7 @@ export const typeInfo: Record<
     bootcamp: '데이터 분석',
     bootcampReason: '완벽한 팀플레이어 + 데이터 = AI 시대에도 살아남는 조합.',
     description:
-      '팀을 완성시키는 당신, 하지만 AI가 협업 도구와 보고서를 대체하고 있습니다.\n지금 데이터로 당신의 가치를 증명하세요.',
+      '팀을 완성시키고 마무리를 책임지는 사람입니다.\n하지만 일정 관리, 진행 보고, 피드백 정리 — 당신의 핵심 업무가 자동화되고 있습니다.\n\n완벽한 팀 관리만으론 더 이상 안전하지 않습니다.\n데이터로 팀을 설계하는 PM만 살아남습니다.',
     aiTip:
       'AI 협업 도구를 먼저 익혀서 팀에 도입하세요. 도입하는 사람이 대체되지 않습니다.',
     jobs: ['프로젝트 매니저', '팀 리더', '조직 문화 전문가'],
@@ -598,6 +879,24 @@ export const typeInfo: Record<
         : s <= 60
         ? '데이터 역량 더하면 팀에서 독보적이 됩니다.'
         : '지금 데이터 분석 과정에서 역전하세요.',
+    insight: {
+      strength: '팀을 완성시키고 마무리를 책임집니다. 꼼꼼한 팀 관리로 조직의 신뢰를 받습니다.',
+      crisis: '일정 관리, 진행 보고, 팀 피드백 정리. 당신이 하는 일의 대부분이 자동화되고 있습니다.',
+      direction: '데이터로 팀을 설계하는 PM이 되세요. 조직 운영에 데이터를 더하면 대체 불가입니다.',
+    },
+    jobSection: {
+      warning: '일정 관리·진행 보고·피드백 모두 자동화 중\n데이터로 팀을 설계하는 PM만 살아남습니다',
+      tasks: [
+        { name: '일정 관리', rate: 86 },
+        { name: '진행 보고', rate: 91 },
+        { name: '팀 피드백 정리', rate: 77 },
+        { name: '조직 문화 설계', rate: 22 },
+      ],
+      transitions: [
+        { from: 'PM', to: '데이터 기반 PM' },
+        { from: '팀 리더', to: '조직 애널리틱스' },
+      ],
+    },
   },
 }
 

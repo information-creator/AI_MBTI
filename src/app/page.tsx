@@ -112,16 +112,16 @@ export default function LandingPage() {
           ].map((type) => (
             <div
               key={type.code}
-              className="rounded-2xl p-3 flex items-center gap-2"
+              className="rounded-2xl p-3 flex items-center gap-2.5"
               style={{ border: `1px solid ${type.border}`, background: type.bg }}
             >
               <Image
                 src={['HACF','HACP','HALF','HALP'].includes(type.code) ? `/character/${type.code}.png` : `/characters/${type.code}.svg`}
-                alt={type.title} width={48} height={48} className="object-contain shrink-0" unoptimized
+                alt={type.title} width={52} height={52} className="object-contain shrink-0" unoptimized
               />
               <div>
-                <div className={`text-slate-800 font-semibold leading-snug ${type.code === 'HACF' ? 'text-[10px]' : 'text-xs'}`}>{type.title}</div>
-                <div className="text-slate-400 text-xs mt-0.5 font-mono">{type.code}</div>
+                <div className="text-slate-900 font-bold leading-snug text-base">{type.title}</div>
+                <div className="text-slate-900 text-base mt-0.5 font-mono font-bold">{type.code}</div>
               </div>
             </div>
           ))}

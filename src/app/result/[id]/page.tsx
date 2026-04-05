@@ -12,7 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params
-  const BASE_URL = 'https://aimbti-jet.vercel.app'
+  const BASE_URL = 'https://aimbti-seven.vercel.app'
 
   if (id === 'local') {
     return { title: 'AI 시대 생존력 진단 결과' }
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props) {
     openGraph: {
       title,
       description,
-      images: [{ url: ogImageUrl, width: 1200, height: 630 }],
+      images: [{ url: ogImageUrl, width: 900, height: 900 }],
       url: `${BASE_URL}/result/${id}`,
     },
     twitter: {
@@ -80,7 +80,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
       typeCode = 'TSLF'
       aiScore = 61
       overtimeLevel = '적당한 직장인'
-      overtimeComment = 'AI 자동화 도구 하나만 도입해도 야근 2시간은 줄일 수 있습니다.'
+      overtimeComment = 'AI 자동화 도구 하나만 도입해도\n야근 2시간은 줄일 수 있습니다.'
       resultId = id
     } else {
       const { data: result, error } = await db
@@ -96,7 +96,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
       typeCode = (result.type_code as TypeCode) ?? 'TSLF'
       aiScore = result.ai_score
       overtimeLevel = result.overtime_result ?? '적당한 직장인'
-      overtimeComment = 'AI 자동화 도구 하나만 도입해도 야근 2시간은 줄일 수 있습니다.'
+      overtimeComment = 'AI 자동화 도구 하나만 도입해도\n야근 2시간은 줄일 수 있습니다.'
       resultId = result.id
 
       // 쿠폰 조회
