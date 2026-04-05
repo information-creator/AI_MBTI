@@ -348,7 +348,7 @@ export default function ResultClient({
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
           style={{ animationDelay: '0.45s' }}
         >
-          <h2 className="text-slate-900 font-bold text-lg mb-2">😴 퇴근 보너스</h2>
+          <h2 className="text-slate-900 font-bold text-lg mb-2">😴 퇴근</h2>
           <div
             className="rounded-xl p-4"
             style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.15)' }}

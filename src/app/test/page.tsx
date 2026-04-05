@@ -114,7 +114,8 @@ export default function TestPage() {
   }
 
   function handleBack() {
-    if (current > 0) setCurrent((c) => c - 1)
+    if (current === 0) router.push('/')
+    else setCurrent((c) => c - 1)
   }
 
   if (submitting) {
@@ -148,7 +149,7 @@ export default function TestPage() {
       <div className="px-5 py-4 flex items-center justify-between w-full">
         <button
           onClick={handleBack}
-          disabled={current === 0}
+          disabled={false}
           className="text-slate-400 hover:text-slate-700 disabled:opacity-30 transition-colors text-sm flex items-center gap-1"
         >
           ← 이전

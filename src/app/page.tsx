@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image, { StaticImageData } from 'next/image'
+import CTAButton from '@/components/CTAButton'
 import halfImg from '@/assets/half.png'
 import tscfImg from '@/assets/tscf.png'
 import hslfImg from '@/assets/hslf.png'
@@ -34,12 +35,12 @@ export default function LandingPage() {
         <span className="text-slate-900 font-bold text-lg tracking-tight">
           AI<span className="text-indigo-600">mbti</span>
         </span>
-        <Link
-          href="/test"
+        <CTAButton
+          location="header"
           className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
         >
           테스트 시작 →
-        </Link>
+        </CTAButton>
       </header>
 
       {/* 히어로 섹션 */}
@@ -64,12 +65,12 @@ export default function LandingPage() {
             <strong className="text-slate-900">나의 생존 전략</strong>
           </p>
 
-          <Link
-            href="/test"
+          <CTAButton
+            location="hero"
             className="block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200"
           >
             내 직업 생존 가능성 확인하기 (무료) →
-          </Link>
+          </CTAButton>
 
           <p className="text-slate-400 text-xs">
             ⏱ 약 3분 · 로그인 불필요 · 완전 무료
@@ -138,12 +139,12 @@ export default function LandingPage() {
           ))}
         </div>
 
-        <Link
-          href="/test"
+        <CTAButton
+          location="type_preview"
           className="block mt-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all"
         >
           내 생존 유형 확인하기 →
-        </Link>
+        </CTAButton>
       </section>
 
       {/* 바이럴 카피 섹션 */}
@@ -155,12 +156,12 @@ export default function LandingPage() {
           <p className="text-slate-500 text-sm">
             결과 공유하면 친구도 불안해집니다 ㅋㅋ
           </p>
-          <Link
-            href="/test"
+          <CTAButton
+            location="viral"
             className="inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base px-8 py-3 rounded-2xl transition-colors"
           >
             내 생존 유형 확인하기 →
-          </Link>
+          </CTAButton>
         </div>
       </section>
 
