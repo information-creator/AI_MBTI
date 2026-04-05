@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Suspense } from 'react'
 import GAPageView from '@/components/GAPageView'
+import KakaoInit from '@/components/KakaoInit'
 import './globals.css'
 
 export const viewport: Viewport = {
@@ -50,18 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <GAPageView gaId={GA_ID} />
           </Suspense>
         )}
-        {KAKAO_KEY && (
-          <Script
-            src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
-            integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-            onLoad={() => {
-              const K = (window as any).Kakao
-              if (K && !K.isInitialized()) K.init(KAKAO_KEY)
-            }}
-          />
-        )}
+        {KAKAO_KEY && <KakaoInit kakaoKey={KAKAO_KEY} />}
         <Script id="clarity-init" strategy="afterInteractive">
           {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","w6vmprm75l");`}
         </Script>
