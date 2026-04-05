@@ -39,9 +39,14 @@ export function getSupabaseServer(): SupabaseClient | null {
 
 export type Result = {
   id: string
-  mbti_type: string
+  type_code: string
+  type_name: string
   ai_score: number
-  job_type: string
+  work_style: string
+  ai_usage: string
+  strength: string
+  speed: string
+  overtime_result: string
   shared: boolean
   created_at: string
 }

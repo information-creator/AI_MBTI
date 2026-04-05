@@ -1,437 +1,694 @@
 export type Question = {
   id: number
-  part: 'A' | 'B' | 'C'
+  part: 'A' | 'B' | 'C' | 'D' | 'E'
   text: string
-  options: { label: string; value: string; score?: number }[]
+  options: { label: string; value: string }[]
 }
 
 export const questions: Question[] = [
-  // Part A — MBTI 매핑 (6문항)
+  // 파트 A — 업무방식 (H vs T)
   {
     id: 1,
     part: 'A',
-    text: '회의에서 나는?',
+    text: '혼자 집중할 때 vs 팀과 협업할 때\n어느 쪽이 더 잘 되나요?',
     options: [
-      { label: '먼저 발언하고 아이디어를 쏟아낸다', value: 'E' },
-      { label: '충분히 듣고 나서 신중하게 말한다', value: 'I' },
+      { label: '혼자 집중할 때 훨씬 잘 된다', value: 'H' },
+      { label: '팀과 함께할 때 더 잘 된다', value: 'T' },
     ],
   },
   {
     id: 2,
     part: 'A',
-    text: '새 프로젝트를 시작할 때 나는?',
+    text: '새 프로젝트를 시작할 때?',
     options: [
-      { label: '검증된 방법과 구체적인 데이터로 시작한다', value: 'S' },
-      { label: '큰 그림과 가능성부터 그려본다', value: 'N' },
+      { label: '혼자 먼저 구상하고 정리한다', value: 'H' },
+      { label: '팀 미팅부터 잡고 함께 방향을 잡는다', value: 'T' },
     ],
   },
   {
     id: 3,
     part: 'A',
-    text: '팀원이 실수했을 때 나는?',
+    text: '가장 생산적인 환경은?',
     options: [
-      { label: '원인 분석과 개선안을 먼저 제시한다', value: 'T' },
-      { label: '먼저 공감하고 함께 해결책을 찾는다', value: 'F' },
+      { label: '조용한 1인실 — 방해 없이 몰입', value: 'H' },
+      { label: '활기찬 오픈 오피스 — 자극받으며 일함', value: 'T' },
     ],
   },
   {
     id: 4,
     part: 'A',
-    text: '업무 방식은?',
+    text: '문제가 생기면?',
     options: [
-      { label: '계획대로 착착 끝내는 스타일', value: 'J' },
-      { label: '상황 보면서 유연하게 처리하는 스타일', value: 'P' },
+      { label: '혼자 끝까지 파고들어 해결한다', value: 'H' },
+      { label: '바로 동료에게 물어보고 같이 푼다', value: 'T' },
     ],
   },
+
+  // 파트 B — AI 활용도 (A vs S)
   {
     id: 5,
-    part: 'A',
-    text: '주말 재충전 방식은?',
+    part: 'B',
+    text: '업무에 AI 도구 활용 빈도는?',
     options: [
-      { label: '친구들 만나거나 밖에서 활동한다', value: 'E' },
-      { label: '혼자만의 시간으로 에너지를 충전한다', value: 'I' },
+      { label: '매일 필수 — AI 없이는 일 못 함', value: 'A' },
+      { label: '가끔 쓰거나 거의 안 쓴다', value: 'S' },
     ],
   },
   {
     id: 6,
-    part: 'A',
-    text: '보고서를 쓸 때 나는?',
+    part: 'B',
+    text: 'AI가 내 일의 몇 %를 대신할 수 있을 것 같나요?',
     options: [
-      { label: '숫자와 팩트 위주로 깔끔하게 정리한다', value: 'S' },
-      { label: '맥락과 인사이트를 강조해서 스토리를 만든다', value: 'N' },
+      { label: '50% 이상 — AI가 많은 부분을 커버 가능', value: 'A' },
+      { label: '30% 미만 — 내 일은 내가 해야 한다', value: 'S' },
     ],
   },
-
-  // Part B — AI 대체 가능성 (4문항)
   {
     id: 7,
     part: 'B',
-    text: '내 주요 업무에서 반복적인 작업의 비중은?',
+    text: 'AI 뉴스를 접하면?',
     options: [
-      { label: '80% 이상 — 매일 같은 일을 한다', value: 'B1_HIGH', score: 80 },
-      { label: '50~80% — 반복도 있고 창의도 있다', value: 'B1_MID', score: 50 },
-      { label: '30~50% — 대부분 새로운 판단이 필요하다', value: 'B1_LOW', score: 30 },
-      { label: '30% 미만 — 매번 다른 문제를 푼다', value: 'B1_MIN', score: 10 },
+      { label: '바로 업무에 적용 시도해본다', value: 'A' },
+      { label: '일단 지켜본다 — 검증되면 쓸 것', value: 'S' },
     ],
   },
   {
     id: 8,
     part: 'B',
-    text: '내 직무에서 AI 도구(ChatGPT 등)를\n활용하면?',
+    text: '나의 핵심 경쟁력은?',
     options: [
-      { label: '내 일의 90%를 대신 할 수 있을 것 같다', value: 'B2_HIGH', score: 85 },
-      { label: '절반 정도는 도움 받을 수 있겠다', value: 'B2_MID', score: 50 },
-      { label: '보조 도구 수준이고 핵심은 내가 해야 한다', value: 'B2_LOW', score: 25 },
-      { label: '내 직무에 AI는 거의 적용 안 된다', value: 'B2_MIN', score: 10 },
+      { label: 'AI 활용 능력 — 도구를 잘 쓰는 것', value: 'A' },
+      { label: '사람 감각 — 관계와 직관', value: 'S' },
     ],
   },
+
+  // 파트 C — 강점영역 (L vs C)
   {
     id: 9,
-    part: 'B',
-    text: '내 직업에서 가장 중요한 능력은?',
+    part: 'C',
+    text: '칭찬받는 이유는?',
     options: [
-      { label: '정확한 데이터 입력 / 문서 처리', value: 'B3_DATA', score: 80 },
-      { label: '고객 응대 / 커뮤니케이션', value: 'B3_COMM', score: 45 },
-      { label: '전략적 판단 / 의사결정', value: 'B3_STRAT', score: 20 },
-      { label: '창의적 발상 / 예술적 표현', value: 'B3_CREA', score: 30 },
+      { label: '정확하고 논리적이라는 말을 듣는다', value: 'L' },
+      { label: '창의적이고 감각적이라는 말을 듣는다', value: 'C' },
     ],
   },
   {
     id: 10,
-    part: 'B',
-    text: 'AI 뉴스를 보면 드는 솔직한 생각은?',
+    part: 'C',
+    text: '보고서를 작성할 때?',
     options: [
-      { label: '"나도 대체될 것 같아 불안하다"', value: 'B4_SCARED', score: 70 },
-      { label: '"잘 활용하면 경쟁력이 올라갈 것 같다"', value: 'B4_OPPO', score: 30 },
-      { label: '"아직은 내 일을 못 따라온다"', value: 'B4_SAFE', score: 20 },
-      { label: '"관심 없다 / 잘 모른다"', value: 'B4_NONE', score: 55 },
+      { label: '데이터와 수치 위주로 구성한다', value: 'L' },
+      { label: '스토리와 감성 위주로 풀어낸다', value: 'C' },
     ],
   },
-
-  // Part C — 퇴근 레벨 (3문항)
   {
     id: 11,
     part: 'C',
-    text: '이번 주 평균 퇴근 시간은?',
+    text: '문제를 해결하는 방식은?',
     options: [
-      { label: '칼퇴! 6시 이전', value: 'C1_EARLY' },
-      { label: '그래도 7~8시', value: 'C1_MID' },
-      { label: '9~10시... 야근 루틴', value: 'C1_LATE' },
-      { label: '자정 이후 — 퇴근이란 개념이 없다', value: 'C1_ZOMBIE' },
+      { label: '원인을 분석하고 논리적으로 해결책을 찾는다', value: 'L' },
+      { label: '직관적으로 새로운 아이디어를 던진다', value: 'C' },
     ],
   },
   {
     id: 12,
     part: 'C',
-    text: '주말에 업무 연락이 오면?',
+    text: '나를 한 단어로 표현하면?',
     options: [
-      { label: '무조건 무시 — 나의 시간은 나의 것', value: 'C2_IGNORE' },
-      { label: '눈팅은 하지만 답장은 월요일에', value: 'C2_DELAY' },
-      { label: '보면 바로 답장하게 됨... 습관이 됐다', value: 'C2_REPLY' },
-      { label: '주말도 출근한다 이미', value: 'C2_WORK' },
+      { label: '분석가', value: 'L' },
+      { label: '크리에이터', value: 'C' },
+    ],
+  },
+
+  // 파트 D — 실행속도 (F vs P)
+  {
+    id: 13,
+    part: 'D',
+    text: '일 처리 스타일은?',
+    options: [
+      { label: '일단 빠르게 시작하고 고쳐나간다', value: 'F' },
+      { label: '완벽히 준비한 다음 시작한다', value: 'P' },
     ],
   },
   {
-    id: 13,
-    part: 'C',
-    text: '"AI가 내 야근을 없애줄 수 있다"는 말에?',
+    id: 14,
+    part: 'D',
+    text: '마감이 다가오면?',
     options: [
-      { label: '제발요 당장 도입해주세요', value: 'C3_PLEASE' },
-      { label: '반반 — 일은 줄겠지만 다른 일이 생긴다', value: 'C3_MAYBE' },
-      { label: '야근은 일 때문이 아니라 문화 때문', value: 'C3_CULTURE' },
-      { label: '이미 AI 써도 야근 중', value: 'C3_ALREADY' },
+      { label: '이미 다 끝내놨다', value: 'F' },
+      { label: '막판에 몰아서 완성한다', value: 'P' },
+    ],
+  },
+  {
+    id: 15,
+    part: 'D',
+    text: '새 기술이나 툴을 접하면?',
+    options: [
+      { label: '일단 써본다 — 쓰면서 배운다', value: 'F' },
+      { label: '매뉴얼 다 읽고 이해한 다음 쓴다', value: 'P' },
+    ],
+  },
+  {
+    id: 16,
+    part: 'D',
+    text: '완성도 vs 속도, 어느 쪽이 더 중요한가요?',
+    options: [
+      { label: '속도가 더 중요하다 — 일단 내놓고 봐야', value: 'F' },
+      { label: '완성도가 더 중요하다 — 낼 거면 제대로', value: 'P' },
+    ],
+  },
+
+  // 파트 E — 퇴근 보너스 (유머용, 결과 유형에 영향 없음)
+  {
+    id: 17,
+    part: 'E',
+    text: '이번 주 평균 퇴근 시간은?',
+    options: [
+      { label: '칼퇴! 6시 이전', value: 'E1_EARLY' },
+      { label: '그래도 7~8시', value: 'E1_MID' },
+      { label: '9~10시... 야근 루틴', value: 'E1_LATE' },
+      { label: '자정 이후 — 퇴근이란 개념이 없다', value: 'E1_ZOMBIE' },
+    ],
+  },
+  {
+    id: 18,
+    part: 'E',
+    text: '주말에 업무 연락이 오면?',
+    options: [
+      { label: '무조건 무시 — 나의 시간은 나의 것', value: 'E2_IGNORE' },
+      { label: '눈팅은 하지만 답장은 월요일에', value: 'E2_DELAY' },
+      { label: '보면 바로 답장하게 됨... 습관이 됐다', value: 'E2_REPLY' },
+      { label: '주말도 출근한다 이미', value: 'E2_WORK' },
+    ],
+  },
+  {
+    id: 19,
+    part: 'E',
+    text: '야근의 이유는?',
+    options: [
+      { label: '일이 많아서 — 어쩔 수 없다', value: 'E3_BUSY' },
+      { label: '완벽주의 때문에 — 내가 문제다', value: 'E3_PERFECT' },
+      { label: '눈치 때문에 — 문화가 문제다', value: 'E3_CULTURE' },
+      { label: '재밌어서 — 일이 좋다', value: 'E3_FUN' },
+    ],
+  },
+  {
+    id: 20,
+    part: 'E',
+    text: '"AI가 야근을 없애줄 수 있다"는 말에?',
+    options: [
+      { label: '제발요 당장 도입해주세요', value: 'E4_PLEASE' },
+      { label: '반반 — 일은 줄겠지만 다른 일이 생긴다', value: 'E4_MAYBE' },
+      { label: '야근은 문화가 문제지 AI가 답이 아님', value: 'E4_CULTURE' },
+      { label: '이미 AI 써도 야근 중', value: 'E4_ALREADY' },
     ],
   },
 ]
 
-export type MbtiType =
-  | 'ENTJ' | 'ENTP' | 'ENFJ' | 'ENFP'
-  | 'ESTJ' | 'ESTP' | 'ESFJ' | 'ESFP'
-  | 'INTJ' | 'INTP' | 'INFJ' | 'INFP'
-  | 'ISTJ' | 'ISTP' | 'ISFJ' | 'ISFP'
+export type TypeCode =
+  | 'HALF' | 'HALP' | 'HACF' | 'HACP'
+  | 'HSLF' | 'HSLP' | 'HSCF' | 'HSCP'
+  | 'TALF' | 'TALP' | 'TACF' | 'TACP'
+  | 'TSLF' | 'TSLP' | 'TSCF' | 'TSCP'
 
-export type JobType =
-  | 'AI_PIONEER'
-  | 'CORPORATE_SURVIVOR'
-  | 'CREATIVE_REBEL'
-  | 'DATA_GUARDIAN'
-  | 'PEOPLE_CONNECTOR'
-  | 'STRATEGY_MASTER'
-  | 'SILENT_EXECUTOR'
-  | 'WILD_CARD'
+export type BootcampType = 'AI LLM' | '데이터 분석' | '데이터 엔지니어' | 'AI 서비스'
 
 export type ResultData = {
-  mbtiType: MbtiType
+  typeCode: TypeCode
   aiScore: number
-  jobType: JobType
+  overtimeLevel: string
+  overtimeComment: string
 }
-
-export type BootcampType = '데이터 분석' | '데이터 엔지니어링' | 'AI LLM'
 
 export const bootcampInfo: Record<
   BootcampType,
-  { label: string; description: string; tag: string; color: string }
+  { title: string; color: string; reason: string }
 > = {
-  '데이터 분석': {
-    label: '데이터 분석 부트캠프',
-    description: '비즈니스 데이터를 읽고 인사이트로 바꾸는 실전 과정. SQL · Python · 시각화까지.',
-    tag: '취업 연계',
-    color: '#10b981',
-  },
-  '데이터 엔지니어링': {
-    label: '데이터 엔지니어링 부트캠프',
-    description: '데이터 파이프라인 설계부터 클라우드 인프라까지. 실무 프로젝트 중심.',
-    tag: '실무 집중',
-    color: '#6366f1',
-  },
   'AI LLM': {
-    label: 'AI · LLM 부트캠프',
-    description: 'ChatGPT API · LangChain · RAG 구축까지. AI를 직접 만드는 과정.',
-    tag: '최신 트렌드',
+    title: 'AI LLM 부트캠프',
+    color: '#6366f1',
+    reason: 'ChatGPT를 도구로 쓰는 사람 vs 도구가 되는 사람',
+  },
+  '데이터 분석': {
+    title: '데이터 분석 부트캠프',
+    color: '#0ea5e9',
+    reason: '당신의 강점 + 데이터 = AI 시대 생존 패키지',
+  },
+  '데이터 엔지니어': {
+    title: '데이터 엔지니어 부트캠프',
+    color: '#10b981',
+    reason: 'AI가 대체 못 하는 파이프라인 설계자로 전환하세요',
+  },
+  'AI 서비스': {
+    title: 'AI 서비스 부트캠프',
     color: '#f59e0b',
+    reason: 'AI 서비스를 만드는 사람이 AI에 대체되지 않습니다',
   },
 }
 
-export const jobTypeInfo: Record<
-  JobType,
+export const typeInfo: Record<
+  TypeCode,
   {
     title: string
     subtitle: string
-    celebrity: string
-    company: string
-    description: string
-    aiTip: string
-    jobs: string[]
-    color: string
     emoji: string
-    scoreComment: (score: number) => string
+    color: string
+    aiScore: number
     bootcamp: BootcampType
     bootcampReason: string
+    description: string
+    aiTip: string
+    jobs: [string, string, string]
+    threat: string
+    scoreComment: (score: number) => string
   }
 > = {
-  AI_PIONEER: {
-    title: 'AI를 부려먹는 사람',
-    subtitle: '누구보다 빠르게 AI를 내 편으로',
+  HALF: {
+    title: 'AI 시대 지휘관',
+    subtitle: '빠르고 혼자인데 AI까지 쓴다',
+    emoji: '🚀',
+    color: '#6366f1',
+    aiScore: 28,
     bootcamp: 'AI LLM',
-    bootcampReason: '이미 AI 친화적인 당신, LLM을 직접 다루면 경쟁자가 없어집니다.',
-    celebrity: '일론 머스크 스타일',
-    company: '테슬라 · 오픈AI 창업자형',
+    bootcampReason: 'AI를 이미 쓰는 당신, LLM을 직접 다루면 경쟁자가 없어집니다.',
     description:
-      '당신은 AI를 두려워하지 않습니다. 오히려 AI를 도구로 삼아 경쟁자보다 10배 빠르게 움직이는 타입입니다. 변화에 가장 먼저 올라타는 사람이 결국 가장 많이 남습니다.',
+      'AI를 누구보다 빠르게 씁니다.\n하지만 방향이 없으면 AI도 무기가 아닙니다.\n\nLLM을 직접 설계하면, 당신은 지휘관이 됩니다.',
     aiTip:
       'ChatGPT + Notion AI로 보고서 자동화, Claude로 코드 리뷰 — 지금 당장 도입하세요. 당신의 직관과 AI의 속도가 합쳐지면 무적입니다.',
-    jobs: ['AI 프로덕트 매니저', '스타트업 창업자', '전략 컨설턴트'],
-    color: '#6366f1',
-    emoji: '🚀',
+    jobs: ['AI 프로덕트 매니저', '전략 컨설턴트', '스타트업 창업자'],
+    threat: 'AI를 써도 방향을 못 잡으면 더 빠르게 도태됩니다.',
     scoreComment: (s) =>
       s <= 30
-        ? '대체 걱정 제로! 당신은 AI를 부리는 사람입니다.'
+        ? '대체 걱정 제로! AI를 부리는 지휘관입니다.'
         : s <= 60
-        ? 'AI와 공존하며 한 단계 더 올라갈 수 있습니다.'
-        : '지금 당장 AI 툴을 배우면 역전 가능합니다!',
+        ? 'AI 활용 방향을 잡으면 무적이 됩니다.'
+        : '지금 LLM 과정에 투자하면 역전 가능합니다!',
   },
-  CORPORATE_SURVIVOR: {
-    title: '조직에서 살아남는 사람',
-    subtitle: '조직의 언어를 AI보다 잘 아는 사람',
-    bootcamp: '데이터 분석',
-    bootcampReason: '보고서와 의사결정에 데이터 역량이 더해지면 조직에서 독보적이 됩니다.',
-    celebrity: '삼성전자 임원 스타일',
-    company: '삼성전자 · LG전자 · 현대차',
-    description:
-      '수많은 보고서와 회의를 버텨낸 당신. 프로세스를 이해하고 사람을 움직이는 능력은 AI가 쉽게 따라오지 못합니다. 단, AI를 모르면 도태됩니다.',
-    aiTip:
-      '내부 보고서 초안은 ChatGPT로, 데이터 분석은 Copilot으로. 하루 2시간 절약이 당신을 살립니다.',
-    jobs: ['조직개발 전문가', '전략기획 팀장', '디지털 혁신 담당'],
+  HALP: {
+    title: '완벽주의 AI 설계자',
+    subtitle: '느리지만 정확한 AI 아키텍트',
+    emoji: '🔭',
     color: '#0ea5e9',
-    emoji: '🏢',
+    aiScore: 25,
+    bootcamp: '데이터 엔지니어',
+    bootcampReason: '꼼꼼함과 AI 활용을 합치면 파이프라인 아키텍트로 전환 가능합니다.',
+    description:
+      'AI를 씁니다. 그것도 제대로 검증하면서 씁니다.\n\n하지만 속도가 느리면 기회를 놓칠 수 있습니다.\n데이터 파이프라인을 설계하는 역량이 당신을 대체 불가로 만듭니다.',
+    aiTip:
+      'AI 도구를 테스트하는 습관이 강점입니다. 자동화 파이프라인 설계에 이 역량을 쏟으세요.',
+    jobs: ['데이터 엔지니어', 'ML 엔지니어', 'AI 아키텍트'],
+    threat: 'AI 속도를 따라가지 못하면 완벽주의가 발목을 잡습니다.',
     scoreComment: (s) =>
       s <= 30
-        ? '조직 장악력 최강! AI도 당신의 부하입니다.'
+        ? '완벽한 AI 활용자! 대체 가능성 최저 구간입니다.'
         : s <= 60
-        ? 'AI 도구 몇 가지만 익히면 완벽한 생존 패키지!'
-        : '지금 AI 툴 하나라도 도입하면 당장 티가 납니다.',
+        ? '파이프라인 설계 역량을 더하면 독보적이 됩니다.'
+        : '지금 데이터 엔지니어링 커리어로 전환할 타이밍!',
   },
-  CREATIVE_REBEL: {
-    title: 'AI가 절대 못 베끼는 사람',
-    subtitle: 'AI가 흉내 못 내는 감성의 소유자',
+  HACF: {
+    title: '데이터로 판치는 크리에이터',
+    subtitle: 'AI + 창의력의 가장 강력한 조합',
+    emoji: '🎨',
+    color: '#10b981',
+    aiScore: 32,
     bootcamp: 'AI LLM',
     bootcampReason: '창의력 + AI 도구 조합이 가장 강력합니다. LLM을 조수로 쓰는 법을 배우세요.',
-    celebrity: '방탄소년단 RM 스타일',
-    company: '카카오 · 네이버 · 크리에이터',
     description:
-      '독창적인 아이디어와 감성이 무기인 당신. AI는 평균을 잘 만들지만, 당신 같은 반란자의 창의성은 대체 불가입니다. 단, AI로 반복 작업을 제거하면 더 빛납니다.',
+      'AI를 쓰고, 논리도 되고, 빠릅니다.\n하지만 창의력은 AI가 흉내 낼 수 없습니다.\n\n지금 LLM을 내 무기로 만들면 경쟁자가 없어집니다.',
     aiTip:
-      'Midjourney로 시각화, Claude로 카피 초안 — AI를 조수로 써서 아이디어 실현 속도를 높이세요.',
-    jobs: ['크리에이티브 디렉터', '콘텐츠 전략가', 'UX 리서처'],
-    color: '#f59e0b',
-    emoji: '🎨',
+      'Midjourney로 시각화, Claude로 카피 초안 — AI를 조수로 써서 아이디어 실현 속도를 극대화하세요.',
+    jobs: ['크리에이티브 디렉터', 'AI 콘텐츠 전략가', 'UX 리서처'],
+    threat: '창의력만으로는 부족합니다. AI 활용 깊이가 차별점이 됩니다.',
     scoreComment: (s) =>
       s <= 30
-        ? '창의력은 AI 대체 불가 영역! 당신이 앞섭니다.'
+        ? '창의력 + AI = 대체 불가 조합! 앞서갑니다.'
         : s <= 60
-        ? '창의력 + AI 도구 = 슈퍼파워 조합!'
+        ? 'LLM 과정 하나로 슈퍼파워 조합 완성!'
         : 'AI로 반복 줄이고 창의에만 집중하세요.',
   },
-  DATA_GUARDIAN: {
-    title: '숫자로 모든 걸 증명하는 사람',
-    subtitle: '숫자 뒤에 숨겨진 진실을 찾는 사람',
-    bootcamp: '데이터 분석',
-    bootcampReason: '당신의 성향은 데이터 분석가에 최적화되어 있습니다. 지금 시작하면 6개월 내 전직 가능.',
-    celebrity: '구글 데이터 사이언티스트 스타일',
-    company: '카카오뱅크 · 토스 · 네이버',
+  HACP: {
+    title: '느린 듯 정확한 AI 예술가',
+    subtitle: 'AI를 쓰되 감성은 내가 완성한다',
+    emoji: '🌙',
+    color: '#14b8a6',
+    aiScore: 30,
+    bootcamp: 'AI LLM',
+    bootcampReason: '감성 + AI = 아무도 못 따라오는 창작 역량. LLM으로 완성하세요.',
     description:
-      '데이터로 말하고, 숫자로 설득하는 당신. AI 시대에 가장 각광받는 유형 중 하나입니다. 단순 집계는 AI가 하지만, 의미 해석과 의사결정은 당신이 합니다.',
+      'AI를 씁니다. 창의적이고, 완벽하게 준비합니다.\n\n하지만 느린 실행이 기회를 놓치게 할 수 있습니다.\nAI로 반복을 줄이면, 당신의 감성이 빛납니다.',
     aiTip:
-      'Python + ChatGPT API 연동으로 자동 분석 파이프라인 구축. SQL 쿼리는 Copilot에 맡기고 인사이트 도출에 집중하세요.',
-    jobs: ['데이터 분석가', 'BI 전문가', '핀테크 기획자'],
-    color: '#10b981',
-    emoji: '📊',
+      'AI 초안으로 속도를 높이고, 마지막 감성 터치는 당신이 직접. 이 조합이 가장 강합니다.',
+    jobs: ['AI 아트 디렉터', '콘텐츠 크리에이터', 'AI 기획자'],
+    threat: '속도 없는 완벽주의는 시장에서 무시됩니다.',
     scoreComment: (s) =>
       s <= 30
-        ? '데이터 + 판단력 = AI 시대 최강 조합!'
+        ? '감성 + AI 활용 = 희귀한 조합! 당신이 앞섭니다.'
         : s <= 60
-        ? 'AI 분석 도구 하나 추가하면 레벨 업!'
-        : '데이터 역량 강화에 집중하면 역전 가능!',
+        ? 'AI 반복 자동화로 창의에 더 집중하세요.'
+        : 'LLM 과정에서 무기를 찾을 수 있습니다.',
   },
-  PEOPLE_CONNECTOR: {
-    title: '사람이 곧 스펙인 사람',
-    subtitle: 'AI가 절대 못 하는 관계의 기술',
-    bootcamp: '데이터 분석',
-    bootcampReason: '데이터로 사람을 설득하는 능력을 더하면 HR · 영업에서 최강이 됩니다.',
-    celebrity: '스타벅스 하워드 슐츠 스타일',
-    company: '인사팀 · 영업 · HR 컨설팅',
+  HSLF: {
+    title: '조용한 논리 장인',
+    subtitle: '혼자서 빠르게 정확하게, 하지만 AI와는 거리를 둔다',
+    emoji: '⚙️',
+    color: '#64748b',
+    aiScore: 48,
+    bootcamp: '데이터 엔지니어',
+    bootcampReason: '논리적이고 꼼꼼한 당신, 파이프라인 설계자로 전환하면 AI가 대체 못 합니다.',
     description:
-      '사람과 사람을 잇고, 신뢰를 쌓는 능력이 핵심인 당신. 공감력과 네트워크는 AI의 가장 취약한 영역입니다. 이 강점을 살리면 AI 시대에도 오히려 더 빛납니다.',
+      '혼자서 빠르고 정확하게 해냅니다.\n\n하지만 AI를 멀리하는 순간,\n당신의 속도는 AI를 쓰는 경쟁자에게 추월당합니다.',
+    aiTip:
+      'Copilot으로 코드 자동화, SQL 쿼리 생성 — 당신의 논리 역량에 AI 속도를 더하세요.',
+    jobs: ['데이터 엔지니어', '백엔드 개발자', '시스템 분석가'],
+    threat: 'AI 없이 혼자 하는 속도는 곧 경쟁력을 잃습니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '논리 + 실행력 조합! 대체 가능성 낮은 구간입니다.'
+        : s <= 60
+        ? 'AI 도구 하나만 더하면 대체 불가 포지션!'
+        : '데이터 엔지니어링 역량으로 역전하세요.',
+  },
+  HSLP: {
+    title: '철저한 혼자형 전략가',
+    subtitle: '완벽하게 혼자 논리로 만든다',
+    emoji: '♟️',
+    color: '#475569',
+    aiScore: 45,
+    bootcamp: '데이터 엔지니어',
+    bootcampReason: '꼼꼼한 당신의 분석력 + 파이프라인 설계 = AI 시대 가장 안전한 커리어.',
+    description:
+      '혼자서 완벽하게 만들어냅니다.\n\n하지만 AI 도구 없이 완벽을 추구하면\n속도 경쟁에서 밀립니다.',
+    aiTip:
+      'AI 초안으로 시간을 아끼고, 당신의 꼼꼼함으로 완성도를 높이세요. 이 조합이 최강입니다.',
+    jobs: ['데이터 엔지니어', '시스템 설계자', '기술 전략가'],
+    threat: 'AI 없는 완벽주의는 점점 더 느린 커리어가 됩니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '전략적 꼼꼼함은 AI가 못 따라와요!'
+        : s <= 60
+        ? 'AI 자동화 도구 하나 익히면 레벨 업!'
+        : '지금 데이터 파이프라인 역량에 투자하세요.',
+  },
+  HSCF: {
+    title: '감성 독립군',
+    subtitle: '혼자서 감성으로 빠르게 만들어낸다',
+    emoji: '🎭',
+    color: '#f59e0b',
+    aiScore: 38,
+    bootcamp: 'AI LLM',
+    bootcampReason: '감성 독립군에게 AI LLM은 가장 강력한 창작 도구입니다.',
+    description:
+      '혼자서 감성적으로 빠르게 창작합니다.\n\n하지만 AI를 안 쓰면\n당신의 창의력은 AI를 활용하는 경쟁자에게 밀립니다.',
+    aiTip:
+      'AI를 창작 조수로 써보세요. 당신의 감성 + AI의 속도 = 아무도 못 따라오는 조합입니다.',
+    jobs: ['콘텐츠 크리에이터', '브랜드 기획자', 'UX 디자이너'],
+    threat: 'AI를 외면하는 크리에이터는 점점 시장에서 밀려납니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '감성 + 실행력! 창의 영역에서 앞서갑니다.'
+        : s <= 60
+        ? 'AI 조수 하나만 들이면 슈퍼파워 조합!'
+        : '지금 AI LLM 과정에서 무기를 찾으세요.',
+  },
+  HSCP: {
+    title: '나만의 세계 완성형',
+    subtitle: '혼자서 감성으로 완벽하게 만든다',
+    emoji: '🌸',
+    color: '#f97316',
+    aiScore: 35,
+    bootcamp: 'AI LLM',
+    bootcampReason: '완벽한 감성 창작자에게 AI는 가장 강력한 조수입니다.',
+    description:
+      '나만의 세계를 완벽하게 구현합니다.\n\n하지만 속도 없는 완벽주의는\n시장의 빠른 흐름을 따라가지 못합니다.',
+    aiTip:
+      'AI로 반복 작업을 줄이고, 당신만의 감성 완성에 집중하세요. 그게 가장 강한 포지션입니다.',
+    jobs: ['AI 아트 디렉터', '독립 크리에이터', '브랜드 디자이너'],
+    threat: '완벽주의 + AI 거리두기 = 커리어 위기 신호입니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '나만의 세계는 AI가 절대 못 만들어요!'
+        : s <= 60
+        ? 'AI 도구 하나로 속도를 더하면 무적!'
+        : 'AI LLM 과정에서 돌파구를 찾으세요.',
+  },
+  TALF: {
+    title: '팀 이끄는 AI 선봉장',
+    subtitle: 'AI 쓰고 팀도 이끌고 빠르게 실행',
+    emoji: '⚡',
+    color: '#3b82f6',
+    aiScore: 31,
+    bootcamp: '데이터 분석',
+    bootcampReason: '팀을 이끄는 당신에게 데이터 분석은 의사결정의 무기가 됩니다.',
+    description:
+      'AI를 쓰고 팀도 이끕니다. 빠르고 논리적입니다.\n\n하지만 데이터 없는 빠른 실행은\n방향이 틀릴 때 팀 전체가 흔들립니다.',
+    aiTip:
+      '데이터 분석 + AI 도구로 의사결정 속도를 높이세요. 팀을 이끄는 당신에게 가장 강력한 무기입니다.',
+    jobs: ['팀장/리더', '프로덕트 매니저', '데이터 기반 전략가'],
+    threat: '데이터 없이 빠르게만 달리면 팀 전체가 방향을 잃습니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '팀 이끄는 AI 선봉장! 대체 가능성 낮습니다.'
+        : s <= 60
+        ? '데이터 역량 더하면 팀에서 독보적이 됩니다.'
+        : '지금 데이터 분석 역량에 투자할 타이밍!',
+  },
+  TALP: {
+    title: '함께 만드는 AI 설계자',
+    subtitle: '팀과 AI로 완벽한 시스템을 만든다',
+    emoji: '🏗️',
+    color: '#6366f1',
+    aiScore: 29,
+    bootcamp: '데이터 분석',
+    bootcampReason: '팀 + AI + 완벽주의에 데이터 분석이 더해지면 최강의 설계자가 됩니다.',
+    description:
+      'AI를 쓰고, 팀과 함께, 완벽하게 설계합니다.\n\n하지만 완벽하게 준비하다 기회를 놓치면\n아무리 좋은 설계도 의미가 없습니다.',
+    aiTip:
+      'MVP를 빠르게 만들고, 데이터로 검증하고, 팀과 개선하세요. 이 사이클이 가장 강합니다.',
+    jobs: ['프로덕트 매니저', '데이터 기반 기획자', 'AI 서비스 기획자'],
+    threat: '완벽한 준비만 하다가는 시장 기회를 놓칩니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '완벽한 AI 설계자! 대체 가능성 매우 낮습니다.'
+        : s <= 60
+        ? '데이터 분석으로 설계에 힘을 더하세요.'
+        : '지금 데이터 역량 강화가 필요합니다.',
+  },
+  TACF: {
+    title: 'AI 부리는 크리에이터',
+    subtitle: '팀 속에서 AI로 창의를 폭발시킨다',
+    emoji: '🎙️',
+    color: '#8b5cf6',
+    aiScore: 33,
+    bootcamp: 'AI LLM',
+    bootcampReason: '팀 크리에이터 + AI LLM = 시장에서 가장 강력한 콘텐츠 파워.',
+    description:
+      'AI를 쓰고, 팀과 함께, 창의적으로 빠르게.\n\n하지만 AI 활용의 깊이가 없으면\n표면적인 창의력에 그칩니다.',
+    aiTip:
+      'LLM으로 콘텐츠 생산 파이프라인을 만들어보세요. 팀과 AI가 합쳐질 때 창의력이 배가됩니다.',
+    jobs: ['AI 콘텐츠 디렉터', '크리에이티브 팀장', 'AI 마케터'],
+    threat: 'AI 활용 깊이 없는 창의력은 금방 평준화됩니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? 'AI + 창의 + 팀! 대체 불가 조합입니다.'
+        : s <= 60
+        ? 'LLM 과정으로 AI 활용을 한 단계 올리세요.'
+        : '지금 AI LLM 과정에서 돌파구를 찾으세요.',
+  },
+  TACP: {
+    title: '협력형 AI 아티스트',
+    subtitle: '팀과 AI로 감성 작품을 완성한다',
+    emoji: '🎭',
+    color: '#a855f7',
+    aiScore: 31,
+    bootcamp: 'AI LLM',
+    bootcampReason: '협력 + 감성 + AI LLM = 누구도 흉내 낼 수 없는 창작 역량.',
+    description:
+      'AI를 쓰고, 팀과 함께, 감성으로 완성합니다.\n\n하지만 완성도를 위한 속도 희생이\n팀 전체의 리듬을 방해할 수 있습니다.',
+    aiTip:
+      'AI로 초안 속도를 높이고, 팀과 감성 터치를 나누세요. 이 조합이 가장 아름답습니다.',
+    jobs: ['AI 크리에이티브 디렉터', '협업 아트 디렉터', 'AI 콘텐츠 기획자'],
+    threat: '완벽한 감성 추구가 팀 속도를 늦추면 기회를 잃습니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '협력 + AI + 감성! 희귀한 조합입니다.'
+        : s <= 60
+        ? 'AI 활용 속도를 높이면 팀에서 독보적!'
+        : 'LLM 과정에서 새 무기를 찾으세요.',
+  },
+  TSLF: {
+    title: '사람으로 굴러가는 분석가',
+    subtitle: '팀과 논리로 빠르게 결론을 낸다',
+    emoji: '📊',
+    color: '#0ea5e9',
+    aiScore: 61,
+    bootcamp: '데이터 분석',
+    bootcampReason: '당신의 강점 + 데이터 = AI 시대 생존 패키지',
+    description:
+      '성실한 당신의 관리 업무, AI가 이미 넘보고 있습니다.\n지금 데이터 역량을 더하면 대체 불가능한 존재가 됩니다.',
+    aiTip:
+      '데이터 분석 + AI 리포팅 자동화로 당신의 팀 장악력을 데이터로 증명하세요.',
+    jobs: ['데이터 분석가', '비즈니스 분석가', '팀 리더'],
+    threat: 'AI가 보고서와 분석을 대체하는 속도가 빨라지고 있습니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '팀 장악력 + 분석력! AI도 당신의 부하입니다.'
+        : s <= 60
+        ? '데이터 역량 더하면 AI 시대 완벽한 생존 패키지!'
+        : '지금 데이터 분석 과정에 투자할 타이밍입니다.',
+  },
+  TSLP: {
+    title: '신중한 팀 전략가',
+    subtitle: '팀과 논리로 완벽하게 준비한다',
+    emoji: '🏢',
+    color: '#1d4ed8',
+    aiScore: 58,
+    bootcamp: '데이터 분석',
+    bootcampReason: '전략 + 데이터 분석 = 조직에서 독보적인 의사결정자.',
+    description:
+      '신중하게 준비하고 팀을 이끕니다.\n\n하지만 AI가 분석과 보고서를 대체하는 속도는\n당신의 준비 속도보다 빠릅니다.',
+    aiTip:
+      '데이터 분석 도구로 준비 시간을 단축하세요. 전략적 판단은 여전히 당신의 몫입니다.',
+    jobs: ['전략기획 팀장', '조직개발 전문가', '비즈니스 전략가'],
+    threat: 'AI가 전략 분석 초안을 만드는 시대, 당신의 역할은 재정의되어야 합니다.',
+    scoreComment: (s) =>
+      s <= 30
+        ? '신중한 전략가는 AI가 못 대체해요!'
+        : s <= 60
+        ? '데이터 분석 역량 더하면 조직에서 독보적!'
+        : '지금 데이터 분석 과정에서 역전하세요.',
+  },
+  TSCF: {
+    title: '감성으로 팀 살리는 사람',
+    subtitle: '팀의 에너지를 만들고 빠르게 실행한다',
+    emoji: '🤝',
+    color: '#ec4899',
+    aiScore: 65,
+    bootcamp: '데이터 분석',
+    bootcampReason: '사람 중심 강점 + 데이터 = AI 시대 HR·영업에서 최강.',
+    description:
+      '팀을 살리는 당신의 감성 역량, AI가 이미 흉내 내기 시작했습니다.\n지금 데이터 역량을 더하면 AI도 대체 못 하는 존재가 됩니다.',
     aiTip:
       'AI로 미팅 준비 자동화 (상대방 정보 요약, 대화 포인트 생성). 관계 구축 시간에 더 집중하세요.',
     jobs: ['HR 파트너', '커뮤니티 매니저', '세일즈 전략가'],
-    color: '#ec4899',
-    emoji: '🤝',
+    threat: 'AI 챗봇이 고객 응대를 대체하는 속도가 빠릅니다.',
     scoreComment: (s) =>
       s <= 30
-        ? '인간 네트워크는 AI가 절대 못 빼앗아요!'
+        ? '인간 감성은 AI가 절대 못 빼앗아요!'
         : s <= 60
         ? 'AI + 인간적 감성의 하이브리드 전략이 답!'
-        : '지금 인적 네트워크에 투자하면 미래가 달라집니다.',
+        : '지금 데이터 분석 역량에 투자하면 역전 가능.',
   },
-  STRATEGY_MASTER: {
-    title: '3수 앞을 보는 사람',
-    subtitle: '복잡한 판을 읽고 움직이는 체스 플레이어',
+  TSCP: {
+    title: '완벽한 팀의 완성자',
+    subtitle: '팀과 감성으로 완벽하게 마무리한다',
+    emoji: '🛡️',
+    color: '#f43f5e',
+    aiScore: 62,
     bootcamp: '데이터 분석',
-    bootcampReason: '전략적 사고 + 데이터 분석 = 컨설팅 · 기획 시장에서 독보적 포지션.',
-    celebrity: 'McKinsey 파트너 스타일',
-    company: '전략컨설팅 · 투자은행 · VC',
+    bootcampReason: '완벽한 팀플레이어 + 데이터 = AI 시대에도 살아남는 조합.',
     description:
-      '복잡한 상황을 분석하고 최적의 전략을 짜는 당신. AI가 데이터를 처리해도 최종 판단과 책임은 사람이 집니다. 전략적 사고는 AI 시대에 더 가치 있어집니다.',
+      '팀을 완성시키는 당신, 하지만 AI가 협업 도구와 보고서를 대체하고 있습니다.\n지금 데이터로 당신의 가치를 증명하세요.',
     aiTip:
-      'ChatGPT로 시나리오 브레인스토밍, Perplexity로 시장 조사 자동화. 당신의 판단 시간을 늘리세요.',
-    jobs: ['경영전략 컨설턴트', '사업개발 리더', '투자 심사역'],
-    color: '#8b5cf6',
-    emoji: '♟️',
+      'AI 협업 도구를 먼저 익혀서 팀에 도입하세요. 도입하는 사람이 대체되지 않습니다.',
+    jobs: ['프로젝트 매니저', '팀 리더', '조직 문화 전문가'],
+    threat: 'AI가 협업 관리 영역까지 들어오고 있습니다.',
     scoreComment: (s) =>
       s <= 30
-        ? '전략 판단력은 AI가 넘볼 수 없는 영역!'
+        ? '완벽한 팀플레이어! 대체 가능성 낮은 구간입니다.'
         : s <= 60
-        ? 'AI 리서치 도구로 무장하면 더 강해집니다!'
-        : '전략 역량 + AI 분석 = 다음 레벨로 도약!',
+        ? '데이터 역량 더하면 팀에서 독보적이 됩니다.'
+        : '지금 데이터 분석 과정에서 역전하세요.',
   },
-  SILENT_EXECUTOR: {
-    title: '말 없이 다 해버리는 사람',
-    subtitle: '말보다 결과로 증명하는 사람',
-    bootcamp: '데이터 엔지니어링',
-    bootcampReason: '묵묵히 실행하는 성향은 파이프라인 구축에 딱 맞습니다. 수요 폭발 중인 직군입니다.',
-    celebrity: '워런 버핏 스타일',
-    company: '제조 · 물류 · 운영관리',
-    description:
-      '묵묵히 실행하고 책임지는 당신. 운영과 실행력은 여전히 현장에서 가장 중요합니다. 단, 반복 업무의 자동화 속도가 빨라지고 있어 지금 준비가 필요합니다.',
-    aiTip:
-      'RPA 도구(UiPath 등)로 반복 업무 자동화, AI 일정 관리 도구로 실행력 극대화. 당신의 꼼꼼함 + 자동화 = 최강 조합.',
-    jobs: ['운영 매니저', '프로젝트 매니저', '품질관리 전문가'],
-    color: '#64748b',
-    emoji: '⚙️',
-    scoreComment: (s) =>
-      s <= 30
-        ? '실행력 + 꼼꼼함은 AI도 못 따라와요!'
-        : s <= 60
-        ? '자동화 도구 하나 배우면 생산성 2배!'
-        : '지금 RPA나 자동화 도구에 투자할 타이밍!',
-  },
-  WILD_CARD: {
-    title: 'AI도 예측 못 하는 사람',
-    subtitle: '예측 불가능한 게 오히려 강점',
-    bootcamp: 'AI LLM',
-    bootcampReason: '다양한 실험을 즐기는 당신에게 LLM 과정은 가장 빠르게 몰입할 수 있는 분야입니다.',
-    celebrity: '스티브 잡스 스타일',
-    company: '스타트업 · 프리랜서 · 포트폴리오 커리어',
-    description:
-      '틀에 맞지 않는 당신.\n그게 바로 AI 시대의 최대 강점입니다.\n\nAI는 패턴을 학습하지만\n당신은 패턴을 깨는 사람입니다.\n\n불확실성을 즐기는 사람이\nAI 시대를 지배합니다.',
-    aiTip:
-      '다양한 AI 도구를 실험해보세요. Claude, Midjourney, Suno, Runway — 당신의 실험 정신이 남들보다 빠르게 배우게 만듭니다.',
-    jobs: ['포트폴리오 크리에이터', 'AI 얼리어답터', '프리랜서 기획자'],
-    color: '#f97316',
-    emoji: '🃏',
-    scoreComment: (s) =>
-      s <= 30
-        ? '예측 불가 카드! AI도 당신을 못 따라잡아요.'
-        : s <= 60
-        ? '다양한 AI 도구 실험으로 독보적 영역 개척!'
-        : '지금이 바로 새로운 역할을 만들 타이밍!',
-  },
+}
+
+// 퇴근 보너스 계산
+function calcOvertimeLevel(answers: Record<number, string>): {
+  overtimeLevel: string
+  overtimeComment: string
+} {
+  const q17 = answers[17] ?? ''
+  const q18 = answers[18] ?? ''
+  const q19 = answers[19] ?? ''
+  const q20 = answers[20] ?? ''
+
+  // 야근 레벨 점수
+  let score = 0
+  if (q17 === 'E1_LATE') score += 1
+  else if (q17 === 'E1_ZOMBIE') score += 2
+
+  if (q18 === 'E2_REPLY') score += 1
+  else if (q18 === 'E2_WORK') score += 2
+
+  if (q19 === 'E3_BUSY' || q19 === 'E3_PERFECT') score += 1
+  if (q19 === 'E3_CULTURE') score += 1
+
+  if (q20 === 'E4_ALREADY') score += 2
+  else if (q20 === 'E4_CULTURE') score += 1
+
+  if (score === 0) {
+    return {
+      overtimeLevel: '칼퇴 마스터',
+      overtimeComment: '워라밸 끝판왕! AI 시대에 가장 건강한 커리어를 만들고 있습니다.',
+    }
+  } else if (score <= 2) {
+    return {
+      overtimeLevel: '적당한 직장인',
+      overtimeComment: '야근도 하지만 균형을 잡고 있습니다. AI로 효율을 높이면 칼퇴가 가능합니다.',
+    }
+  } else if (score <= 4) {
+    return {
+      overtimeLevel: '야근 루틴러',
+      overtimeComment: 'AI 자동화 도구 하나만 도입해도 야근 2시간은 줄일 수 있습니다.',
+    }
+  } else {
+    return {
+      overtimeLevel: '야근계의 전설',
+      overtimeComment: '이 정도 헌신이면 AI가 당신의 야근을 없애줄 자격이 충분합니다. 지금 당장 도입하세요.',
+    }
+  }
 }
 
 export function calculateResult(answers: Record<number, string>): ResultData {
-  // MBTI 계산
-  const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 }
-  for (const [qId, val] of Object.entries(answers)) {
-    const q = questions.find((q) => q.id === Number(qId))
-    if (q?.part === 'A' && val in counts) {
-      counts[val as keyof typeof counts]++
-    }
+  // 파트 A (1-4): H vs T
+  let hCount = 0
+  let tCount = 0
+  for (let i = 1; i <= 4; i++) {
+    if (answers[i] === 'H') hCount++
+    else if (answers[i] === 'T') tCount++
   }
-  const e = counts.E >= counts.I ? 'E' : 'I'
-  const s = counts.S >= counts.N ? 'S' : 'N'
-  const t = counts.T >= counts.F ? 'T' : 'F'
-  const j = counts.J >= counts.P ? 'J' : 'P'
-  const mbtiType = `${e}${s}${t}${j}` as MbtiType
+  const workStyle = hCount >= 3 ? 'H' : 'T'
 
-  // AI 점수 계산 (Part B 평균)
-  const scoreMap: Record<string, number> = {
-    B1_HIGH: 80, B1_MID: 50, B1_LOW: 30, B1_MIN: 10,
-    B2_HIGH: 85, B2_MID: 50, B2_LOW: 25, B2_MIN: 10,
-    B3_DATA: 80, B3_COMM: 45, B3_STRAT: 20, B3_CREA: 30,
-    B4_SCARED: 70, B4_OPPO: 30, B4_SAFE: 20, B4_NONE: 55,
+  // 파트 B (5-8): A vs S
+  let aCount = 0
+  let sCount = 0
+  for (let i = 5; i <= 8; i++) {
+    if (answers[i] === 'A') aCount++
+    else if (answers[i] === 'S') sCount++
   }
-  const bScores = [7, 8, 9, 10]
-    .map((id) => scoreMap[answers[id]] ?? 50)
-    .filter(Boolean)
-  const aiScore = Math.round(bScores.reduce((a, b) => a + b, 0) / bScores.length)
+  const aiUsage = aCount >= 3 ? 'A' : 'S'
 
-  // JobType 결정
-  const jobType = getJobType(mbtiType, aiScore)
-
-  return { mbtiType, aiScore, jobType }
-}
-
-function getJobType(mbti: MbtiType, aiScore: number): JobType {
-  const map: Record<MbtiType, JobType> = {
-    ENTJ: 'STRATEGY_MASTER',
-    ENTP: 'AI_PIONEER',
-    ENFJ: 'PEOPLE_CONNECTOR',
-    ENFP: 'CREATIVE_REBEL',
-    ESTJ: 'CORPORATE_SURVIVOR',
-    ESTP: 'WILD_CARD',
-    ESFJ: 'PEOPLE_CONNECTOR',
-    ESFP: 'CREATIVE_REBEL',
-    INTJ: 'STRATEGY_MASTER',
-    INTP: 'DATA_GUARDIAN',
-    INFJ: 'CREATIVE_REBEL',
-    INFP: 'CREATIVE_REBEL',
-    ISTJ: 'SILENT_EXECUTOR',
-    ISTP: 'DATA_GUARDIAN',
-    ISFJ: 'SILENT_EXECUTOR',
-    ISFP: 'WILD_CARD',
+  // 파트 C (9-12): L vs C
+  let lCount = 0
+  let cCount = 0
+  for (let i = 9; i <= 12; i++) {
+    if (answers[i] === 'L') lCount++
+    else if (answers[i] === 'C') cCount++
   }
-  // aiScore 높으면 WILD_CARD 혹은 AI_PIONEER 우선
-  if (aiScore >= 70 && (mbti.startsWith('E'))) return 'AI_PIONEER'
-  return map[mbti]
+  const strength = lCount >= 3 ? 'L' : 'C'
+
+  // 파트 D (13-16): F vs P
+  let fCount = 0
+  let pCount = 0
+  for (let i = 13; i <= 16; i++) {
+    if (answers[i] === 'F') fCount++
+    else if (answers[i] === 'P') pCount++
+  }
+  const speed = fCount >= 3 ? 'F' : 'P'
+
+  const typeCode = `${workStyle}${aiUsage}${strength}${speed}` as TypeCode
+  const aiScore = typeInfo[typeCode].aiScore
+
+  const { overtimeLevel, overtimeComment } = calcOvertimeLevel(answers)
+
+  return { typeCode, aiScore, overtimeLevel, overtimeComment }
 }

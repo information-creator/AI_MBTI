@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 }
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
+const KAKAO_KEY = process.env.NEXT_PUBLIC_KAKAO_APP_KEY
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -48,6 +49,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Suspense fallback={null}>
             <GAPageView gaId={GA_ID} />
           </Suspense>
+        )}
+        {KAKAO_KEY && (
+          <>
+            <Script
+              src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+              strategy="afterInteractive"
+            />
+            <Script id="kakao-init" strategy="afterInteractive">
+              {`if (window.Kakao && !window.Kakao.isInitialized()) { window.Kakao.init('${KAKAO_KEY}'); }`}
+            </Script>
+          </>
         )}
         {/* 데스크탑에서도 모바일 폭으로 중앙 정렬 */}
         <div className="min-h-screen mx-auto w-full max-w-[480px] bg-white shadow-xl shadow-slate-200">

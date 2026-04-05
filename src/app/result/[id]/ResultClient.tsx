@@ -2,35 +2,33 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image, { StaticImageData } from 'next/image'
-import { JobType, jobTypeInfo, bootcampInfo } from '@/lib/quiz'
+import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
-import aiPioneerImg from '@/assets/ai_pioneer.png'
-
-const typeImages: Partial<Record<JobType, StaticImageData>> = {
-  AI_PIONEER: aiPioneerImg,
-}
 
 type Props = {
-  mbtiType: string
+  typeCode: TypeCode
   aiScore: number
-  jobType: JobType
+  overtimeLevel: string
+  overtimeComment: string
   resultId: string
   couponCode: string | null
 }
 
 export default function ResultClient({
-  mbtiType,
+  typeCode,
   aiScore,
-  jobType,
+  overtimeLevel,
+  overtimeComment,
   resultId,
   couponCode,
 }: Props) {
-  const info = jobTypeInfo[jobType]
+  const info = typeInfo[typeCode]
+  const bc = bootcampInfo[info.bootcamp]
 
   useEffect(() => {
-    gtagEvent('result_view', { mbti_type: mbtiType, ai_score: aiScore, job_type: jobType })
-  }, [mbtiType, aiScore, jobType])
+    gtagEvent('result_view', { type_code: typeCode, ai_score: aiScore })
+  }, [typeCode, aiScore])
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [copied, setCopied] = useState(false)
   const [couponCopied, setCouponCopied] = useState(false)
@@ -56,14 +54,12 @@ export default function ResultClient({
     canvas.width = W
     canvas.height = H
 
-    // 배경
     const grad = ctx.createLinearGradient(0, 0, W, H)
     grad.addColorStop(0, '#0f0f1a')
     grad.addColorStop(1, '#1a1040')
     ctx.fillStyle = grad
     ctx.fillRect(0, 0, W, H)
 
-    // 장식 원
     ctx.beginPath()
     ctx.arc(W - 80, 80, 120, 0, Math.PI * 2)
     ctx.fillStyle = info.color + '20'
@@ -74,35 +70,28 @@ export default function ResultClient({
     ctx.fillStyle = info.color + '15'
     ctx.fill()
 
-    // 브랜드
     ctx.font = 'bold 18px Arial'
     ctx.fillStyle = '#6366f1'
     ctx.fillText('AImBTI', 40, 44)
 
-    // 이모지 (큰 텍스트로)
     ctx.font = '72px Arial'
     ctx.fillText(info.emoji, 40, 130)
 
-    // 유형 제목
     ctx.font = 'bold 36px Arial'
     ctx.fillStyle = '#ffffff'
     ctx.fillText(info.title, 40, 180)
 
-    // MBTI 배지
     ctx.fillStyle = info.color + '30'
-    ctx.roundRect(40, 195, 80, 30, 8)
+    ctx.roundRect(40, 195, 90, 30, 8)
     ctx.fill()
     ctx.font = 'bold 14px Arial'
     ctx.fillStyle = info.color
-    ctx.fillText(mbtiType, 54, 215)
+    ctx.fillText(typeCode, 54, 215)
 
-    // 설명 (줄바꿈 처리)
     ctx.font = '16px Arial'
     ctx.fillStyle = '#9ca3af'
-    const words = info.subtitle.split('')
     ctx.fillText(info.subtitle, 40, 250)
 
-    // AI 점수 바
     ctx.font = 'bold 14px Arial'
     ctx.fillStyle = '#9ca3af'
     ctx.fillText('AI 대체 가능성', 40, 295)
@@ -111,7 +100,6 @@ export default function ResultClient({
     ctx.fillStyle = scoreColor
     ctx.fillText(`${aiScore}%`, 200, 295)
 
-    // 게이지 바
     ctx.fillStyle = '#374151'
     ctx.roundRect(40, 308, 400, 12, 6)
     ctx.fill()
@@ -123,15 +111,13 @@ export default function ResultClient({
     ctx.roundRect(40, 308, 400 * (aiScore / 100), 12, 6)
     ctx.fill()
 
-    // 직업 추천
     ctx.font = '14px Arial'
     ctx.fillStyle = '#6b7280'
-    ctx.fillText('추천 직업:', 40, 348)
+    ctx.fillText('추천 직무:', 40, 348)
     ctx.font = 'bold 14px Arial'
     ctx.fillStyle = '#e5e7eb'
     ctx.fillText(info.jobs.join(' · '), 40, 368)
 
-    // 우측 URL
     ctx.save()
     ctx.font = '13px Arial'
     ctx.fillStyle = '#4b5563'
@@ -148,7 +134,7 @@ export default function ResultClient({
     const dataUrl = drawShareCard()
     const a = document.createElement('a')
     a.href = dataUrl
-    a.download = `aimbti_${jobType}.png`
+    a.download = `aimbti_${typeCode}.png`
     a.click()
     setShareLoading(false)
   }
@@ -171,8 +157,7 @@ export default function ResultClient({
 
   function handleKakaoShare() {
     const url = window.location.href
-    const text = `나는 ${info.title}! AI 대체 가능성 ${aiScore}%\n${info.subtitle}\n\n당신의 유형은? → ${url}`
-    // 카카오 SDK 미설치 시 URL 복사로 fallback
+    const text = `나는 ${info.title} (${typeCode})! AI 대체 가능성 ${aiScore}%\n${info.subtitle}\n\n당신의 유형은? → ${url}`
     if (typeof window !== 'undefined' && (window as any).Kakao?.isInitialized?.()) {
       ;(window as any).Kakao.Share.sendDefault({
         objectType: 'text',
@@ -188,10 +173,8 @@ export default function ResultClient({
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 히든 캔버스 */}
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* 상단 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <Link href="/" className="text-slate-900 font-bold text-lg">
           AI<span className="text-indigo-600">mbti</span>
@@ -205,46 +188,31 @@ export default function ResultClient({
       </header>
 
       <main className="px-5 py-6 space-y-5">
+        {/* 캐릭터 이모지 */}
+        <div className="flex justify-center float-animation">
+          <span className="text-9xl">{info.emoji}</span>
+        </div>
+
         {/* 결과 카드 */}
         <div
-          className="rounded-3xl p-8 animate-fade-in-up"
+          className="rounded-3xl p-6 animate-fade-in-up"
           style={{
             background: `linear-gradient(135deg, ${info.color}12 0%, #ffffff 100%)`,
             border: `1px solid ${info.color}30`,
           }}
         >
-          <div className="flex items-start gap-4">
-            <div className="float-animation shrink-0">
-              {typeImages[jobType] ? (
-                <Image
-                  src={typeImages[jobType]!}
-                  alt={info.title}
-                  width={80}
-                  height={80}
-                  className="rounded-2xl object-cover"
-                />
-              ) : (
-                <span className="text-6xl">{info.emoji}</span>
-              )}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: info.color + '20', color: info.color }}
-                >
-                  {mbtiType}
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-1">{info.title}</h1>
-              <p className="text-slate-600 text-sm">{info.subtitle}</p>
-              <p className="text-xs text-slate-400 mt-1">
-                {info.celebrity} · {info.company}
-              </p>
-            </div>
+          <div className="text-center">
+            <span
+              className="text-xs font-bold px-3 py-1 rounded-full"
+              style={{ background: info.color + '20', color: info.color }}
+            >
+              {typeCode}
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-3 mb-1">{info.title}</h1>
+            <p className="text-slate-600 text-sm">{info.subtitle}</p>
           </div>
 
-          <p className="mt-6 text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-line">
+          <p className="mt-5 text-slate-700 leading-relaxed text-sm sm:text-base whitespace-pre-line text-center">
             {info.description}
           </p>
         </div>
@@ -264,7 +232,6 @@ export default function ResultClient({
             </div>
           </div>
 
-          {/* 게이지 바 */}
           <div className="relative h-4 bg-slate-100 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-1000"
@@ -276,15 +243,22 @@ export default function ResultClient({
           </div>
 
           <p className="text-slate-500 text-sm">{info.scoreComment(aiScore)}</p>
+
+          <div
+            className="rounded-xl p-3 text-sm font-semibold"
+            style={{ background: scoreColor + '10', color: scoreColor }}
+          >
+            ⚠️ {info.threat}
+          </div>
         </div>
 
-        {/* 직업 추천 */}
+        {/* 직무 추천 */}
         <div
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
           style={{ animationDelay: '0.2s' }}
         >
           <h2 className="text-slate-900 font-bold text-lg mb-4">추천 직업 / 직무</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {info.jobs.map((job) => (
               <div
                 key={job}
@@ -319,52 +293,54 @@ export default function ResultClient({
         </div>
 
         {/* 부트캠프 추천 */}
-        {(() => {
-          const bc = bootcampInfo[info.bootcamp]
-          return (
-            <div
-              className="rounded-3xl p-6 animate-fade-in-up bg-white"
-              style={{
-                border: `1px solid ${bc.color}30`,
-                animationDelay: '0.4s',
-              }}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: bc.color + '15', color: bc.color }}
-                >
-                  {bc.tag}
-                </span>
-              </div>
-              <h2 className="text-slate-900 font-bold text-lg mt-2 mb-1">🎯 당신의 다음 스텝</h2>
-              <p className="text-slate-500 text-sm mb-4">{info.bootcampReason}</p>
-              <div
-                className="rounded-2xl p-4 mb-4 border border-slate-100"
-                style={{ background: bc.color + '08' }}
-              >
-                <p className="font-bold text-slate-900 mb-1">{bc.label}</p>
-                <p className="text-slate-500 text-sm">{bc.description}</p>
-              </div>
-              <a
-                href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodes.co.kr/'}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, job_type: jobType })}
-                className="block text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
-                style={{ background: bc.color, color: '#000' }}
-              >
-                무료 커리큘럼 받아보기 →
-              </a>
-            </div>
-          )
-        })()}
+        <div
+          className="rounded-3xl p-6 animate-fade-in-up bg-white"
+          style={{
+            border: `1px solid ${bc.color}30`,
+            animationDelay: '0.4s',
+          }}
+        >
+          <h2 className="text-slate-900 font-bold text-lg mt-2 mb-1">🎯 당신의 다음 스텝</h2>
+          <p className="text-slate-500 text-sm mb-4">{info.bootcampReason}</p>
+          <div
+            className="rounded-2xl p-4 mb-4 border border-slate-100"
+            style={{ background: bc.color + '08' }}
+          >
+            <p className="font-bold text-slate-900 mb-1">{bc.title}</p>
+            <p className="text-slate-500 text-sm">{bc.reason}</p>
+          </div>
+          <a
+            href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodes.co.kr/'}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, type_code: typeCode })}
+            className="block text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+            style={{ background: bc.color, color: '#000' }}
+          >
+            무료 커리큘럼 받아보기 →
+          </a>
+        </div>
+
+        {/* 퇴근 보너스 */}
+        <div
+          className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
+          style={{ animationDelay: '0.45s' }}
+        >
+          <h2 className="text-slate-900 font-bold text-lg mb-2">😴 퇴근 보너스</h2>
+          <div
+            className="rounded-xl p-4"
+            style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.15)' }}
+          >
+            <p className="font-bold text-orange-600 text-lg mb-1">{overtimeLevel}</p>
+            <p className="text-slate-600 text-sm">{overtimeComment}</p>
+          </div>
+        </div>
 
         {/* 무료 쿠폰 */}
         {couponCode && (
           <div
             className="rounded-3xl p-6 animate-fade-in-up bg-amber-50 border border-amber-200"
-            style={{ animationDelay: '0.4s' }}
+            style={{ animationDelay: '0.5s' }}
           >
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🎁</span>
@@ -374,9 +350,7 @@ export default function ResultClient({
               오픈채팅방 입장 시 아래 코드를 제시하면 특별 혜택을 드립니다.
             </p>
             <div className="flex items-center gap-3">
-              <div
-                className="flex-1 font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200"
-              >
+              <div className="flex-1 font-mono font-bold text-xl text-amber-600 px-4 py-3 rounded-xl text-center tracking-widest bg-white border border-amber-200">
                 {couponCode}
               </div>
               <button
@@ -405,7 +379,7 @@ export default function ResultClient({
         {/* 공유 섹션 */}
         <div
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
-          style={{ animationDelay: '0.5s' }}
+          style={{ animationDelay: '0.55s' }}
         >
           <h2 className="text-slate-900 font-bold text-lg mb-2">결과 공유하기</h2>
           <p className="text-slate-500 text-sm mb-5">

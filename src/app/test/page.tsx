@@ -7,10 +7,36 @@ import { supabase } from '@/lib/supabase'
 import { generateCouponCode } from '@/lib/coupon'
 import { gtagEvent } from '@/lib/ga'
 
-const PART_LABELS = {
-  A: 'MBTI 성향',
-  B: 'AI 대체 가능성',
-  C: '퇴근 레벨',
+const PART_LABELS: Record<string, string> = {
+  A: '업무방식',
+  B: 'AI 활용도',
+  C: '강점영역',
+  D: '실행속도',
+  E: '퇴근 보너스',
+}
+
+const PART_ICONS: Record<string, string> = {
+  A: '🧠',
+  B: '🤖',
+  C: '✨',
+  D: '⚡',
+  E: '😴',
+}
+
+const PART_COLORS: Record<string, string> = {
+  A: 'rgba(99,102,241,0.2)',
+  B: 'rgba(16,185,129,0.2)',
+  C: 'rgba(168,85,247,0.2)',
+  D: 'rgba(245,158,11,0.2)',
+  E: 'rgba(249,115,22,0.2)',
+}
+
+const PART_TEXT_COLORS: Record<string, string> = {
+  A: '#a5b4fc',
+  B: '#6ee7b7',
+  C: '#d8b4fe',
+  D: '#fde68a',
+  E: '#fdba74',
 }
 
 export default function TestPage() {
@@ -20,7 +46,7 @@ export default function TestPage() {
   const [submitting, setSubmitting] = useState(false)
 
   const question = questions[current]
-  const progress = ((current) / questions.length) * 100
+  const progress = (current / questions.length) * 100
   const isLast = current === questions.length - 1
 
   async function handleAnswer(value: string) {
@@ -39,18 +65,22 @@ export default function TestPage() {
     try {
       const result = calculateResult(newAnswers)
       gtagEvent('test_complete', {
-        mbti_type: result.mbtiType,
+        type_code: result.typeCode,
         ai_score: result.aiScore,
-        job_type: result.jobType,
       })
 
       // Supabase에 결과 저장
       const { data: resultRow, error: resultError } = await supabase
-        .from('results')
+        .from('results_v2')
         .insert({
-          mbti_type: result.mbtiType,
+          type_code: result.typeCode,
+          type_name: result.typeCode,
           ai_score: result.aiScore,
-          job_type: result.jobType,
+          work_style: result.typeCode[0],
+          ai_usage: result.typeCode[1],
+          strength: result.typeCode[2],
+          speed: result.typeCode[3],
+          overtime_result: result.overtimeLevel,
         })
         .select('id')
         .single()
@@ -78,7 +108,7 @@ export default function TestPage() {
       // 저장 실패해도 임시 결과 페이지로 이동
       const result = calculateResult(newAnswers)
       router.push(
-        `/result/local?mbti=${result.mbtiType}&score=${result.aiScore}&job=${result.jobType}`
+        `/result/local?type=${result.typeCode}&score=${result.aiScore}&overtime=${encodeURIComponent(result.overtimeLevel)}`
       )
     }
   }
@@ -101,6 +131,8 @@ export default function TestPage() {
       </div>
     )
   }
+
+  const part = question.part
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -130,15 +162,11 @@ export default function TestPage() {
           <span
             className="text-xs font-semibold px-2 py-1 rounded-full"
             style={{
-              background: question.part === 'A'
-                ? 'rgba(99,102,241,0.2)'
-                : question.part === 'B'
-                ? 'rgba(16,185,129,0.2)'
-                : 'rgba(249,115,22,0.2)',
-              color: question.part === 'A' ? '#a5b4fc' : question.part === 'B' ? '#6ee7b7' : '#fdba74',
+              background: PART_COLORS[part] ?? 'rgba(99,102,241,0.2)',
+              color: PART_TEXT_COLORS[part] ?? '#a5b4fc',
             }}
           >
-            {PART_LABELS[question.part]}
+            {PART_LABELS[part]}
           </span>
         </div>
       </div>
@@ -152,7 +180,7 @@ export default function TestPage() {
           {/* 파트 아이콘 */}
           <div className="text-center mb-6">
             <span className="text-4xl">
-              {question.part === 'A' ? '🧠' : question.part === 'B' ? '🤖' : '😴'}
+              {PART_ICONS[part] ?? '❓'}
             </span>
           </div>
 
@@ -192,12 +220,12 @@ export default function TestPage() {
 
       {/* 하단 파트 인디케이터 */}
       <div className="px-5 py-4 flex justify-center gap-2 w-full">
-        {(['A', 'B', 'C'] as const).map((part) => {
-          const partQuestions = questions.filter((q) => q.part === part)
+        {(['A', 'B', 'C', 'D', 'E'] as const).map((p) => {
+          const partQuestions = questions.filter((q) => q.part === p)
           const partAnswered = partQuestions.filter((q) => answers[q.id]).length
-          const isActive = question.part === part
+          const isActive = question.part === p
           return (
-            <div key={part} className="flex items-center gap-1.5">
+            <div key={p} className="flex items-center gap-1.5">
               <div
                 className={`h-1.5 rounded-full transition-all ${
                   isActive ? 'w-8' : 'w-4'
@@ -207,7 +235,7 @@ export default function TestPage() {
                     ? '#6ee7b7'
                     : isActive
                     ? '#6366f1'
-                    : 'rgba(255,255,255,0.2)',
+                    : 'rgba(99,102,241,0.2)',
                 }}
               />
             </div>
