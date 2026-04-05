@@ -56,9 +56,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               src="https://developers.kakao.com/sdk/js/kakao.js"
               strategy="afterInteractive"
             />
-            <Script id="kakao-init" strategy="afterInteractive">
-              {`(function tryInit(){if(window.Kakao){if(!window.Kakao.isInitialized())window.Kakao.init('${KAKAO_KEY}');}else{setTimeout(tryInit,50);}})();`}
-            </Script>
+            <Script
+              id="kakao-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `(function tryInit(){if(window.Kakao){if(!window.Kakao.isInitialized())window.Kakao.init('${KAKAO_KEY}');}else{setTimeout(tryInit,50);}})();`,
+              }}
+            />
           </>
         )}
         {/* 데스크탑에서도 모바일 폭으로 중앙 정렬 */}
