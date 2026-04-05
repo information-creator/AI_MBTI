@@ -1,5 +1,4 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-<rect width="512" height="512" fill="#fff1f2"/>
 <!-- Background warm radiating lines -->
 <line x1="256" y1="300" x2="20" y2="100" stroke="#fda4af" stroke-width="1.2" opacity="0.2"/>
 <line x1="256" y1="300" x2="256" y2="20" stroke="#fb7185" stroke-width="1.2" opacity="0.2"/>
