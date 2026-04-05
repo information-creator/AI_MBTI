@@ -52,24 +52,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
         {KAKAO_KEY && (
           <Script
-            id="kakao-sdk"
+            src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+            integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+            crossOrigin="anonymous"
             strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                (function() {
-                  var s = document.createElement('script');
-                  s.src = 'https://developers.kakao.com/sdk/js/kakao.js';
-                  s.onload = function() {
-                    if (window.Kakao && !window.Kakao.isInitialized()) {
-                      window.Kakao.init('${KAKAO_KEY}');
-                    }
-                  };
-                  document.head.appendChild(s);
-                })();
-              `,
+            onLoad={() => {
+              const K = (window as any).Kakao
+              if (K && !K.isInitialized()) K.init(KAKAO_KEY)
             }}
           />
         )}
+        <Script id="clarity-init" strategy="afterInteractive">
+          {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","w6vmprm75l");`}
+        </Script>
         {/* 데스크탑에서도 모바일 폭으로 중앙 정렬 */}
         <div className="min-h-screen mx-auto w-full max-w-[480px] bg-white shadow-xl shadow-slate-200">
           {children}
