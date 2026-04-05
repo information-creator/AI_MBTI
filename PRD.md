@@ -1,23 +1,25 @@
 # AI 시대 생존력 진단 서비스 — PRD
 
-**버전**: v1.3  
-**스택**: Next.js 16 (App Router) + Tailwind CSS v4 + Vercel + Supabase  
-**배포 URL**: https://aimbti-jet.vercel.app  
-**상태**: MVP 배포 완료 → 16유형 확장 진행 중
+**버전**: v2.0 (2026-04-05)  
+**스택**: Next.js (App Router) + Tailwind CSS + Vercel + Supabase  
+**배포 URL**: https://aimbti.vercel.app  
+**운영사**: metacode.kr  
+**상태**: 리드 수집 퍼널 완성 · 운영 중
 
 ---
 
 ## 1. 서비스 개요
 
-MBTI 유형 기반으로 AI 시대 생존 역량을 진단하고, 직업 추천 · 자동화 가이드 · 부트캠프 연동 · 커뮤니티로 연결하는 바이럴 테스트 서비스.
+MBTI 형식의 20문항 진단으로 AI 대체 가능성을 측정하고, 결과에 따라 부트캠프 상담 신청(리드 수집)으로 연결하는 퍼널형 바이럴 진단 서비스.
 
 **핵심 KPI**
-- metacode 부트캠프 유입 증대 (데이터 분석 / 데이터 엔지니어링 / AI LLM)
-- 오픈채팅방 멤버 확보
-- 결과 카드 SNS 공유 수
+- 리드 전환율: 결과 페이지 → 이름/전화번호 제출 비율
+- 부트캠프 클릭률: 리드 제출 → https://metacodes.co.kr/ 클릭 비율
+- 바이럴 확산: 결과 공유 → SNS 자연 유입
+- 테스트 완료율: /test 진입 → /result 도달 비율
 
 **핵심 가설**  
-"내가 AI에 대체될까?" 라는 질문은 누구나 궁금하다. 결과를 SNS에 공유하게 만들면 광고비 없이 바이럴이 가능하다.
+"내가 AI에 대체될까?" 라는 질문은 누구나 궁금하다. 결과를 공유하게 만들면 광고비 없이 바이럴이 가능하고, 위협감으로 부트캠프 전환이 가능하다.
 
 ---
 
@@ -25,47 +27,32 @@ MBTI 유형 기반으로 AI 시대 생존 역량을 진단하고, 직업 추천 
 
 | 페이지 | 경로 | 역할 |
 |---|---|---|
-| 랜딩 | `/` | 훅 카피 + 테스트 시작 CTA + 무료 쿠폰 10개 배너 |
-| 테스트 | `/test` | 16문항 스텝 형식 (4축 메인 + 퇴근 보너스) |
-| 결과 | `/result/[id]` | 유형 캐릭터 + 직업 추천 + 부트캠프 추천 + 공유 카드 |
-| 가이드 | `/guide` | 전자책 다운로드 / 오픈채팅방 입장 CTA |
+| 랜딩 | `/` | 훅 카피 + 테스트 시작 CTA + 16유형 미리보기 |
+| 테스트 | `/test` | 20문항 스텝 형식 + 분석 애니메이션 |
+| 결과 | `/result/[id]` | 유형 결과 + 리드 수집 CTA + 쿠폰 |
+| 개인정보처리방침 | `/privacy` | 법적 고지 (별도 페이지) |
 
 ---
 
-## 3. 테스트 설계
+## 3. 테스트 설계 (20문항)
 
-### 핵심 4축 기준 (옵션 1 — AI 시대 생존 관점)
+### 핵심 4축 기준
 
-| 축 | 코드 A | 코드 B |
-|---|---|---|
-| 1. 업무 방식 | 혼자 깊게 (H) | 함께 넓게 (T) |
-| 2. AI 활용도 | AI 적극 사용 (A) | 사람 감각 중심 (S) |
-| 3. 강점 영역 | 논리/분석 (L) | 창의/감성 (C) |
-| 4. 실행 속도 | 빠르게 실행 (F) | 완벽하게 준비 (P) |
+| 파트 | 축 | 문항 수 | 설명 |
+|---|---|---|---|
+| A | H / T | 4 | 독립형(H) vs 협업형(T) — 업무 방식 |
+| B | A / S | 4 | AI 적극활용(A) vs 신중형(S) — AI 활용도 |
+| C | L / C | 4 | 논리/분석형(L) vs 창의/감성형(C) — 강점 영역 |
+| D | F / P | 4 | 속도우선(F) vs 완성도우선(P) — 실행 속도 |
+| E | 보너스 | 4 | 퇴근 시간/야근 (유형 반영 없음, 유머 코멘트용) |
 
-각 축당 3~4문항 → 총 12~16문항으로 4글자 코드 산출
+파트 A~D 각 4문항 다수결 → 4글자 코드 산출 (예: HALF, TSCP)
 
-### 파트 A — 업무 방식 (3문항)
-혼자 vs 함께 성향 측정
-
-### 파트 B — AI 활용도 (3문항)
-AI 적극 사용 vs 사람 감각 중심 측정
-
-### 파트 C — 강점 영역 (3문항)
-논리/분석 vs 창의/감성 측정
-
-### 파트 D — 실행 속도 (3문항)
-빠르게 실행 vs 완벽하게 준비 측정
-
-### 파트 E — 퇴근/워라밸 보너스 (4문항, 유형 반영 없음)
-유머 문항. 공유율 상승 목적. 결과 페이지에 별도 표시.
-
-| 축 | A | B |
-|---|---|---|
-| 1. 퇴근 시간 | 칼퇴 | 야근 |
-| 2. 업무 몰입 | 일이 곧 나 | 일은 그냥 일 |
-| 3. 스트레스 해소 | 혼자 해소 | 사람 만나서 해소 |
-| 4. 미래 준비 | 이미 준비 중 | 되면 되겠지 |
+### 분석 화면 애니메이션
+- 0→85%: 4%씩 80ms 간격
+- 85→95%: 0.5%씩 80ms 간격
+- 완료 직전 100% 표시 → router.push('/result/[id]')
+- 단계 레이블: "응답 분석 중..." → "AI 성향 매핑..." → "유형 계산 중..." → "리포트 생성 중..."
 
 ---
 
@@ -76,16 +63,16 @@ AI 적극 사용 vs 사람 감각 중심 측정
 
 | 코드 | 유형 이름 | AI 대체 점수 | 추천 부트캠프 |
 |---|---|---|---|
-| HALF | AI 시대 지휘관 | 28% | AI LLM |
-| HALP | 완벽주의 AI 설계자 | 25% | 데이터 엔지니어 |
+| HALF | AI 시대 지휘관 | 28% | AI 서비스 개발자 |
+| HALP | 완벽주의 AI 설계자 | 25% | AI 서비스 개발자 |
 | HACF | 데이터로 판치는 크리에이터 | 32% | AI LLM |
 | HACP | 느린 듯 정확한 AI 예술가 | 30% | AI LLM |
 | HSLF | 조용한 논리 장인 | 48% | 데이터 엔지니어 |
 | HSLP | 철저한 혼자형 전략가 | 45% | 데이터 엔지니어 |
-| HSCF | 감성 독립군 | 38% | AI LLM |
-| HSCP | 나만의 세계 완성형 | 35% | AI LLM |
-| TALF | 팀 이끄는 AI 선봉장 | 31% | 데이터 분석 |
-| TALP | 함께 만드는 AI 설계자 | 29% | 데이터 분석 |
+| HSCF | 감성 독립군 | 38% | 데이터 분석 |
+| HSCP | 나만의 세계 완성형 | 35% | 데이터 분석 |
+| TALF | 팀 이끄는 AI 선봉장 | 31% | AI 서비스 개발자 |
+| TALP | 함께 만드는 AI 설계자 | 29% | AI 서비스 개발자 |
 | TACF | AI 부리는 크리에이터 | 33% | AI LLM |
 | TACP | 협력형 AI 아티스트 | 31% | AI LLM |
 | TSLF | 사람으로 굴러가는 분석가 | 61% | 데이터 분석 |
@@ -93,196 +80,149 @@ AI 적극 사용 vs 사람 감각 중심 측정
 | TSCF | 감성으로 팀 살리는 사람 | 65% | 데이터 분석 |
 | TSCP | 완벽한 팀의 완성자 | 62% | 데이터 분석 |
 
-### AI 점수별 멘트 구조
+### 부트캠프 매핑 로직
 
-| AI 점수 | 톤 | 메시지 방향 |
+| 조건 | 부트캠프 | 해당 유형 |
 |---|---|---|
-| ~30% | 안도 + 경계 | "지금은 안전. 하지만 안심하면 안 되는 이유 →" |
-| 31~60% | 위기감 | "위험 신호 감지. 지금 준비 안 하면 3년 후 후회" |
-| 61~100% | 강한 위협 | "⚠️ 위험. 당신 직업 AI가 이미 넘보고 있습니다" |
-
-### 퇴근 보너스 결과 예시
-```
-당신의 AI 유형: AI 시대 지휘관 (HALF)
-당신의 퇴근 레벨: 야근 3단계 😂
-"AI는 잘 쓰는데 퇴근은 못 하는 사람"
-```
-
-### 점수 계산 방식
-- 모든 로직은 프론트엔드 JS에서 처리 (API 호출 없음, LLM 불필요)
-- Supabase에는 결과값만 저장 (응답 집계용)
-- Supabase 연결 실패 시 로컬 결과 페이지(`/result/local`)로 fallback
+| A + L (AI 활용 + 논리형) | AI 서비스 개발자 | HALF, HALP, TALF, TALP |
+| A + C (AI 활용 + 창의형) | AI LLM | HACF, HACP, TACF, TACP |
+| S + L + H (사람감각 + 논리형 + 독립) | 데이터 엔지니어 | HSLF, HSLP |
+| S + L + T (사람감각 + 논리형 + 협업) | 데이터 분석 | TSLF, TSLP |
+| S + C (사람감각 + 창의형) | 데이터 분석 | HSCF, HSCP, TSCF, TSCP |
 
 ---
 
-## 5. 결과 페이지 스펙
+## 5. 결과 페이지 스펙 (`/result/[id]`)
 
-| 요소 | 상세 |
-|---|---|
-| 유형 카드 | 4글자 코드 + 유형명 + 캐릭터 이미지 |
-| AI 대체 점수 | 0~100 게이지바 + 점수별 위협/안도 카피 |
-| 퇴근 레벨 | 보너스 유머 결과 별도 표시 |
-| 직업 추천 | 유형별 3개 직업 + 대기업 예시 |
-| AI 자동화 가이드 | 유형별 GPT/SLM 활용 팁 (하드코딩) |
-| 부트캠프 추천 | 유형별 1개 과정 자동 추천 + CTA → `NEXT_PUBLIC_BOOTCAMP_URL` |
-| 공유 카드 | Canvas API로 PNG 생성. 카카오 · 링크 복사 · 카드 저장 |
-| 무료 쿠폰 | 결과 확인 후 쿠폰 코드 노출 + 오픈채팅방 링크 |
+### 섹션 구성
+1. **헤더**: 유형명, 4글자 코드, 이모지, AI 대체 점수 게이지
+2. **위기 진단**: 강점 / 위기 / 방향 (3단 카드)
+3. **직업 영향도**: 직무별 AI 대체율 막대 차트 (3개 직무)
+4. **직업 전환 제안**: from → to (화살표 시각화)
+5. **무료 상담 CTA**: "무료 상담 받아보기" → 이름/전화번호 입력 모달
+6. **AI 활용 팁** (`aiTip`): 상담 신청 완료 후 노출 (쿠폰 언락과 동시)
+7. **쿠폰 섹션**: 상담 신청 후 쿠폰 코드 표시
+8. **공유 버튼**: 카카오톡 + URL 복사
 
----
+### 리드 수집 모달 (부트캠프 상담)
+- 이름 입력 (필수)
+- 전화번호 입력 (필수, 9~11자리 숫자)
+- 개인정보 수집 동의 체크박스 + /privacy 링크
+- 제출 시: Supabase leads 저장 → bootcamp URL 오픈 → aiTip + 쿠폰 노출
 
-## 6. 캐릭터 이미지 (16종)
-
-로우폴리 3D 캐릭터 스타일. Gemini ImageGen으로 생성.
-
-**공통 베이스 프롬프트**
-```
-Low-poly geometric 3D character illustration, isometric style, faceted polygon shapes, 
-clean flat colors, white background, full body standing pose, no text, no shadow.
-```
-
-| 코드 | 유형명 | 색상 | 소품/포즈 특징 |
-|---|---|---|---|
-| HALF | AI 시대 지휘관 | 퍼플 + 인디고 | AI 스크린 3개 띄우고 손가락 튕기는 포즈 |
-| HALP | 완벽주의 AI 설계자 | 딥네이비 + 실버 | 설계도 들고 돋보기로 검토하는 포즈 |
-| HACF | 데이터로 판치는 크리에이터 | 에메랄드 + 골드 | 차트 보드 + 붓 동시에 든 포즈 |
-| HACP | 느린 듯 정확한 AI 예술가 | 틸 + 민트 | 태블릿에 천천히 그림 그리는 포즈 |
-| HSLF | 조용한 논리 장인 | 슬레이트 + 차콜 | 렌치 + 작은 로봇 완성품 든 포즈 |
-| HSLP | 철저한 혼자형 전략가 | 다크그린 + 올리브 | 체스 퀸 들고 체스판 바라보는 포즈 |
-| HSCF | 감성 독립군 | 앰버 + 오렌지 | 붓 + 팔레트 들고 윙크하는 포즈 |
-| HSCP | 나만의 세계 완성형 | 로즈골드 + 베이지 | 헤드폰 끼고 자기 작품 감상하는 포즈 |
-| TALF | 팀 이끄는 AI 선봉장 | 코발트 + 스카이블루 | 양손으로 팀원들 이끄는 리더 포즈 |
-| TALP | 함께 만드는 AI 설계자 | 블루 + 스틸 | 화이트보드에 팀과 설계하는 포즈 |
-| TACF | AI 부리는 크리에이터 | 바이올렛 + 핫핑크 | 노트북 + 마이크 동시에 든 포즈 |
-| TACP | 협력형 AI 아티스트 | 라벤더 + 퍼플 | 팀원과 함께 캔버스 그리는 포즈 |
-| TSLF | 사람으로 굴러가는 분석가 | 스카이블루 + 화이트 | 명함 뿌리며 악수하는 포즈 |
-| TSLP | 신중한 팀 전략가 | 네이비 + 골드 | 두꺼운 폴더 들고 회의실 걷는 포즈 |
-| TSCF | 감성으로 팀 살리는 사람 | 핑크 + 로즈 | 양팔 벌려 팀원 3명 안는 포즈 |
-| TSCP | 완벽한 팀의 완성자 | 코랄 + 피치 | 체크리스트 들고 팀원 칭찬하는 포즈 |
+### 공유
+- 카카오톡 공유 (Kakao SDK)
+- URL 복사 (클립보드)
 
 ---
 
-## 7. 부트캠프 연동 퍼널
+## 6. 리드 수집 시스템
 
-### 퍼널 구조
+### API: `POST /api/leads`
 
-```
-랜딩 ("AI가 당신 월급을 노리고 있습니다")
-    ↓
-테스트 (16문항)
-    ↓
-결과 페이지
-    ├── 위협 메시지 (AI 점수 기반 불안 유발)
-    ├── "이렇게 하면 역전 가능합니다"
-    └── 부트캠프 추천 섹션
-            ↓
-        무료 커리큘럼 받아보기 → metacodes.co.kr
+**요청 Body**
+```json
+{
+  "name": "홍길동",
+  "phone": "01012345678",
+  "type_code": "HALF",
+  "result_id": "uuid-...",
+  "source": "bootcamp_modal"
+}
 ```
 
-### 부트캠프 4종 및 유형 매핑
+**자동 파생 필드**
+- `interest`: type_code → bootcamp 매핑으로 자동 설정 (AI LLM / 데이터 분석 / 데이터 엔지니어 / AI 서비스 개발자)
 
-| 부트캠프 | 대상 코드 | 추천 이유 |
-|---|---|---|
-| 데이터 분석 | TALF, TALP, TSLF, TSLP, TSCF, TSCP | 조직/관계 중심 → 데이터로 설득력 강화 |
-| 데이터 엔지니어 | HALP, HSLF, HSLP | 시스템/논리 중심 → 파이프라인 설계 적합 |
-| AI LLM | HALF, HACF, HACP, HSCF, HSCP, TACF, TACP | 창의/AI 중심 → LLM 활용 극대화 |
-| AI 서비스 *(런칭 대기)* | 추후 배정 | 실행/현장 중심 |
+**중복 처리**
+- phone + source 조합으로 중복 체크 (maybeSingle)
+- 중복 시 200 OK 반환 (사용자에게 에러 없음)
 
-### 부트캠프별 카피 방향
+**유효성 검사**
+- phone: 숫자만 추출 후 9~11자리
+- name: 비어있으면 400 반환
 
-**데이터 분석**
-> "당신의 조직 장악력 + 데이터 = AI 시대 생존 패키지"
-
-**데이터 엔지니어**
-> "AI가 대체 못 하는 파이프라인 설계자로 전환하세요"
-
-**AI LLM**
-> "ChatGPT를 도구로 쓰는 사람 vs 도구가 되는 사람"
-
-**AI 서비스** *(런칭 대기)*
-> "AI 서비스를 만드는 사람이 AI에 대체되지 않습니다"
-
-### 공유 카피 (바이럴 설계)
-
-```
-낮은 점수 (자랑형):
-"나는 AI 대체 가능성 25%야 😏 너는 몇 %야?
-→ aimbti-jet.vercel.app"
-
-높은 점수 (공감 유발형):
-"나 AI한테 대체될 수도 있대... 65% 😱
-너도 한번 해봐 → aimbti-jet.vercel.app"
-
-퇴근 유머형:
-"AI 시대 지휘관인데 야근 3단계래 ㅋㅋㅋ
-→ aimbti-jet.vercel.app"
-```
+### 개인정보 처리방침
+- 수집 항목: 이름, 전화번호
+- 처리 목적: 부트캠프 상담 연결
+- 동의 방식: 체크박스 + /privacy 링크 (전문 토글 없음, 별도 페이지로 충분)
 
 ---
 
-## 8. 기술 스택
+## 7. 기술 스택
 
 | 영역 | 기술 |
 |---|---|
-| 프레임워크 | Next.js 16 (App Router) |
-| 스타일 | Tailwind CSS v4 (모바일 퍼스트) |
-| 레이아웃 | 콘텐츠 최대 너비 480px, 가운데 정렬 (웹/모바일 동일 경험) |
-| DB | Supabase (익명 UUID, RLS 활성화) |
+| 프레임워크 | Next.js App Router |
+| 스타일 | Tailwind CSS (모바일 퍼스트, max-w-[480px]) |
+| DB | Supabase (PostgreSQL) |
 | 배포 | Vercel (GitHub 자동 배포) |
-| 분석 | GA4 (`NEXT_PUBLIC_GA_ID`) |
-| 공유 | Canvas API + 카카오 SDK (선택) |
+| 분석 | Google Analytics 4 |
+| 공유 | Kakao SDK |
 
 ---
 
-## 9. 환경변수
+## 8. DB 스키마
+
+### `results_v2` — 진단 결과 저장
+```sql
+id          uuid primary key default gen_random_uuid()
+type_code   text not null
+ai_score    int
+answers     jsonb
+created_at  timestamptz default now()
+```
+
+### `leads` — 리드 정보 (컬럼 순서: 업무용)
+```sql
+name        text not null
+phone       text not null
+interest    text           -- 부트캠프 유형 (자동 파생)
+type_code   text           -- 진단 유형
+source      text           -- 'bootcamp_modal' | 'coupon_gate'
+result_id   uuid references results_v2(id)
+created_at  timestamptz default now()
+id          uuid primary key default gen_random_uuid()
+```
+
+### `coupons` — 쿠폰 발급
+```sql
+id          uuid primary key default gen_random_uuid()
+result_id   uuid references results_v2(id)
+code        text
+used        boolean default false
+created_at  timestamptz default now()
+```
+
+---
+
+## 9. GA4 이벤트 추적
+
+| 이벤트 | 발생 시점 | 주요 파라미터 |
+|---|---|---|
+| `cta_click` | CTA 버튼 클릭 | `location`: 'header' / 'hero' / 'type_preview' / 'viral' |
+| `test_start` | 테스트 첫 문항 진입 | — |
+| `test_complete` | 결과 페이지 도달 | `type_code` |
+| `share_click` | 공유 버튼 클릭 | `method`: 'kakao' / 'copy' |
+| `lead_submit` | 리드 폼 제출 완료 | `source`, `type_code` |
+| `bootcamp_click` | 부트캠프 URL 클릭 | `bootcamp`: 부트캠프 유형 |
+| `coupon_unlock` | 쿠폰 섹션 노출 | `type_code` |
+
+**페이지 타이틀 추적**: `page_title: document.title` 포함 → GA에서 페이지별 구분 가능
+
+---
+
+## 10. 환경변수
 
 | 변수 | 설명 | 필수 |
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL | ✅ |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase publishable key | ✅ |
-| `SUPABASE_SECRET_KEY` | Supabase secret key (서버 전용) | ✅ |
-| `NEXT_PUBLIC_BOOTCAMP_URL` | 부트캠프 랜딩 URL | ✅ |
+| `SUPABASE_SECRET_KEY` | Supabase secret key (서버 전용, /api/leads) | ✅ |
 | `NEXT_PUBLIC_GA_ID` | GA4 측정 ID | 권장 |
-| `NEXT_PUBLIC_OPENCHAT_URL` | 카카오 오픈채팅 URL | 권장 |
-| `NEXT_PUBLIC_KAKAO_APP_KEY` | 카카오 JS 키 | 선택 |
+| `NEXT_PUBLIC_KAKAO_APP_KEY` | 카카오 JS 키 (공유용) | 선택 |
 
----
-
-## 10. Supabase 테이블
-
-```sql
--- 결과 저장
-create table results (
-  id uuid default gen_random_uuid() primary key,
-  type_code text not null,
-  type_name text not null,
-  ai_score integer not null,
-  work_style text not null,
-  ai_usage text not null,
-  strength text not null,
-  speed text not null,
-  overtime_result text,
-  shared boolean default false,
-  created_at timestamp with time zone default now()
-);
-
--- 쿠폰 발급
-create table coupons (
-  id uuid default gen_random_uuid() primary key,
-  code text unique not null,
-  used boolean default false,
-  result_id uuid references results(id),
-  created_at timestamp with time zone default now()
-);
-
--- RLS 활성화
-alter table results enable row level security;
-alter table coupons enable row level security;
-
-create policy "allow insert" on results for insert with check (true);
-create policy "allow insert" on coupons for insert with check (true);
-create policy "allow select" on results for select using (true);
-create policy "allow select" on coupons for select using (true);
-```
+> **주의**: 부트캠프 URL은 환경변수 미사용, 코드에 직접 하드코딩 → `https://metacodes.co.kr/`
 
 ---
 
@@ -290,47 +230,44 @@ create policy "allow select" on coupons for select using (true);
 
 | 파일 | 역할 |
 |---|---|
-| `app/layout.tsx` | 공통 메타태그, OG, keywords |
-| `app/page.tsx` | 랜딩 페이지 메타태그 + canonical |
-| `app/guide/page.tsx` | 가이드 페이지 메타태그 |
+| `app/layout.tsx` | 공통 메타태그, OG |
+| `app/page.tsx` | 랜딩 메타태그 + canonical |
+| `app/result/[id]/page.tsx` | 동적 OG (유형별 제목) |
 | `app/sitemap.ts` | `/sitemap.xml` 자동 생성 |
 | `app/robots.ts` | `/robots.txt` 자동 생성 |
 
 ---
 
-## 12. MVP 진행 상태
+## 12. 진행 상태
 
 ### 완료
-- [x] 랜딩 페이지
-- [x] 테스트 플로우 (스텝 형식)
-- [x] 결과 페이지 (유형 + 점수 + 직업 추천)
-- [x] 부트캠프 추천 섹션
-- [x] SNS 공유 카드 (Canvas API)
-- [x] 쿠폰 자동 발급
-- [x] Supabase 결과 저장 + fallback
-- [x] GA4 연동
-- [x] SEO (sitemap, robots, 메타태그)
+- [x] 랜딩 페이지 (16유형 미리보기 카드 포함)
+- [x] 20문항 테스트 플로우
+- [x] 분석 화면 % 진행바 애니메이션
+- [x] 결과 페이지 (16유형, AI 점수, 직업 추천)
+- [x] 부트캠프 4종 + 유형 매핑 (AI 서비스 개발자 포함)
+- [x] 리드 수집 (이름 + 전화번호 → Supabase leads)
+- [x] 개인정보 수집 동의 (체크박스 + /privacy 링크)
+- [x] 중복 리드 방지 (phone + source 체크)
+- [x] 쿠폰 섹션 UI
+- [x] 카카오톡 공유 / URL 복사
+- [x] Supabase 결과 저장 + fallback (로컬 처리)
+- [x] GA4 연동 + 이벤트 추적
 - [x] Vercel 배포
+- [x] 파비콘 커스텀 (ai_mbti_icon_final.png)
 
-### 2차 개발 (진행 중)
-- [ ] **4축 기반 16유형으로 전면 재설계** (HALF 코드 시스템)
-- [ ] **퇴근 보너스 테스트 분리** (유형 반영 없음, 유머 결과만)
-- [ ] **16종 캐릭터 이미지** (Gemini ImageGen 생성)
-- [ ] **랜딩 카피 위협 버전으로 교체**
-- [ ] **결과 페이지 위협 멘트 강화** (점수 구간별)
-- [ ] **AI 서비스 부트캠프 연동** (런칭 후 즉시 반영)
-- [ ] 로그인 / 회원가입
-- [ ] 어드민 대시보드
-- [ ] 이메일 자동 발송
-- [ ] 다국어 지원
+### 미완성 / 향후 과제
+- [ ] GA `page_title` 전송 추가 (GAPageView.tsx — 현재 page_path만 전송)
+- [ ] 쿠폰 실제 발급 로직 (현재 UI만)
+- [ ] 대시보드 페이지 (`/dashboard`) — 폴더만 생성됨
+- [ ] 이메일 수집 활성화 (필드는 존재, UI 미노출)
+- [ ] 카카오 로그인 기반 결과 저장
 
 ---
 
 ## 13. 비기능 요구사항
 
-- Lighthouse 모바일 점수 90 이상
-- 테스트 페이지 LCP 2초 이내
-- 이미지 WebP 변환 필수
+- 모바일 퍼스트 (max-width: 480px, 웹에서는 중앙 정렬)
 - Supabase RLS 활성화
-- 개인정보 미수집 (익명 UUID만 저장)
-- 쿠폰 중복 사용 방지 로직 필수
+- 서버 사이드: SUPABASE_SECRET_KEY로만 leads 삽입 (클라이언트 노출 금지)
+- Supabase 연결 실패 시 로컬 결과 페이지로 fallback

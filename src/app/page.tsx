@@ -4,7 +4,7 @@ import Image from 'next/image'
 import CTAButton from '@/components/CTAButton'
 
 export const metadata: Metadata = {
-  title: 'AI 시대 생존력 진단 | 나는 AI에 대체될까?',
+  title: 'AImBTI',
   description: 'MBTI 기반 AI 시대 생존 역량 진단. 12문항으로 알아보는 나의 AI 대체 가능성과 미래 직업 추천.',
   alternates: {
     canonical: 'https://aimbti.vercel.app',
@@ -94,21 +94,21 @@ export default function LandingPage() {
         <div className="grid grid-cols-2 gap-2.5">
           {[
             { emoji: '🚀', title: 'AI 시대 지휘관', code: 'HALF', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)' },
-            { emoji: '🔭', title: '완벽주의 AI 설계자', code: 'HALP', bg: 'rgba(14,165,233,0.08)', border: 'rgba(14,165,233,0.2)' },
-            { emoji: '🎨', title: '데이터로 판치는 크리에이터', code: 'HACF', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
-            { emoji: '🌙', title: '느린 듯 정확한 AI 예술가', code: 'HACP', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
+            { emoji: '🔭', title: '완벽주의 설계자', code: 'HALP', bg: 'rgba(14,165,233,0.08)', border: 'rgba(14,165,233,0.2)' },
+            { emoji: '🎨', title: '데이터 크리에이터', code: 'HACF', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
+            { emoji: '🌙', title: '정확한 AI 예술가', code: 'HACP', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
             { emoji: '⚙️', title: '조용한 논리 장인', code: 'HSLF', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)' },
-            { emoji: '♟️', title: '철저한 혼자형 전략가', code: 'HSLP', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)' },
+            { emoji: '♟️', title: '혼자형 전략가', code: 'HSLP', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)' },
             { emoji: '🎭', title: '감성 독립군', code: 'HSCF', bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.2)' },
-            { emoji: '🌸', title: '나만의 세계 완성형', code: 'HSCP', bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.2)' },
-            { emoji: '⚡', title: '팀 이끄는 AI 선봉장', code: 'TALF', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)' },
-            { emoji: '🏗️', title: '함께 만드는 AI 설계자', code: 'TALP', bg: 'rgba(14,165,233,0.08)', border: 'rgba(14,165,233,0.2)' },
-            { emoji: '🎙️', title: 'AI 부리는 크리에이터', code: 'TACF', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
-            { emoji: '🎭', title: '협력형 AI 아티스트', code: 'TACP', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
-            { emoji: '📊', title: '사람으로 굴러가는 분석가', code: 'TSLF', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)' },
-            { emoji: '🏢', title: '신중한 팀 전략가', code: 'TSLP', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)' },
-            { emoji: '🤝', title: '감성으로 팀 살리는 사람', code: 'TSCF', bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.2)' },
-            { emoji: '🛡️', title: '완벽한 팀의 완성자', code: 'TSCP', bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.2)' },
+            { emoji: '🌸', title: '나만의 완성형', code: 'HSCP', bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.2)' },
+            { emoji: '⚡', title: 'AI 선봉장', code: 'TALF', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)' },
+            { emoji: '🏗️', title: '팀 AI 설계자', code: 'TALP', bg: 'rgba(14,165,233,0.08)', border: 'rgba(14,165,233,0.2)' },
+            { emoji: '🎙️', title: 'AI 크리에이터', code: 'TACF', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
+            { emoji: '🎭', title: '협력형 아티스트', code: 'TACP', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
+            { emoji: '📊', title: '팀 기반 분석가', code: 'TSLF', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)' },
+            { emoji: '🏢', title: '신중한 전략가', code: 'TSLP', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)' },
+            { emoji: '🤝', title: '팀 감성 리더', code: 'TSCF', bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.2)' },
+            { emoji: '🛡️', title: '팀의 완성자', code: 'TSCP', bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.2)' },
           ].map((type) => (
             <div
               key={type.code}
@@ -119,9 +119,9 @@ export default function LandingPage() {
                 src={['HACF','HACP','HALF','HALP'].includes(type.code) ? `/character/${type.code}.png` : `/characters/${type.code}.svg`}
                 alt={type.title} width={52} height={52} className="object-contain shrink-0" unoptimized
               />
-              <div>
-                <div className="text-slate-900 font-bold leading-snug text-base">{type.title}</div>
-                <div className="text-slate-900 text-base mt-0.5 font-mono font-bold">{type.code}</div>
+              <div className="min-w-0">
+                <div className="text-slate-900 font-bold text-[15px] truncate">{type.title}</div>
+                <div className="text-slate-900 text-[15px] mt-0.5 font-mono font-bold">{type.code}</div>
               </div>
             </div>
           ))}

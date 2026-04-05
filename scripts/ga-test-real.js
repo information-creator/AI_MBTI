@@ -1,8 +1,8 @@
 const { chromium } = require('playwright')
 
 const URL = 'https://aimbti-jet.vercel.app'
-const TOTAL = 30 // 실제 브라우저 클릭이라 시간 걸림, 30개로 시작
-const CONCURRENCY = 3
+const TOTAL = 100
+const CONCURRENCY = 5
 
 // 이탈 시나리오 (가중치)
 const SCENARIOS = [
