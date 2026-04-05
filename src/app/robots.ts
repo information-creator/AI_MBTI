@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-const BASE_URL = 'https://aimbti.vercel.app'
+const BASE_URL = 'https://aimbti-seven.vercel.app'
 
 export default function robots(): MetadataRoute.Robots {
   return {

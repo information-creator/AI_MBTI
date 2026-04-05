@@ -221,7 +221,7 @@ export default function ResultClient({
     ctx.font = '13px Arial'
     ctx.fillStyle = '#4b5563'
     ctx.textAlign = 'right'
-    ctx.fillText('aimbti.vercel.app', W - 40, H - 20)
+    ctx.fillText('aimbti-seven.vercel.app', W - 40, H - 20)
     ctx.restore()
 
     return canvas.toDataURL('image/png')
@@ -286,7 +286,7 @@ export default function ResultClient({
   }
 
   function handleKakaoShare() {
-    const BASE = 'https://aimbti.vercel.app'
+    const BASE = window.location.origin
     const shareUrl = `${BASE}/result/${resultId}`
     if (typeof window !== 'undefined' && (window as any).Kakao?.isInitialized?.()) {
       ;(window as any).Kakao.Share.sendDefault({
@@ -300,7 +300,7 @@ export default function ResultClient({
           link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
         },
         buttons: [
-          { title: '내 유형 확인하기', link: { mobileWebUrl: BASE, webUrl: BASE } },
+          { title: '결과 보러가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } },
         ],
       })
     } else {
