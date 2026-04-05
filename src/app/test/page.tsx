@@ -24,19 +24,19 @@ const PART_ICONS: Record<string, string> = {
 }
 
 const PART_COLORS: Record<string, string> = {
-  A: 'rgba(99,102,241,0.2)',
-  B: 'rgba(16,185,129,0.2)',
-  C: 'rgba(168,85,247,0.2)',
-  D: 'rgba(245,158,11,0.2)',
-  E: 'rgba(249,115,22,0.2)',
+  A: 'rgba(99,102,241,0.12)',
+  B: 'rgba(16,185,129,0.12)',
+  C: 'rgba(168,85,247,0.12)',
+  D: 'rgba(217,119,6,0.12)',
+  E: 'rgba(234,88,12,0.12)',
 }
 
 const PART_TEXT_COLORS: Record<string, string> = {
-  A: '#a5b4fc',
-  B: '#6ee7b7',
-  C: '#d8b4fe',
-  D: '#fde68a',
-  E: '#fdba74',
+  A: '#6366f1',
+  B: '#10b981',
+  C: '#9333ea',
+  D: '#d97706',
+  E: '#ea580c',
 }
 
 export default function TestPage() {
