@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
-import { JobType, jobTypeInfo } from '@/lib/quiz'
+import { JobType, jobTypeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
 
 type Props = {
@@ -307,6 +307,49 @@ export default function ResultClient({
             전체 자동화 가이드 보기 →
           </Link>
         </div>
+
+        {/* 부트캠프 추천 */}
+        {(() => {
+          const bc = bootcampInfo[info.bootcamp]
+          return (
+            <div
+              className="rounded-3xl p-6 animate-fade-in-up"
+              style={{
+                background: `linear-gradient(135deg, ${bc.color}15, rgba(15,15,26,0.9))`,
+                border: `1px solid ${bc.color}40`,
+                animationDelay: '0.4s',
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <span
+                  className="text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: bc.color + '25', color: bc.color }}
+                >
+                  {bc.tag}
+                </span>
+              </div>
+              <h2 className="text-white font-bold text-lg mt-2 mb-1">🎯 당신의 다음 스텝</h2>
+              <p className="text-gray-400 text-sm mb-4">{info.bootcampReason}</p>
+              <div
+                className="rounded-2xl p-4 mb-4"
+                style={{ background: 'rgba(0,0,0,0.3)' }}
+              >
+                <p className="font-bold text-white mb-1">{bc.label}</p>
+                <p className="text-gray-400 text-sm">{bc.description}</p>
+              </div>
+              <a
+                href={process.env.NEXT_PUBLIC_BOOTCAMP_URL ?? 'https://metacodingschool.com'}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, job_type: jobType })}
+                className="block text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+                style={{ background: bc.color, color: '#000' }}
+              >
+                무료 커리큘럼 받아보기 →
+              </a>
+            </div>
+          )
+        })()}
 
         {/* 무료 쿠폰 */}
         {couponCode && (

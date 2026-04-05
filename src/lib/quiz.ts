@@ -166,6 +166,32 @@ export type ResultData = {
   jobType: JobType
 }
 
+export type BootcampType = '데이터 분석' | '데이터 엔지니어링' | 'AI LLM'
+
+export const bootcampInfo: Record<
+  BootcampType,
+  { label: string; description: string; tag: string; color: string }
+> = {
+  '데이터 분석': {
+    label: '데이터 분석 부트캠프',
+    description: '비즈니스 데이터를 읽고 인사이트로 바꾸는 실전 과정. SQL · Python · 시각화까지.',
+    tag: '취업 연계',
+    color: '#10b981',
+  },
+  '데이터 엔지니어링': {
+    label: '데이터 엔지니어링 부트캠프',
+    description: '데이터 파이프라인 설계부터 클라우드 인프라까지. 실무 프로젝트 중심.',
+    tag: '실무 집중',
+    color: '#6366f1',
+  },
+  'AI LLM': {
+    label: 'AI · LLM 부트캠프',
+    description: 'ChatGPT API · LangChain · RAG 구축까지. AI를 직접 만드는 과정.',
+    tag: '최신 트렌드',
+    color: '#f59e0b',
+  },
+}
+
 export const jobTypeInfo: Record<
   JobType,
   {
@@ -179,11 +205,15 @@ export const jobTypeInfo: Record<
     color: string
     emoji: string
     scoreComment: (score: number) => string
+    bootcamp: BootcampType
+    bootcampReason: string
   }
 > = {
   AI_PIONEER: {
-    title: 'AI 개척자형',
+    title: 'AI를 부려먹는 사람',
     subtitle: '누구보다 빠르게 AI를 내 편으로',
+    bootcamp: 'AI LLM',
+    bootcampReason: '이미 AI 친화적인 당신, LLM을 직접 다루면 경쟁자가 없어집니다.',
     celebrity: '일론 머스크 스타일',
     company: '테슬라 · 오픈AI 창업자형',
     description:
@@ -201,8 +231,10 @@ export const jobTypeInfo: Record<
         : '지금 당장 AI 툴을 배우면 역전 가능합니다!',
   },
   CORPORATE_SURVIVOR: {
-    title: '대기업 생존자형',
+    title: '조직에서 살아남는 사람',
     subtitle: '조직의 언어를 AI보다 잘 아는 사람',
+    bootcamp: '데이터 분석',
+    bootcampReason: '보고서와 의사결정에 데이터 역량이 더해지면 조직에서 독보적이 됩니다.',
     celebrity: '삼성전자 임원 스타일',
     company: '삼성전자 · LG전자 · 현대차',
     description:
@@ -220,8 +252,10 @@ export const jobTypeInfo: Record<
         : '지금 AI 툴 하나라도 도입하면 당장 티가 납니다.',
   },
   CREATIVE_REBEL: {
-    title: '창의적 반란자형',
+    title: 'AI가 절대 못 베끼는 사람',
     subtitle: 'AI가 흉내 못 내는 감성의 소유자',
+    bootcamp: 'AI LLM',
+    bootcampReason: '창의력 + AI 도구 조합이 가장 강력합니다. LLM을 조수로 쓰는 법을 배우세요.',
     celebrity: '방탄소년단 RM 스타일',
     company: '카카오 · 네이버 · 크리에이터',
     description:
@@ -239,8 +273,10 @@ export const jobTypeInfo: Record<
         : 'AI로 반복 줄이고 창의에만 집중하세요.',
   },
   DATA_GUARDIAN: {
-    title: '데이터 수호자형',
+    title: '숫자로 모든 걸 증명하는 사람',
     subtitle: '숫자 뒤에 숨겨진 진실을 찾는 사람',
+    bootcamp: '데이터 분석',
+    bootcampReason: '당신의 성향은 데이터 분석가에 최적화되어 있습니다. 지금 시작하면 6개월 내 전직 가능.',
     celebrity: '구글 데이터 사이언티스트 스타일',
     company: '카카오뱅크 · 토스 · 네이버',
     description:
@@ -258,8 +294,10 @@ export const jobTypeInfo: Record<
         : '데이터 역량 강화에 집중하면 역전 가능!',
   },
   PEOPLE_CONNECTOR: {
-    title: '사람 연결자형',
+    title: '사람이 곧 스펙인 사람',
     subtitle: 'AI가 절대 못 하는 관계의 기술',
+    bootcamp: '데이터 분석',
+    bootcampReason: '데이터로 사람을 설득하는 능력을 더하면 HR · 영업에서 최강이 됩니다.',
     celebrity: '스타벅스 하워드 슐츠 스타일',
     company: '인사팀 · 영업 · HR 컨설팅',
     description:
@@ -277,8 +315,10 @@ export const jobTypeInfo: Record<
         : '지금 인적 네트워크에 투자하면 미래가 달라집니다.',
   },
   STRATEGY_MASTER: {
-    title: '전략 마스터형',
-    subtitle: '3수 앞을 내다보는 체스 플레이어',
+    title: '3수 앞을 보는 사람',
+    subtitle: '복잡한 판을 읽고 움직이는 체스 플레이어',
+    bootcamp: '데이터 분석',
+    bootcampReason: '전략적 사고 + 데이터 분석 = 컨설팅 · 기획 시장에서 독보적 포지션.',
     celebrity: 'McKinsey 파트너 스타일',
     company: '전략컨설팅 · 투자은행 · VC',
     description:
@@ -296,8 +336,10 @@ export const jobTypeInfo: Record<
         : '전략 역량 + AI 분석 = 다음 레벨로 도약!',
   },
   SILENT_EXECUTOR: {
-    title: '침묵의 실행자형',
+    title: '말 없이 다 해버리는 사람',
     subtitle: '말보다 결과로 증명하는 사람',
+    bootcamp: '데이터 엔지니어링',
+    bootcampReason: '묵묵히 실행하는 성향은 파이프라인 구축에 딱 맞습니다. 수요 폭발 중인 직군입니다.',
     celebrity: '워런 버핏 스타일',
     company: '제조 · 물류 · 운영관리',
     description:
@@ -315,8 +357,10 @@ export const jobTypeInfo: Record<
         : '지금 RPA나 자동화 도구에 투자할 타이밍!',
   },
   WILD_CARD: {
-    title: '와일드카드형',
+    title: 'AI도 예측 못 하는 사람',
     subtitle: '예측 불가능한 게 오히려 강점',
+    bootcamp: 'AI LLM',
+    bootcampReason: '다양한 실험을 즐기는 당신에게 LLM 과정은 가장 빠르게 몰입할 수 있는 분야입니다.',
     celebrity: '스티브 잡스 스타일',
     company: '스타트업 · 프리랜서 · 포트폴리오 커리어',
     description:
