@@ -32,16 +32,29 @@ body {
   50% { transform: translateY(-10px); }
 }
 
-.animate-fade-in-up {
+@utility animate-fade-in-up {
   animation: fadeInUp 0.5s ease forwards;
 }
 
-.glow-effect {
+@utility glow-effect {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-.float-animation {
+@utility float-animation {
   animation: float 3s ease-in-out infinite;
+}
+
+@keyframes cheerPop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(20px); }
+  20%  { opacity: 1; transform: scale(1.08) translateY(0); }
+  35%  { transform: scale(0.97); }
+  50%  { transform: scale(1); }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.95) translateY(-10px); }
+}
+
+@utility animate-cheer-pop {
+  animation: cheerPop 2.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .progress-bar {
