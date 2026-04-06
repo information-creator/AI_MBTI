@@ -102,7 +102,6 @@ export default function LandingPage() {
               <Image
                 src={`/real_charaters/${code}.png`}
                 alt={info.title} width={52} height={52} className="object-contain shrink-0" unoptimized
-                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
               />
               <div className="min-w-0">
                 <div className="font-bold text-[17px] leading-snug line-clamp-2" style={{ color: info.color }}>{info.title}</div>
