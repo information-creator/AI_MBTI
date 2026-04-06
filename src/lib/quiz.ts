@@ -275,8 +275,8 @@ export const typeInfo: Record<
   }
 > = {
   HALF: {
-    title: 'AI 시대 지휘관',
-    subtitle: '빠르고 혼자인데 AI까지 쓴다',
+    title: 'AI 지배자',
+    subtitle: '혼자서 AI 스택 다 쌓는 LLM형',
     emoji: '🚀',
     color: '#6366f1',
     aiScore: 28,
@@ -300,7 +300,7 @@ export const typeInfo: Record<
       direction: 'LLM을 직접 다루는 기획자는 아직 소수입니다. 지금이 선점 타이밍입니다.',
     },
     jobSection: {
-      warning: 'ChatGPT 쓰는 기획자는 이미 수만명\nLLM 직접 다루는 기획자는 아직 소수입니다',
+      warning: '기획서·보고서 작성은 이미 자동화됐습니다\nLLM을 직접 다루는 기획자만 자리가 남습니다',
       tasks: [
         { name: '기획서 작성', rate: 82 },
         { name: '보고서 작성', rate: 88 },
@@ -314,8 +314,8 @@ export const typeInfo: Record<
     },
   },
   HALP: {
-    title: '완벽주의 AI 설계자',
-    subtitle: '느리지만 정확한 AI 아키텍트',
+    title: 'LLM 장인',
+    subtitle: '완벽하게 설계한 뒤 AI로 폭발하는 LLM형',
     emoji: '🔭',
     color: '#0ea5e9',
     aiScore: 25,
@@ -339,7 +339,7 @@ export const typeInfo: Record<
       direction: '시스템을 설계하는 사람은 AI가 대체 못 합니다. 아키텍트로 전환하면 대체 불가입니다.',
     },
     jobSection: {
-      warning: '코드는 이미 AI가 짜고 있습니다\n설계할 줄 아는 개발자만 살아남습니다',
+      warning: '코드 작성은 이미 자동화됐습니다\n시스템을 설계하는 개발자만 자리가 남습니다',
       tasks: [
         { name: '코드 작성', rate: 76 },
         { name: '문서화', rate: 91 },
@@ -353,8 +353,8 @@ export const typeInfo: Record<
     },
   },
   HACF: {
-    title: '데이터로 판치는 크리에이터',
-    subtitle: 'AI + 창의력의 가장 강력한 조합',
+    title: 'LLM 아티스트',
+    subtitle: 'AI + 창의력 = 대체 불가 DA형',
     emoji: '🎨',
     color: '#10b981',
     aiScore: 32,
@@ -378,7 +378,7 @@ export const typeInfo: Record<
       direction: 'AI를 지휘하는 크리에이티브 디렉터가 되세요. 방향을 잡는 사람은 대체되지 않습니다.',
     },
     jobSection: {
-      warning: 'AI가 초당 수천 개의 콘텐츠를 만들고 있습니다\n방향을 잡는 사람만 살아남습니다',
+      warning: '콘텐츠 제작은 이미 자동화됐습니다\n방향을 잡는 디렉터만 자리가 남습니다',
       tasks: [
         { name: '콘텐츠 초안', rate: 93 },
         { name: '이미지 제작', rate: 87 },
@@ -392,8 +392,8 @@ export const typeInfo: Record<
     },
   },
   HACP: {
-    title: '느린 듯 정확한 AI 예술가',
-    subtitle: 'AI를 쓰되 감성은 내가 완성한다',
+    title: 'DA 예술가',
+    subtitle: 'AI는 도구, 완성은 나 — DA형 장인',
     emoji: '🌙',
     color: '#14b8a6',
     aiScore: 30,
@@ -417,7 +417,7 @@ export const typeInfo: Record<
       direction: 'AI로 반복 작업을 줄이고 감성 디렉션에만 집중하세요. 그 조합이 최강입니다.',
     },
     jobSection: {
-      warning: '이미지·영상·글쓰기 모두 AI가 넘봅니다\nAI를 지휘하는 감각만이 살아남습니다',
+      warning: '이미지·영상·글쓰기는 이미 자동화됐습니다\nAI를 지휘하는 크리에이터만 자리가 남습니다',
       tasks: [
         { name: '콘텐츠 제작', rate: 87 },
         { name: '기획서 작성', rate: 79 },
@@ -431,8 +431,8 @@ export const typeInfo: Record<
     },
   },
   HSLF: {
-    title: '조용한 논리 장인',
-    subtitle: '혼자서 빠르게 정확하게, 하지만 AI와는 거리를 둔다',
+    title: 'DA 논리왕',
+    subtitle: '말 없이 혼자 데이터 다 처리하는 DA형',
     emoji: '⚙️',
     color: '#64748b',
     aiScore: 48,
@@ -456,7 +456,7 @@ export const typeInfo: Record<
       direction: '논리력 + 데이터 파이프라인 설계 = 대체 불가 포지션. 지금 전환이 가장 빠른 길입니다.',
     },
     jobSection: {
-      warning: 'GitHub Copilot이 이미 코드를 짜고 있습니다\n파이프라인 설계는 아직 인간의 영역입니다',
+      warning: '코드 작성은 이미 자동화됐습니다\n파이프라인을 설계하는 엔지니어만 자리가 남습니다',
       tasks: [
         { name: '코드 작성', rate: 78 },
         { name: 'SQL 쿼리', rate: 85 },
@@ -470,8 +470,8 @@ export const typeInfo: Record<
     },
   },
   HSLP: {
-    title: '철저한 혼자형 전략가',
-    subtitle: '완벽하게 혼자 논리로 만든다',
+    title: 'DE 은둔자',
+    subtitle: '아무도 모르게 혼자 시스템 다 만드는 DE형',
     emoji: '♟️',
     color: '#475569',
     aiScore: 45,
@@ -495,7 +495,7 @@ export const typeInfo: Record<
       direction: '완벽주의 + 데이터 파이프라인 설계 역량 = 아무도 대체 못 하는 엔지니어가 됩니다.',
     },
     jobSection: {
-      warning: '완벽한 코드도 AI가 작성하는 시대\n설계 역량이 없으면 대체됩니다',
+      warning: '완벽한 코드 작성도 이미 자동화됐습니다\n아키텍처를 설계하는 개발자만 자리가 남습니다',
       tasks: [
         { name: '코드 리뷰', rate: 74 },
         { name: '문서 작성', rate: 91 },
@@ -509,8 +509,8 @@ export const typeInfo: Record<
     },
   },
   HSCF: {
-    title: '감성 독립군',
-    subtitle: '혼자서 감성으로 빠르게 만들어낸다',
+    title: 'DA 독립군',
+    subtitle: '혼자서 빠르게 뚝딱 — AI 없이도 DA형',
     emoji: '🎭',
     color: '#f59e0b',
     aiScore: 38,
@@ -534,7 +534,7 @@ export const typeInfo: Record<
       direction: 'AI를 조수로 쓰세요. 당신의 감성으로 방향을 잡고 AI로 속도를 더하면 무적입니다.',
     },
     jobSection: {
-      warning: 'Midjourney가 이미 디자인을 하고 있습니다\nAI를 지휘하는 크리에이터만 살아남습니다',
+      warning: '디자인·시안 작업은 이미 자동화됐습니다\nAI를 지휘하는 크리에이터만 자리가 남습니다',
       tasks: [
         { name: '디자인 시안', rate: 81 },
         { name: '콘텐츠 작성', rate: 89 },
@@ -548,8 +548,8 @@ export const typeInfo: Record<
     },
   },
   HSCP: {
-    title: '나만의 세계 완성형',
-    subtitle: '혼자서 감성으로 완벽하게 만든다',
+    title: 'DA 세계관 장인',
+    subtitle: '느려도 괜찮아, 결과물이 예술이니까',
     emoji: '🌸',
     color: '#f97316',
     aiScore: 35,
@@ -573,7 +573,7 @@ export const typeInfo: Record<
       direction: 'AI를 먼저 쓰는 크리에이터가 시장을 가져갑니다. 독창성 + AI 속도가 답입니다.',
     },
     jobSection: {
-      warning: 'AI가 이미 당신의 스타일을 학습하고 있습니다\n먼저 AI를 쓰는 크리에이터가 시장을 가져갑니다',
+      warning: '콘텐츠 제작과 편집은 이미 자동화됐습니다\nAI를 먼저 쓰는 크리에이터만 자리가 남습니다',
       tasks: [
         { name: '콘텐츠 제작', rate: 87 },
         { name: '디자인', rate: 81 },
@@ -587,8 +587,8 @@ export const typeInfo: Record<
     },
   },
   TALF: {
-    title: '팀 이끄는 AI 선봉장',
-    subtitle: 'AI 쓰고 팀도 이끌고 빠르게 실행',
+    title: 'AI 팀장',
+    subtitle: 'AI + 팀워크 = 최강 조합 LLM형',
     emoji: '⚡',
     color: '#3b82f6',
     aiScore: 31,
@@ -612,7 +612,7 @@ export const typeInfo: Record<
       direction: '데이터로 의사결정하는 리더는 대체되지 않습니다. 지금 데이터 역량을 더하면 독보적입니다.',
     },
     jobSection: {
-      warning: '팀 관리 업무의 74%가 자동화 대상입니다\n데이터로 의사결정하는 리더만 살아남습니다',
+      warning: '팀 관리 업무의 74%는 이미 자동화됐습니다\n데이터로 의사결정하는 리더만 자리가 남습니다',
       tasks: [
         { name: '회의 요약', rate: 88 },
         { name: '업무 배분', rate: 74 },
@@ -626,8 +626,8 @@ export const typeInfo: Record<
     },
   },
   TALP: {
-    title: '함께 만드는 AI 설계자',
-    subtitle: '팀과 AI로 완벽한 시스템을 만든다',
+    title: 'LLM 설계자',
+    subtitle: '팀 + AI로 완벽한 시스템 설계 — LLM형',
     emoji: '🏗️',
     color: '#6366f1',
     aiScore: 29,
@@ -651,7 +651,7 @@ export const typeInfo: Record<
       direction: '설계 역량과 데이터 해석이 남은 차별점입니다. 지금 이 두 가지에 집중해야 합니다.',
     },
     jobSection: {
-      warning: '기획서 작성의 82%는 이미 AI가 가능합니다\n설계 역량이 없으면 대체됩니다',
+      warning: '기획서 작성의 82%는 이미 자동화됐습니다\n설계 역량을 가진 기획자만 자리가 남습니다',
       tasks: [
         { name: '기획서 작성', rate: 82 },
         { name: '회의록 정리', rate: 91 },
@@ -665,8 +665,8 @@ export const typeInfo: Record<
     },
   },
   TACF: {
-    title: 'AI 부리는 크리에이터',
-    subtitle: '팀 속에서 AI로 창의를 폭발시킨다',
+    title: 'LLM 크리에이터',
+    subtitle: '팀 속에서 AI로 창의 폭발 — DA형',
     emoji: '🎙️',
     color: '#8b5cf6',
     aiScore: 33,
@@ -690,7 +690,7 @@ export const typeInfo: Record<
       direction: 'AI를 지휘하는 마케터가 되세요. 전략과 방향을 잡는 사람은 아무도 대체 못 합니다.',
     },
     jobSection: {
-      warning: '광고 카피·콘텐츠 제작 모두 AI가 합니다\nAI를 지휘하는 마케터만 살아남습니다',
+      warning: '광고 카피·콘텐츠 제작은 이미 자동화됐습니다\nAI를 지휘하는 마케터만 자리가 남습니다',
       tasks: [
         { name: '콘텐츠 제작', rate: 93 },
         { name: '광고 카피', rate: 89 },
@@ -704,15 +704,15 @@ export const typeInfo: Record<
     },
   },
   TACP: {
-    title: '협력형 AI 아티스트',
-    subtitle: '팀과 AI로 감성 작품을 완성한다',
+    title: 'DA 화가',
+    subtitle: '팀 + AI + 감성 = 독보적 DA형',
     emoji: '🎭',
     color: '#a855f7',
     aiScore: 31,
     bootcamp: 'AI LLM',
     bootcampReason: '협력 + 감성 + AI LLM = 누구도 흉내 낼 수 없는 창작 역량.',
     description:
-      '팀과 함께 AI로 감성 있는 결과물을 만듭니다.\n하지만 아이디어도 콘텐츠도 AI가 만드는 시대가 왔습니다.\n\n만드는 것으로 차별점을 만드는 건 이미 끝났습니다.\n크리에이티브 디렉션만이 살아남는 역할입니다.',
+      '팀과 함께, AI로, 감성까지 — 셋을 동시에 다루는 당신.\n그런데 이제 AI가 아이디어도 콘텐츠도 혼자 만들기 시작했습니다.\n\n만드는 것만으로는 더 이상 특별해질 수 없습니다.\n무엇을 만들지 결정하는 사람이 살아남습니다.',
     aiTip:
       'AI로 초안 속도를 높이고, 팀과 감성 터치를 나누세요. 이 조합이 가장 아름답습니다.',
     jobs: ['AI 크리에이티브 디렉터', '협업 아트 디렉터', 'AI 콘텐츠 기획자'],
@@ -724,12 +724,12 @@ export const typeInfo: Record<
         ? 'AI 활용 속도를 높이면 팀에서 독보적!'
         : 'LLM 과정에서 새 무기를 찾으세요.',
     insight: {
-      strength: '팀과 함께 AI를 쓰며 감성 있는 결과물을 완성합니다. 협업 크리에이터로서 희귀한 포지션입니다.',
-      crisis: '아이디어도 콘텐츠도 AI가 만드는 시대입니다. 만드는 것 자체로는 차별점이 사라집니다.',
-      direction: '크리에이티브 디렉션만이 살아남는 역할입니다. LLM을 내 목소리로 만드는 것이 핵심입니다.',
+      strength: '팀과 AI와 감성, 세 가지를 동시에 다룹니다. 이 조합을 가진 사람은 정말 드뭅니다.',
+      crisis: '이제 AI가 아이디어도, 콘텐츠도 만듭니다. 만드는 것 자체로는 더 이상 차별점이 없습니다.',
+      direction: 'AI에게 방향을 주는 디렉터가 되세요. 감성과 판단력은 AI가 결코 가질 수 없는 무기입니다.',
     },
     jobSection: {
-      warning: '아이디어도 AI가 내고 콘텐츠도 AI가 만듭니다\n방향을 잡는 디렉터만 살아남습니다',
+      warning: '아이디어·콘텐츠 제작은 이미 자동화됐습니다\n방향을 잡는 디렉터만 자리가 남습니다',
       tasks: [
         { name: '콘텐츠 초안', rate: 91 },
         { name: '아이디어 발굴', rate: 76 },
@@ -743,8 +743,8 @@ export const typeInfo: Record<
     },
   },
   TSLF: {
-    title: '사람으로 굴러가는 분석가',
-    subtitle: '팀과 논리로 빠르게 결론을 낸다',
+    title: 'DE 분석가',
+    subtitle: 'AI 없어도 사람 네트워크가 곧 데이터 — DE형',
     emoji: '📊',
     color: '#0ea5e9',
     aiScore: 61,
@@ -768,7 +768,7 @@ export const typeInfo: Record<
       direction: '데이터로 설득하는 사람만 살아남습니다. 관계력 + 데이터 분석 = AI 시대 생존 공식입니다.',
     },
     jobSection: {
-      warning: '보고서·데이터 정리·고객 응대\n이미 AI가 하고 있습니다',
+      warning: '보고서·데이터 정리·고객 응대는 이미 자동화됐습니다\n데이터로 설득하는 사람만 자리가 남습니다',
       tasks: [
         { name: '보고서 작성', rate: 91 },
         { name: '데이터 정리', rate: 88 },
@@ -782,8 +782,8 @@ export const typeInfo: Record<
     },
   },
   TSLP: {
-    title: '신중한 팀 전략가',
-    subtitle: '팀과 논리로 완벽하게 준비한다',
+    title: 'DE 전략가',
+    subtitle: '느리지만 팀 전체를 완벽하게 묶는 DE형',
     emoji: '🏢',
     color: '#1d4ed8',
     aiScore: 58,
@@ -807,7 +807,7 @@ export const typeInfo: Record<
       direction: '데이터로 조직을 설득하는 전략가는 대체되지 않습니다. 지금 데이터 역량이 답입니다.',
     },
     jobSection: {
-      warning: '전략 보고서 작성의 84%가 자동화 가능합니다\n데이터로 설득하는 전략가만 살아남습니다',
+      warning: '전략 보고서 작성의 84%는 이미 자동화됐습니다\n데이터로 설득하는 전략가만 자리가 남습니다',
       tasks: [
         { name: '전략 보고서', rate: 84 },
         { name: '회의 준비', rate: 88 },
@@ -821,8 +821,8 @@ export const typeInfo: Record<
     },
   },
   TSCF: {
-    title: '감성으로 팀 살리는 사람',
-    subtitle: '팀의 에너지를 만들고 빠르게 실행한다',
+    title: 'DA 구원투수',
+    subtitle: '감성으로 팀 살리는 DA형 에너지 메이커',
     emoji: '🤝',
     color: '#ec4899',
     aiScore: 65,
@@ -846,7 +846,7 @@ export const typeInfo: Record<
       direction: '사람을 이해하는 감성 + 데이터 분석 = AI가 절대 대체 못 하는 조합입니다.',
     },
     jobSection: {
-      warning: 'HR 채용·교육·관리 모두 AI가 넘봅니다\n데이터로 사람을 이해하는 HR만 살아남습니다',
+      warning: 'HR 채용·교육·관리는 이미 자동화됐습니다\n데이터로 사람을 이해하는 HR만 자리가 남습니다',
       tasks: [
         { name: '채용 공고·스크리닝', rate: 83 },
         { name: '교육 자료 제작', rate: 87 },
@@ -860,8 +860,8 @@ export const typeInfo: Record<
     },
   },
   TSCP: {
-    title: '완벽한 팀의 완성자',
-    subtitle: '팀과 감성으로 완벽하게 마무리한다',
+    title: 'DE 완성자',
+    subtitle: '느리지만 팀 + 감성으로 완벽 마무리 — DE형',
     emoji: '🛡️',
     color: '#f43f5e',
     aiScore: 62,
@@ -885,7 +885,7 @@ export const typeInfo: Record<
       direction: '데이터로 팀을 설계하는 PM이 되세요. 조직 운영에 데이터를 더하면 대체 불가입니다.',
     },
     jobSection: {
-      warning: '일정 관리·진행 보고·피드백 모두 자동화 중\n데이터로 팀을 설계하는 PM만 살아남습니다',
+      warning: '일정·보고·피드백은 이미 자동화됐습니다\n조직을 설계하는 사람만 자리가 남습니다',
       tasks: [
         { name: '일정 관리', rate: 86 },
         { name: '진행 보고', rate: 91 },
