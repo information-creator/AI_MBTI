@@ -62,7 +62,7 @@ export default function GuidePage() {
       {/* 헤더 */}
       <header className="px-6 py-4 flex items-center justify-between border-b border-slate-100">
         <Link href="/" className="text-slate-900 font-bold text-lg">
-          AI<span className="text-indigo-600">mbti</span>
+          AI<span className="text-indigo-600">MBTI</span>
         </Link>
         <Link href="/test" className="text-sm text-slate-400 hover:text-slate-700 transition-colors">
           테스트 하기 →
@@ -186,7 +186,7 @@ export default function GuidePage() {
 
       <footer className="px-6 py-8 border-t border-slate-100 text-center text-slate-400 text-sm mt-10">
         <p>
-          © 2026 AImBTI ·{' '}
+          © 2026 AIMBTI ·{' '}
           <a href="https://metacode.kr" className="hover:text-slate-600 transition-colors">
             metacode.kr
           </a>

@@ -2,9 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import CTAButton from '@/components/CTAButton'
+import { typeInfo } from '@/lib/quiz'
 
 export const metadata: Metadata = {
-  title: 'AImBTI',
+  title: 'AIMBTI',
   description: 'MBTI 기반 AI 시대 생존 역량 진단. 20문항으로 알아보는 나의 AI 대체 가능성과 미래 직업 추천.',
   alternates: {
     canonical: 'https://aimbti-seven.vercel.app',
@@ -22,7 +23,7 @@ export default function LandingPage() {
       {/* 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <span className="text-slate-900 font-bold text-lg tracking-tight">
-          AI<span className="text-indigo-600">mbti</span>
+          AI<span className="text-indigo-600">MBTI</span>
         </span>
         <CTAButton
           location="header"
@@ -92,36 +93,19 @@ export default function LandingPage() {
         <p className="text-slate-500 text-center text-sm mb-6">16가지 AI 시대 생존 유형 — 당신의 코드는?</p>
 
         <div className="grid grid-cols-2 gap-2.5">
-          {[
-            { emoji: '🚀', title: 'AI 시대 지휘관', code: 'HALF', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)' },
-            { emoji: '🔭', title: '완벽주의 설계자', code: 'HALP', bg: 'rgba(14,165,233,0.08)', border: 'rgba(14,165,233,0.2)' },
-            { emoji: '🎨', title: '데이터 크리에이터', code: 'HACF', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
-            { emoji: '🌙', title: '정확한 AI 예술가', code: 'HACP', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
-            { emoji: '⚙️', title: '조용한 논리 장인', code: 'HSLF', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)' },
-            { emoji: '♟️', title: '혼자형 전략가', code: 'HSLP', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)' },
-            { emoji: '🎭', title: '감성 독립군', code: 'HSCF', bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.2)' },
-            { emoji: '🌸', title: '나만의 완성형', code: 'HSCP', bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.2)' },
-            { emoji: '⚡', title: 'AI 선봉장', code: 'TALF', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)' },
-            { emoji: '🏗️', title: '팀 AI 설계자', code: 'TALP', bg: 'rgba(14,165,233,0.08)', border: 'rgba(14,165,233,0.2)' },
-            { emoji: '🎙️', title: 'AI 크리에이터', code: 'TACF', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
-            { emoji: '🎭', title: '협력형 아티스트', code: 'TACP', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
-            { emoji: '📊', title: '팀 기반 분석가', code: 'TSLF', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)' },
-            { emoji: '🏢', title: '신중한 전략가', code: 'TSLP', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)' },
-            { emoji: '🤝', title: '팀 감성 리더', code: 'TSCF', bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.2)' },
-            { emoji: '🛡️', title: '팀의 완성자', code: 'TSCP', bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.2)' },
-          ].map((type) => (
+          {(Object.entries(typeInfo) as [string, typeof typeInfo[keyof typeof typeInfo]][]).map(([code, info]) => (
             <div
-              key={type.code}
+              key={code}
               className="rounded-2xl p-3 flex items-center gap-2.5"
-              style={{ border: `1px solid ${type.border}`, background: type.bg }}
+              style={{ border: `1px solid ${info.color}30`, background: info.color + '10' }}
             >
               <Image
-                src={['HACF','HACP','HALF','HALP'].includes(type.code) ? `/character/${type.code}.png` : `/characters/${type.code}.svg`}
-                alt={type.title} width={52} height={52} className="object-contain shrink-0" unoptimized
+                src={`/real_charaters/${code}.png`}
+                alt={info.title} width={52} height={52} className="object-contain shrink-0" unoptimized
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
               />
               <div className="min-w-0">
-                <div className="text-slate-900 font-bold text-[15px] truncate">{type.title}</div>
-                <div className="text-slate-900 text-[15px] mt-0.5 font-mono font-bold">{type.code}</div>
+                <div className="font-bold text-[17px] leading-snug line-clamp-2" style={{ color: info.color }}>{info.title}</div>
               </div>
             </div>
           ))}
@@ -156,7 +140,7 @@ export default function LandingPage() {
       {/* 푸터 */}
       <footer className="px-5 py-6 border-t border-slate-100 text-center text-slate-400 text-xs">
         <p>
-          © 2026 AImBTI ·{' '}
+          © 2026 AIMBTI ·{' '}
           <a href="https://metacode.kr" className="hover:text-slate-600 transition-colors">
             metacode.kr
           </a>

@@ -29,17 +29,14 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const scoreColor = aiScore >= 70 ? '#ef4444' : aiScore >= 40 ? '#f59e0b' : '#10b981'
   const scoreLabel = aiScore >= 70 ? 'AI 대체 위험' : aiScore >= 40 ? '주의 필요' : '안전 구간'
 
-  const pngTypes = new Set(['HACF', 'HACP', 'HALF', 'HALP'])
-  const BASE = 'https://aimbti-seven.vercel.app'
-  const imgUrl = pngTypes.has(typeCode)
-    ? `${BASE}/character/${typeCode}.png`
-    : `${BASE}/characters/${typeCode}.svg`
+  const BASE = 'https://aimbti.vercel.app'
+  const imgUrl = `${BASE}/real_charaters/${typeCode}.png`
 
   let charImgSrc = ''
   try {
     const res = await fetch(imgUrl)
     const buf = await res.arrayBuffer()
-    const mime = pngTypes.has(typeCode) ? 'image/png' : 'image/svg+xml'
+    const mime = 'image/png'
     charImgSrc = `data:${mime};base64,${Buffer.from(buf).toString('base64')}`
   } catch {}
 
@@ -76,7 +73,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           position: 'absolute', top: 40, left: 60,
           fontSize: 28, fontWeight: 900, color: '#6366f1', display: 'flex',
         }}>
-          AI<span style={{ color: '#818cf8' }}>mbti</span>
+          AI<span style={{ color: '#818cf8' }}>MBTI</span>
         </div>
 
         {/* MBTI 배지 */}

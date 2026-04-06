@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props) {
     return { title: 'AI 시대 생존력 진단 결과' }
   }
 
-  let title = 'AI 시대 생존력 진단 결과 | AImBTI'
+  let title = 'AI 시대 생존력 진단 결과 | AIMBTI'
   let description = 'AI 대체 가능성 진단 결과를 확인하세요.'
 
   try {
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props) {
       if (data) {
         const info = typeInfo[data.type_code as TypeCode]
         if (info) {
-          title = `나는 "${info.title}" | AI 대체 가능성 ${data.ai_score}% | AImBTI`
+          title = `나는 "${info.title}" | AI 대체 가능성 ${data.ai_score}% | AIMBTI`
           description = `${info.subtitle} — 나의 AI 대체 가능성은 ${data.ai_score}%! 당신의 유형은?`
         }
       }

@@ -108,7 +108,7 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 max-w-2xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-xl font-black text-slate-900">AImBTI 대시보드</h1>
+        <h1 className="text-xl font-black text-slate-900">AIMBTI 대시보드</h1>
         <p className="text-slate-500 text-xs mt-1">Supabase 기준 · 실시간</p>
       </div>
 

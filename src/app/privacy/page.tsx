@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: '개인정보처리방침 | AImBTI',
+  title: '개인정보처리방침 | AIMBTI',
 }
 
 export default function PrivacyPage() {
@@ -9,7 +9,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-white">
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <Link href="/" className="text-slate-900 font-bold text-lg">
-          AI<span className="text-indigo-600">mbti</span>
+          AI<span className="text-indigo-600">MBTI</span>
         </Link>
       </header>
 

@@ -39,12 +39,19 @@ const PART_TEXT_COLORS: Record<string, string> = {
   E: '#ea580c',
 }
 
+const CHEER_MESSAGES: Record<number, { emoji: string; title: string; sub: string }> = {
+  5:  { emoji: '🔥', title: '벌써 25%!', sub: '조금만 더 가보자!' },
+  10: { emoji: '💪', title: '절반 달성!', sub: '이제 반 왔어요!' },
+  15: { emoji: '🚀', title: '거의 다 왔어요!', sub: '5개만 더!' },
+}
+
 export default function TestPage() {
   const router = useRouter()
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [loadingPct, setLoadingPct] = useState(0)
+  const [cheerStep, setCheerStep] = useState<number | null>(null)
 
   useEffect(() => {
     if (!submitting) { setLoadingPct(0); return }
@@ -71,7 +78,13 @@ export default function TestPage() {
     if (current === 0) gtagEvent('test_start')
 
     if (!isLast) {
-      setCurrent((c) => c + 1)
+      const next = current + 1
+      setCurrent(next)
+      // Q5, Q10, Q15 완료 시 독려 팝업 (0-indexed: 4, 9, 14)
+      if (current === 4 || current === 9 || current === 14) {
+        setCheerStep(next) // next = 5, 10, 15
+        setTimeout(() => setCheerStep(null), 2200)
+      }
       return
     }
 
@@ -169,8 +182,25 @@ export default function TestPage() {
 
   const part = question.part
 
+  const cheer = cheerStep ? CHEER_MESSAGES[cheerStep] : null
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      {/* 독려 토스트 */}
+      {cheer && (
+        <div className="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+          <div
+            className="animate-cheer-pop flex items-center gap-4 bg-white rounded-2xl shadow-lg px-7 py-4"
+            style={{ border: '1.5px solid #6366f1' }}
+          >
+            <span className="text-3xl">{cheer.emoji}</span>
+            <div>
+              <p className="text-base font-black text-slate-900">{cheer.title}</p>
+              <p className="text-slate-500 text-sm">{cheer.sub}</p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* 상단 진행 바 */}
       <div className="w-full h-1.5 bg-slate-200">
         <div
