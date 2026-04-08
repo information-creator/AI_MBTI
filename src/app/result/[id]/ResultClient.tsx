@@ -48,13 +48,15 @@ export default function ResultClient({
   const [instaToast, setInstaToast] = useState(false)
   const [ebookPage, setEbookPage] = useState(0)
 
-  const ebookLinkMap: Record<string, string> = {
-    '데이터 엔지니어': 'https://live1.metacodev.com/live/data_engineer',
-    'AI LLM': 'https://live1.metacodev.com/live/aillm',
-    '데이터 분석': 'https://live1.metacodev.com/live/data_analytics',
-    'AI 서비스 개발자': 'https://live1.metacodev.com/live/ai_service_developer',
+  const ebookLink = 'https://metacodes.co.kr/'
+
+  const ebookImageMap: Record<string, string[]> = {
+    '데이터 엔지니어': ['/zunza/DE/DE_커리큘럼.png', '/zunza/DE/DE_목차.png'],
+    '데이터 분석': ['/zunza/DA/DA_커리큘럼.png', '/zunza/DA/DA_목차.png'],
+    'AI LLM': ['/zunza/AILLM/AILLM_커리큘럼.png', '/zunza/AILLM/AILLM_목차.png'],
+    'AI 서비스 개발자': ['/zunza/AISERVICE/AI서비스_커리큘럼.png', '/zunza/AISERVICE/AI서비스_목차.png'],
   }
-  const ebookLink = ebookLinkMap[info.bootcamp] ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=ebook'
+  const ebookImages = ebookImageMap[info.bootcamp] ?? null
 
   const FREE_PAGES = 2
   const ebookPages = [
@@ -731,79 +733,40 @@ export default function ResultClient({
             <span className="text-xl">📖</span>
             <h2 className="text-slate-900 font-bold text-xl">무료 전자책 미리보기</h2>
           </div>
-          <p className="text-slate-500 text-sm mb-4">AI 시대 커리어 생존 전략 · 총 4페이지 중 2페이지 무료</p>
+          <p className="text-slate-500 text-sm mb-4">9만원 상당 · 회원가입 시 전체 무료</p>
 
-          {/* 페이지 탭 */}
-          <div className="flex gap-1.5 mb-3 overflow-x-auto pb-1">
-            {ebookPages.map((p, i) => (
-              <button
-                key={p.num}
-                onClick={() => setEbookPage(i)}
-                className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-                style={ebookPage === i
-                  ? { background: '#6366f1', color: '#fff' }
-                  : { background: '#f1f5f9', color: i < FREE_PAGES ? '#64748b' : '#cbd5e1' }
-                }
-              >
-                {i < FREE_PAGES ? `${p.num}페이지` : `🔒 ${p.num}페이지`}
-              </button>
-            ))}
-          </div>
-
-          {/* 페이지 뷰어 */}
-          <div className="relative rounded-2xl overflow-hidden" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', minHeight: 260 }}>
-            <div className="px-4 pt-4 pb-2 border-b border-slate-100 flex items-center justify-between">
-              <p className="text-xs font-bold text-indigo-600">AI 시대 커리어 생존 전략</p>
-              <p className="text-xs text-slate-400">{ebookPage + 1} / {ebookPages.length}</p>
-            </div>
-            <div className="p-4">
-              <h3 className="text-sm font-black text-slate-900 mb-3">{ebookPages[ebookPage].title}</h3>
-              {ebookPage < FREE_PAGES ? (
-                ebookPages[ebookPage].content
-              ) : (
-                <div className="relative">
-                  <div className="space-y-2 select-none" style={{ filter: 'blur(4px)', opacity: 0.4 }}>
-                    {[80, 60, 90, 50, 70].map((w, i) => (
-                      <div key={i} className="h-3 rounded bg-slate-300" style={{ width: `${w}%` }} />
-                    ))}
-                    <div className="h-3 rounded bg-slate-300 w-3/4" />
-                    <div className="h-3 rounded bg-slate-300 w-full" />
-                    <div className="h-3 rounded bg-slate-300 w-2/3" />
-                    <div className="h-3 rounded bg-slate-300 w-5/6" />
-                  </div>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                    <span className="text-2xl">🔒</span>
-                    <p className="text-xs font-bold text-slate-700 text-center">회원가입 후 전체 무료 열람</p>
-                  </div>
-                </div>
-              )}
-            </div>
-            {ebookPage === FREE_PAGES - 1 && (
+          {ebookImages ? (
+            /* 이미지 기반 미리보기 */
+            <div className="relative rounded-2xl overflow-hidden" style={{ maxHeight: 800, border: '1px solid #e2e8f0' }}>
+              {ebookImages.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt={`전자책 미리보기 ${i + 1}`}
+                  className="w-full"
+                  style={{ display: 'block' }}
+                />
+              ))}
+              {/* 하단 페이드 */}
               <div
-                className="absolute inset-x-0 bottom-0 h-16"
-                style={{ background: 'linear-gradient(to bottom, transparent, #f8fafc)' }}
+                className="absolute inset-x-0 bottom-0"
+                style={{ height: '30%', background: 'linear-gradient(to bottom, transparent 0%, white 80%)' }}
               />
-            )}
-          </div>
-
-          <div className="flex justify-between mt-3">
-            <button
-              onClick={() => setEbookPage(Math.max(0, ebookPage - 1))}
-              disabled={ebookPage === 0}
-              className="text-xs font-bold px-3 py-1.5 rounded-lg disabled:opacity-30 transition-all"
-              style={{ background: '#f1f5f9', color: '#64748b' }}
-            >
-              ← 이전
-            </button>
-            <button
-              onClick={() => setEbookPage(Math.min(ebookPages.length - 1, ebookPage + 1))}
-              disabled={ebookPage === ebookPages.length - 1}
-              className="text-xs font-bold px-3 py-1.5 rounded-lg disabled:opacity-30 transition-all"
-              style={{ background: '#f1f5f9', color: '#64748b' }}
-            >
-              다음 →
-            </button>
-          </div>
+              {/* 잠금 안내 */}
+              <div className="absolute inset-x-0 bottom-4 flex flex-col items-center gap-1.5">
+                <span className="text-2xl">🔒</span>
+                <p className="text-sm font-bold text-slate-700">회원가입하면 전체 무료로 볼 수 있어요</p>
+              </div>
+            </div>
+          ) : (
+            /* 텍스트 기반 미리보기 (이미지 없는 유형) */
+            <div className="relative rounded-2xl overflow-hidden" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', minHeight: 200 }}>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                <span className="text-3xl">📚</span>
+                <p className="text-sm font-bold text-slate-700">전자책 준비 중이에요</p>
+              </div>
+            </div>
+          )}
 
           <a
             href={ebookLink}
