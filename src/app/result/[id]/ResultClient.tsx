@@ -5,7 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
-import KakaoShareButton from './KakaoShareButton'
+
+type Scores = { a: number; b: number; c: number; d: number; e: number }
 
 type Props = {
   typeCode: TypeCode
@@ -14,6 +15,75 @@ type Props = {
   overtimeComment: string
   resultId: string
   couponCode: string | null
+  scores: Scores | null
+}
+
+function RadarChart({ scores, color }: { scores: Scores; color: string }) {
+  // 5각형: 위=혼자/함께, 우상=AI활용/사람감각, 우하=논리형/창의형, 좌하=빠른실행/완벽준비, 좌상=야근러/칼퇴파
+  const R = 185, cx = 320, cy = 275
+  const N = 5
+  const angles = Array.from({ length: N }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / N)
+  const targetVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 6]
+
+  const [animVals, setAnimVals] = useState([0, 0, 0, 0, 0])
+
+  useEffect(() => {
+    const duration = 900
+    const start = performance.now()
+    let raf: number
+    function step(now: number) {
+      const t = Math.min((now - start) / duration, 1)
+      const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+      setAnimVals(targetVals.map(v => v * eased))
+      if (t < 1) raf = requestAnimationFrame(step)
+    }
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const pt = (r: number, a: number) => [cx + r * Math.cos(a), cy + r * Math.sin(a)] as [number, number]
+  const polyPts = (vs: number[]) => vs.map((v, i) => pt(R * Math.max(v, 0.04), angles[i])).map(([x, y]) => `${x},${y}`).join(' ')
+  const gridPts = (level: number) => angles.map(a => pt(R * level, a)).map(([x, y]) => `${x},${y}`).join(' ')
+
+  const labelR = R + 48
+  const anchors = ['middle', 'start', 'start', 'end', 'end'] as const
+  const labels = [
+    { hi: '혼자', lo: '함께' },
+    { hi: 'AI 활용', lo: '사람감각' },
+    { hi: '논리형', lo: '창의형' },
+    { hi: '빠른 실행', lo: '완벽 준비' },
+    { hi: '야근러', lo: '칼퇴파' },
+  ]
+
+  return (
+    <svg viewBox="0 0 640 540" className="w-full max-w-[640px] mx-auto">
+      {[0.25, 0.5, 0.75, 1].map(l => (
+        <polygon key={l} points={gridPts(l)} fill="none" stroke="#e2e8f0" strokeWidth="1" />
+      ))}
+      {angles.map((a, i) => {
+        const [x, y] = pt(R, a)
+        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="#e2e8f0" strokeWidth="1" />
+      })}
+      <polygon points={polyPts(animVals)} fill={`${color}22`} stroke={color} strokeWidth="2.5" strokeLinejoin="round" />
+      {animVals.map((v, i) => {
+        const [x, y] = pt(R * Math.max(v, 0.04), angles[i])
+        return <circle key={i} cx={x} cy={y} r="6" fill={color} />
+      })}
+      {labels.map(({ hi, lo }, i) => {
+        const [lx, ly] = pt(labelR, angles[i])
+        const dominant = targetVals[i] >= 0.5
+        const yOff = i === 0 ? -10 : (i === 2 || i === 3) ? 10 : 0
+        return (
+          <g key={i}>
+            <text x={lx} y={ly + yOff - 10} textAnchor={anchors[i]} fontSize="28" fontWeight="700" fill="#1e293b" fontFamily="'Apple SD Gothic Neo','Malgun Gothic',sans-serif">
+              {dominant ? hi : lo}
+            </text>
+          </g>
+        )
+      })}
+    </svg>
+  )
 }
 
 export default function ResultClient({
@@ -22,8 +92,16 @@ export default function ResultClient({
   overtimeLevel,
   overtimeComment,
   resultId,
+  scores: scoresProp,
   // couponCode reserved for future use
 }: Props) {
+  const scores: Scores = scoresProp ?? {
+    a: typeCode[0] === 'H' ? 3 : 1,
+    b: typeCode[1] === 'A' ? 3 : 1,
+    c: typeCode[2] === 'L' ? 3 : 1,
+    d: typeCode[3] === 'F' ? 3 : 1,
+    e: 2,
+  }
   const info = typeInfo[typeCode]
 
   useEffect(() => {
@@ -50,11 +128,15 @@ export default function ResultClient({
 
   const ebookLink = 'https://metacodes.co.kr/'
 
+  const EBOOK_FREE_LIMIT = 7
+
+  const testImages = Array.from({ length: 10 }, (_, i) => `/zunza/DE/DE_테스트_${String(i + 1).padStart(2, '0')}.png`)
+
   const ebookImageMap: Record<string, string[]> = {
-    '데이터 엔지니어': ['/zunza/DE/DE_커리큘럼.png', '/zunza/DE/DE_목차.png'],
-    '데이터 분석': ['/zunza/DA/DA_커리큘럼.png', '/zunza/DA/DA_목차.png'],
-    'AI LLM': ['/zunza/AILLM/AILLM_커리큘럼.png', '/zunza/AILLM/AILLM_목차.png'],
-    'AI 서비스 개발자': ['/zunza/AISERVICE/AI서비스_커리큘럼.png', '/zunza/AISERVICE/AI서비스_목차.png'],
+    '데이터 엔지니어': testImages,
+    '데이터 분석': testImages,
+    'AI LLM': testImages,
+    'AI 서비스 개발자': testImages,
   }
   const ebookImages = ebookImageMap[info.bootcamp] ?? null
 
@@ -367,6 +449,90 @@ export default function ResultClient({
     ctx.fillStyle = '#1e293b'
     ctx.fillText(info.jobs.slice(0, 3).join('  ·  '), 50, jobY + 36)
 
+    // 성향 5각형
+    const pentaStartY = jobY + 80
+    ctx.font = `bold 20px ${KR}`
+    ctx.fillStyle = '#94a3b8'
+    ctx.fillText('나의 성향 DNA', 50, pentaStartY)
+
+    const pCx = W / 2, pCy = pentaStartY + 170, pR = 130
+    const pN = 5
+    const pAngles = Array.from({ length: pN }, (_,i) => -Math.PI/2 + i * 2*Math.PI/pN)
+    const pVals = [scores.a/4, scores.b/4, scores.c/4, scores.d/4, scores.e/6]
+    const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
+    const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
+
+    // 그리드
+    for (const level of [0.25, 0.5, 0.75, 1.0]) {
+      ctx.beginPath()
+      pAngles.forEach((a, i) => {
+        const x = pCx + pR * level * Math.cos(a)
+        const y = pCy + pR * level * Math.sin(a)
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+      })
+      ctx.closePath()
+      ctx.strokeStyle = '#e2e8f0'
+      ctx.lineWidth = 1.5
+      ctx.stroke()
+    }
+
+    // 축선
+    pAngles.forEach(a => {
+      ctx.beginPath()
+      ctx.moveTo(pCx, pCy)
+      ctx.lineTo(pCx + pR * Math.cos(a), pCy + pR * Math.sin(a))
+      ctx.strokeStyle = '#e2e8f0'
+      ctx.lineWidth = 1.5
+      ctx.stroke()
+    })
+
+    // 데이터 다각형
+    ctx.beginPath()
+    pVals.forEach((v, i) => {
+      const r = pR * Math.max(v, 0.05)
+      const x = pCx + r * Math.cos(pAngles[i])
+      const y = pCy + r * Math.sin(pAngles[i])
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+    })
+    ctx.closePath()
+    ctx.fillStyle = info.color + '30'
+    ctx.fill()
+    ctx.strokeStyle = info.color
+    ctx.lineWidth = 3
+    ctx.stroke()
+
+    // 점
+    pVals.forEach((v, i) => {
+      const r = pR * Math.max(v, 0.05)
+      const x = pCx + r * Math.cos(pAngles[i])
+      const y = pCy + r * Math.sin(pAngles[i])
+      ctx.beginPath()
+      ctx.arc(x, y, 7, 0, Math.PI * 2)
+      ctx.fillStyle = info.color
+      ctx.fill()
+    })
+
+    // 레이블
+    const labelR = pR + 44
+    pAngles.forEach((a, i) => {
+      const lx = pCx + labelR * Math.cos(a)
+      const ly = pCy + labelR * Math.sin(a)
+      const dominant = pVals[i] >= 0.5
+      const mainLabel = dominant ? pLabelsHi[i] : (pLabelsLo[i] || pLabelsHi[i])
+      const subLabel = dominant ? pLabelsLo[i] : pLabelsHi[i]
+      const cosA = Math.cos(a)
+      ctx.textAlign = cosA > 0.1 ? 'left' : cosA < -0.1 ? 'right' : 'center'
+      ctx.font = `bold 18px ${KR}`
+      ctx.fillStyle = '#1e293b'
+      ctx.fillText(mainLabel, lx, ly - 4)
+      if (subLabel) {
+        ctx.font = `14px ${KR}`
+        ctx.fillStyle = '#94a3b8'
+        ctx.fillText(subLabel, lx, ly + 16)
+      }
+    })
+    ctx.textAlign = 'left'
+
     // 하단 CTA 띠
     ctx.fillStyle = '#f8fafc'
     ctx.fillRect(0, H - 110, W, 110)
@@ -390,7 +556,7 @@ export default function ResultClient({
       if (!dataUrl) throw new Error('canvas error')
       const a = document.createElement('a')
       a.href = dataUrl
-      a.download = `aimbti_${typeCode}.jpg`
+      a.download = `AIMBTI_${info.title}.jpg`
       a.click()
     } catch {
       alert('이미지 저장에 실패했습니다. 다시 시도해주세요.')
@@ -408,12 +574,216 @@ export default function ResultClient({
     // 이미지 다운로드
     const a = document.createElement('a')
     a.href = dataUrl
-    a.download = `aimbti_${typeCode}.jpg`
+    a.download = `AIMBTI_${info.title}.jpg`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
 
     setInstaToast(true)
+    setShareLoading(false)
+  }
+
+  async function drawKakaoCard(): Promise<string> {
+    const canvas = canvasRef.current
+    if (!canvas) return ''
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return ''
+
+    try {
+      const font = new FontFace('NotoSansKR', 'url(https://fonts.gstatic.com/s/notosanskr/v36/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.0.woff2) format("woff2")')
+      document.fonts.add(await font.load())
+    } catch { /* 시스템 폰트 폴백 */ }
+
+    type CtxWithRoundRect = CanvasRenderingContext2D & { roundRect?: (x: number, y: number, w: number, h: number, r: number) => void }
+    const ctxR = ctx as CtxWithRoundRect
+    if (!ctxR.roundRect) {
+      ctxR.roundRect = function(x: number, y: number, w: number, h: number, r: number) {
+        ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+        ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+        ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+        ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+        ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+      }
+    }
+
+    const W = 800, H = 1070
+    canvas.width = W; canvas.height = H
+    const KR = '"NotoSansKR", "Apple SD Gothic Neo", "Malgun Gothic", Arial'
+
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H)
+
+    const topBand = ctx.createLinearGradient(0, 0, W, 0)
+    topBand.addColorStop(0, info.color); topBand.addColorStop(1, '#6366f1')
+    ctx.fillStyle = topBand; ctx.fillRect(0, 0, W, 10)
+
+    ctx.beginPath(); ctx.arc(W - 50, 220, 140, 0, Math.PI * 2)
+    ctx.fillStyle = info.color + '12'; ctx.fill()
+    ctx.beginPath(); ctx.arc(50, 1000, 100, 0, Math.PI * 2)
+    ctx.fillStyle = '#6366f110'; ctx.fill()
+
+    ctx.font = `bold 22px ${KR}`; ctx.fillStyle = '#6366f1'
+    ctx.fillText('AIMBTI', 50, 98)
+
+    try {
+      const charImg = new window.Image()
+      charImg.crossOrigin = 'anonymous'
+      charImg.src = `/reals_ch/${encodeURIComponent(info.title)}.png`
+      await new Promise<void>((resolve) => {
+        charImg.onload = () => resolve(); charImg.onerror = () => resolve(); setTimeout(resolve, 3000)
+      })
+      ctx.drawImage(charImg, W - 270, 56, 230, 230)
+    } catch { /* 폴백 */ }
+
+    const titleLines = info.title.length > 12 ? [info.title.slice(0, 12), info.title.slice(12)] : [info.title]
+    ctx.font = `bold 46px ${KR}`; ctx.fillStyle = '#0f172a'; ctx.textAlign = 'left'
+    titleLines.forEach((line, i) => ctx.fillText(line, 50, 148 + i * 54))
+    const titleBottom = 148 + titleLines.length * 54
+
+    ctx.font = `18px ${KR}`; ctx.fillStyle = '#64748b'
+    ctx.fillText(info.subtitle, 50, titleBottom + 20)
+
+    const scoreY = titleBottom + 54
+    ctx.beginPath(); ctx.fillStyle = '#f8fafc'; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.fill()
+    ctx.beginPath(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.stroke()
+
+    ctx.font = `bold 15px ${KR}`; ctx.fillStyle = '#64748b'; ctx.fillText('AI 대체 가능성', 80, scoreY + 26)
+    ctx.font = `bold 50px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(`${aiScore}%`, 80, scoreY + 78)
+    ctx.font = `17px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(scoreLabel, 220, scoreY + 78)
+
+    const barY = scoreY + 92
+    ctx.beginPath(); ctx.fillStyle = '#e2e8f0'; ctxR.roundRect!(80, barY, W - 160, 12, 6); ctx.fill()
+    const bg = ctx.createLinearGradient(80, 0, W - 160, 0)
+    bg.addColorStop(0, '#6366f1'); bg.addColorStop(1, scoreColor)
+    ctx.beginPath(); ctx.fillStyle = bg; ctxR.roundRect!(80, barY, (W - 160) * (aiScore / 100), 12, 6); ctx.fill()
+
+    const insightItems = [
+      { emoji: '💪', label: '강점', text: info.insight.strength, bg: '#f0fdf4', border: '#bbf7d0', labelColor: '#15803d', textColor: '#166534' },
+      { emoji: '🚨', label: '현실', text: info.insight.crisis, bg: '#fff1f2', border: '#fecdd3', labelColor: '#dc2626', textColor: '#9f1239' },
+      { emoji: '🎯', label: '할 것', text: info.insight.direction, bg: info.color + '0d', border: info.color + '30', labelColor: info.color, textColor: info.color },
+    ]
+    let iy = scoreY + 128
+    for (const item of insightItems) {
+      ctx.beginPath(); ctx.fillStyle = item.bg; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.fill()
+      ctx.beginPath(); ctx.strokeStyle = item.border; ctx.lineWidth = 1.5; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.stroke()
+      ctx.font = `20px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(item.emoji, 74, iy + 26)
+      ctx.font = `bold 13px ${KR}`; ctx.fillStyle = item.labelColor; ctx.fillText(item.label, 110, iy + 20)
+      const short = item.text.length > 32 ? item.text.slice(0, 32) + '…' : item.text
+      ctx.font = `14px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(short, 110, iy + 42)
+      iy += 78
+    }
+
+    // 성향 5각형
+    const pentaStartY = iy + 20
+    ctx.font = `bold 18px ${KR}`; ctx.fillStyle = '#94a3b8'
+    ctx.fillText('나의 성향 DNA', 50, pentaStartY)
+
+    const pCx = W / 2, pCy = pentaStartY + 160, pR = 120
+    const pN = 5
+    const pAngles = Array.from({ length: pN }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / pN)
+    const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 6]
+    const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
+    const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
+
+    // 그리드
+    for (const level of [0.25, 0.5, 0.75, 1.0]) {
+      ctx.beginPath()
+      pAngles.forEach((a, i) => {
+        const x = pCx + pR * level * Math.cos(a), y = pCy + pR * level * Math.sin(a)
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+      })
+      ctx.closePath(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; ctx.stroke()
+    }
+    // 축선
+    pAngles.forEach(a => {
+      ctx.beginPath(); ctx.moveTo(pCx, pCy)
+      ctx.lineTo(pCx + pR * Math.cos(a), pCy + pR * Math.sin(a))
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; ctx.stroke()
+    })
+    // 데이터 다각형
+    ctx.beginPath()
+    pVals.forEach((v, i) => {
+      const r = pR * Math.max(v, 0.05)
+      const x = pCx + r * Math.cos(pAngles[i]), y = pCy + r * Math.sin(pAngles[i])
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+    })
+    ctx.closePath(); ctx.fillStyle = info.color + '30'; ctx.fill()
+    ctx.strokeStyle = info.color; ctx.lineWidth = 3; ctx.stroke()
+    // 꼭짓점 점
+    pVals.forEach((v, i) => {
+      const r = pR * Math.max(v, 0.05)
+      ctx.beginPath(); ctx.arc(pCx + r * Math.cos(pAngles[i]), pCy + r * Math.sin(pAngles[i]), 6, 0, Math.PI * 2)
+      ctx.fillStyle = info.color; ctx.fill()
+    })
+    // 레이블
+    const labelR = pR + 42
+    pAngles.forEach((a, i) => {
+      const lx = pCx + labelR * Math.cos(a), ly = pCy + labelR * Math.sin(a)
+      const dominant = pVals[i] >= 0.5
+      const main = dominant ? pLabelsHi[i] : (pLabelsLo[i] || pLabelsHi[i])
+      const sub = dominant ? pLabelsLo[i] : pLabelsHi[i]
+      const cosA = Math.cos(a)
+      ctx.textAlign = cosA > 0.1 ? 'left' : cosA < -0.1 ? 'right' : 'center'
+      ctx.font = `bold 16px ${KR}`; ctx.fillStyle = '#1e293b'; ctx.fillText(main, lx, ly - 2)
+      if (sub) { ctx.font = `13px ${KR}`; ctx.fillStyle = '#94a3b8'; ctx.fillText(sub, lx, ly + 16) }
+    })
+    ctx.textAlign = 'left'
+
+    // 하단 CTA (pentagon 바로 아래)
+    const ctaY = pCy + pR + 70
+    ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, ctaY, W, 52)
+    ctx.fillStyle = '#e2e8f0'; ctx.fillRect(0, ctaY, W, 1)
+    ctx.font = `bold 17px ${KR}`; ctx.fillStyle = '#6366f1'; ctx.fillText('나도 진단해보기 →', 50, ctaY + 34)
+    ctx.font = `15px ${KR}`; ctx.fillStyle = '#94a3b8'; ctx.fillText('aimbti.vercel.app', W - 195, ctaY + 34)
+
+    return canvas.toDataURL('image/jpeg', 0.95)
+  }
+
+    async function handleKakaoShare() {
+    gtagEvent('share_click', { method: 'kakao' })
+    setShareLoading(true)
+    const K = window.Kakao
+    if (!K) {
+      const url = window.location.href
+      await navigator.clipboard.writeText(url)
+      alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
+      setShareLoading(false)
+      return
+    }
+    if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY ?? '')
+    const shareUrl = window.location.href
+    try {
+      const dataUrl = await drawKakaoCard()
+      if (!dataUrl) throw new Error('no image')
+      const blob = await (await fetch(dataUrl)).blob()
+      const file = new File([blob], 'aimbti.jpg', { type: 'image/jpeg' })
+      const uploaded = await K.Share.uploadImage({ file: [file] })
+      K.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: `나는 "${info.title}"`,
+          description: `AI 대체 가능성 ${aiScore}%`,
+          imageUrl: uploaded.infos.original.url,
+          imageWidth: 800,
+          imageHeight: 1200,
+          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+        },
+        buttons: [{ title: '결과 보러가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } }],
+      })
+    } catch {
+      const IMAGE_BASE = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
+      K.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: `나는 "${info.title}"`,
+          description: `AI 대체 가능성 ${aiScore}%`,
+          imageUrl: `${IMAGE_BASE}/result/${resultId}/opengraph-image`,
+          imageWidth: 800,
+          imageHeight: 1600,
+          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+        },
+        buttons: [{ title: '결과 보러가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } }],
+      })
+    }
     setShareLoading(false)
   }
 
@@ -495,60 +865,38 @@ export default function ResultClient({
           <div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-1">{info.title}</h1>
             <p className="text-slate-600 text-base">{info.subtitle}</p>
-
-            {/* DNA 바 */}
-            <div className="mt-4 flex flex-col gap-3">
-              {[
-                { left: '혼자', right: '함께', lean: typeCode[0] === 'H' ? 'left' : 'right', color: typeCode[0] === 'H' ? '#6366f1' : '#0ea5e9' },
-                { left: 'AI 활용', right: '사람 감각', lean: typeCode[1] === 'A' ? 'left' : 'right', color: typeCode[1] === 'A' ? '#8b5cf6' : '#10b981' },
-                { left: '논리형', right: '창의형', lean: typeCode[2] === 'L' ? 'left' : 'right', color: typeCode[2] === 'L' ? '#475569' : '#f59e0b' },
-                { left: '빠른 실행', right: '완벽 준비', lean: typeCode[3] === 'F' ? 'left' : 'right', color: typeCode[3] === 'F' ? '#f97316' : '#14b8a6' },
-              ].map(({ left, right, lean, color }) => (
-                <div key={left} className="flex items-center gap-2">
-                  <span className={`text-xs w-14 text-right font-semibold ${lean === 'left' ? 'text-slate-900' : 'text-slate-300'}`}>{left}</span>
-                  <div className="flex-1 flex gap-1 items-center">
-                    {[0,1,2,3,4,5].map((i) => {
-                      const filled = lean === 'left' ? i < 4 : i >= 2
-                      return (
-                        <div
-                          key={i}
-                          className="flex-1 h-2.5 rounded-full transition-all"
-                          style={{ background: filled ? color : '#e2e8f0' }}
-                        />
-                      )
-                    })}
-                  </div>
-                  <span className={`text-xs w-14 font-semibold ${lean === 'right' ? 'text-slate-900' : 'text-slate-300'}`}>{right}</span>
-                </div>
-              ))}
-            </div>
           </div>
 
-          <p className="mt-5 text-slate-700 leading-relaxed text-base whitespace-pre-line" style={{ wordBreak: 'keep-all' }}>
+          {/* 성향 레이더 */}
+          <div className="mt-5">
+            <RadarChart scores={scores} color={info.color} />
+          </div>
+
+          <p className="mt-6 text-slate-700 leading-relaxed text-base whitespace-pre-line" style={{ wordBreak: 'keep-all', lineHeight: '2' }}>
             {info.description}
           </p>
 
           {/* 강점 → 위기 → 방향 */}
-          <div className="mt-4 flex flex-col gap-2">
-            <div className="flex gap-3 items-start rounded-2xl p-4 border border-emerald-100" style={{ background: '#f0fdf4' }}>
+          <div className="mt-8 flex flex-col gap-4">
+            <div className="flex gap-2 items-start rounded-xl p-3 border border-emerald-100" style={{ background: '#f0fdf4' }}>
               <span className="text-base mt-0.5 flex-shrink-0">💪</span>
               <div>
-                <p className="text-sm font-bold text-emerald-700 mb-1">당신의 강점</p>
-                <p className="text-sm text-emerald-800 leading-relaxed">{info.insight.strength}</p>
+                <p className="text-xs font-bold text-emerald-700 mb-1">당신의 강점</p>
+                <p className="text-xs text-emerald-800 leading-relaxed" style={{ wordBreak: 'keep-all' }}>{info.insight.strength}</p>
               </div>
             </div>
-            <div className="flex gap-3 items-start rounded-2xl p-4 border border-red-200" style={{ background: '#fff1f1' }}>
+            <div className="flex gap-2 items-start rounded-xl p-3 border border-red-200" style={{ background: '#fff1f1' }}>
               <span className="text-base mt-0.5 flex-shrink-0">🚨</span>
               <div>
-                <p className="text-sm font-bold text-red-600 mb-1">지금의 위기</p>
-                <p className="text-sm text-red-700 leading-relaxed font-medium">{info.insight.crisis}</p>
+                <p className="text-xs font-bold text-red-600 mb-1">지금의 위기</p>
+                <p className="text-xs text-red-700 leading-relaxed font-medium" style={{ wordBreak: 'keep-all' }}>{info.insight.crisis}</p>
               </div>
             </div>
-            <div className="flex gap-3 items-start rounded-2xl p-4 border" style={{ background: info.color + '08', borderColor: info.color + '30' }}>
+            <div className="flex gap-2 items-start rounded-xl p-3 border" style={{ background: info.color + '08', borderColor: info.color + '30' }}>
               <span className="text-base mt-0.5 flex-shrink-0">🎯</span>
               <div>
-                <p className="text-sm font-bold mb-1" style={{ color: info.color }}>탈출구</p>
-                <p className="text-sm leading-relaxed font-medium" style={{ color: info.color }}>{info.insight.direction}</p>
+                <p className="text-xs font-bold mb-1" style={{ color: info.color }}>탈출구</p>
+                <p className="text-xs leading-relaxed font-medium" style={{ color: info.color, wordBreak: 'keep-all' }}>{info.insight.direction}</p>
               </div>
             </div>
           </div>
@@ -597,7 +945,7 @@ export default function ResultClient({
         >
           {/* 경고 메시지 */}
           <div className="rounded-2xl p-4 mb-5" style={{ background: '#fef2f2', border: '1px solid #fecaca' }}>
-            <p className="text-sm font-bold text-red-600 mb-0.5">⚠️ 지금 당신이 하는 일</p>
+            <p className="text-base font-bold text-red-600 mb-0.5">⚠️ 지금 당신이 하는 일</p>
             <p className="text-sm text-red-500 whitespace-pre-line">{info.jobSection.warning}</p>
           </div>
 
@@ -661,44 +1009,6 @@ export default function ResultClient({
           </div>
         </div>
 
-        {/* 추천 부트캠프 */}
-        {(() => {
-          const bc = bootcampInfo[info.bootcamp]
-          return (
-            <div
-              className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
-              style={{ animationDelay: '0.4s' }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span
-                  className="text-xs font-bold px-2.5 py-1 rounded-full"
-                  style={{ background: bc.color + '18', color: bc.color }}
-                >
-                  {bc.title}
-                </span>
-              </div>
-              <h2 className="text-slate-900 font-bold text-xl mb-1">🎯 당신의 다음 스텝</h2>
-              <p className="text-slate-500 text-sm mb-4">{info.bootcampReason}</p>
-              <div
-                className="rounded-2xl p-4 mb-4"
-                style={{ background: bc.color + '08', border: `1px solid ${bc.color}20` }}
-              >
-                <p className="text-slate-500 text-sm">{bc.reason}</p>
-              </div>
-              <a
-                href="https://forms.gle/FF3mZtpSMQAowrGv7"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, type_code: typeCode })}
-                className="block text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
-                style={{ background: bc.color, color: '#fff' }}
-              >
-                무료 1:1 AI 커리어 상담 신청하기 →
-              </a>
-            </div>
-          )
-        })()}
-
         {/* 무료 특강 단톡방 */}
         <div
           className="rounded-3xl p-6 animate-fade-in-up"
@@ -707,20 +1017,19 @@ export default function ResultClient({
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">🎓</span>
             <div>
-              <p className="font-black text-slate-900 text-lg">AIMBTI 전용 무료 특강 단톡방</p>
-              <p className="text-slate-500 text-sm">매주 무료 특강 초대 · AIMBTI 유입 전용</p>
+              <p className="text-slate-900 text-xl font-black">매주 글로벌 / 대기업 현직자</p>
+              <p className="text-slate-900 text-base font-semibold">커리어 무료 특강</p>
             </div>
           </div>
-          <p className="text-slate-600 text-sm mb-4 ml-1">AI 시대를 같이 헤쳐나갈 사람들이 모여있어요 👀</p>
           <a
             href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => gtagEvent('openchat_click', { source: 'survey', type_code: typeCode })}
-            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
             style={{ background: '#FEE500', color: '#3C1E1E' }}
           >
-            💬 AIMBTI 단톡방 입장하기 (무료)
+            💬 단톡방 입장하기 (무료)
           </a>
         </div>
 
@@ -729,42 +1038,73 @@ export default function ResultClient({
           className="rounded-3xl p-6 animate-fade-in-up bg-white"
           style={{ border: '1px solid rgba(99,102,241,0.25)', animationDelay: '0.5s' }}
         >
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl">📖</span>
-            <h2 className="text-slate-900 font-bold text-xl">무료 전자책 미리보기</h2>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-2xl">📖</span>
+            <h2 className="text-slate-900 font-bold text-2xl">무료 전자책 다운받기</h2>
           </div>
-          <p className="text-slate-500 text-sm mb-4">9만원 상당 · 회원가입 시 전체 무료</p>
+          <div className="flex gap-2 mb-4">
+            <span className="bg-green-50 text-green-600 text-xs px-2.5 py-1 rounded-full font-medium">✅ 1~7페이지 무료</span>
+            <span className="bg-slate-100 text-slate-500 text-xs px-2.5 py-1 rounded-full font-medium">🔒 더 보려면 →</span>
+          </div>
 
           {ebookImages ? (
-            /* 이미지 기반 미리보기 */
-            <div className="relative rounded-2xl overflow-hidden" style={{ maxHeight: 800, border: '1px solid #e2e8f0' }}>
-              {ebookImages.map((src, i) => (
+            <div>
+              {/* 이미지 슬라이더 */}
+              <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">
                 <img
-                  key={i}
-                  src={src}
-                  alt={`전자책 미리보기 ${i + 1}`}
-                  className="w-full"
-                  style={{ display: 'block' }}
+                  src={ebookImages[ebookPage]}
+                  alt={`전자책 ${ebookPage + 1}`}
+                  className="w-full h-auto block"
                 />
-              ))}
-              {/* 하단 페이드 */}
-              <div
-                className="absolute inset-x-0 bottom-0"
-                style={{ height: '30%', background: 'linear-gradient(to bottom, transparent 0%, white 80%)' }}
-              />
-              {/* 잠금 안내 */}
-              <div className="absolute inset-x-0 bottom-4 flex flex-col items-center gap-1.5">
-                <span className="text-2xl">🔒</span>
-                <p className="text-sm font-bold text-slate-700">회원가입하면 전체 무료로 볼 수 있어요</p>
+              </div>
+
+              {/* 인디케이터 */}
+              <div className="flex justify-center gap-2 mt-3 flex-wrap">
+                {ebookImages.slice(0, EBOOK_FREE_LIMIT).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setEbookPage(i)}
+                    className="w-2 h-2 rounded-full transition-all"
+                    style={{ background: i === ebookPage ? '#6366f1' : '#e2e8f0' }}
+                  />
+                ))}
+                {ebookImages.length > EBOOK_FREE_LIMIT && (
+                  <button
+                    onClick={() => { gtagEvent('ebook_click', { type_code: typeCode, action: 'metacode' }); window.open(ebookLink, '_blank') }}
+                    className="w-2 h-2 rounded-full bg-slate-300"
+                  />
+                )}
+              </div>
+
+              {/* 화살표 */}
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={() => setEbookPage(Math.max(0, ebookPage - 1))}
+                  disabled={ebookPage === 0}
+                  className="flex-1 py-3 rounded-xl font-bold text-sm border border-slate-200 text-slate-500 disabled:opacity-30 transition-all"
+                >
+                  ← 이전
+                </button>
+                <button
+                  onClick={() => {
+                    if (ebookPage + 1 >= EBOOK_FREE_LIMIT) {
+                      gtagEvent('ebook_click', { type_code: typeCode, action: 'metacode' })
+                      window.open(ebookLink, '_blank')
+                    } else {
+                      setEbookPage(ebookPage + 1)
+                    }
+                  }}
+                  className="flex-1 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 text-white"
+                  style={{ background: '#6366f1' }}
+                >
+                  {ebookPage + 1 >= EBOOK_FREE_LIMIT ? '전체 보기 →' : '다음 →'}
+                </button>
               </div>
             </div>
           ) : (
-            /* 텍스트 기반 미리보기 (이미지 없는 유형) */
-            <div className="relative rounded-2xl overflow-hidden" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', minHeight: 200 }}>
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                <span className="text-3xl">📚</span>
-                <p className="text-sm font-bold text-slate-700">전자책 준비 중이에요</p>
-              </div>
+            <div className="rounded-2xl flex flex-col items-center justify-center gap-2 bg-slate-50 border border-slate-200 py-16">
+              <span className="text-3xl">📚</span>
+              <p className="text-sm font-bold text-slate-700">전자책 준비 중이에요</p>
             </div>
           )}
 
@@ -773,11 +1113,10 @@ export default function ResultClient({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => gtagEvent('ebook_click', { type_code: typeCode })}
-            className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90 mt-4 leading-snug"
+            className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >
-            <span className="block text-sm font-semibold opacity-80">9만원 상당의 {info.bootcamp} 전자책</span>
-            <span className="block text-base">무료로 받기 →</span>
+            무료로 다운받기 →
           </a>
         </div>
 
@@ -789,7 +1128,14 @@ export default function ResultClient({
           <p className="text-slate-900 font-black text-xl mb-1">친구들한테 공유하고 놀래켜줘!</p>
           <p className="text-slate-500 text-sm mb-5">AI 대체 가능성 {aiScore}% — 친구는 몇 %일까? 😏</p>
           <div className="flex flex-col gap-3">
-            <KakaoShareButton typeCode={typeCode} aiScore={aiScore} resultId={resultId} />
+            <button
+              onClick={handleKakaoShare}
+              disabled={shareLoading}
+              className="flex items-center justify-center gap-2 rounded-2xl font-bold text-base transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+              style={{ background: '#FEE500', color: '#3C1E1E', height: 47 }}
+            >
+              💛 {shareLoading ? '준비 중...' : '카카오톡으로 공유하기'}
+            </button>
             <button
               onClick={handleInstagramShare}
               disabled={shareLoading}
