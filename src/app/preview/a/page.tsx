@@ -24,11 +24,11 @@ export default function PreviewA() {
       {/* 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <span className="text-slate-900 font-bold text-lg tracking-tight">
-          AI<span className="text-indigo-600">MBTI</span>
+          AI<span className="text-red-500">MBTI</span>
         </span>
         <Link
           href="/test"
-          className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
+          className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
         >
           테스트 시작 →
         </Link>
@@ -123,23 +123,6 @@ export default function PreviewA() {
         </Link>
       </section>
 
-      {/* 바이럴 섹션 */}
-      <section className="px-5 py-10 bg-red-50">
-        <div className="text-center space-y-4">
-          <h2 className="text-xl font-bold text-slate-900">
-            친구 대체 가능성이 궁금하지 않나요? 😏
-          </h2>
-          <p className="text-slate-500 text-sm">
-            결과 공유하면 친구도 불안해집니다 ㅋㅋ
-          </p>
-          <Link
-            href="/test"
-            className="inline-block bg-red-500 hover:bg-red-400 text-white font-bold text-base px-8 py-3 rounded-2xl transition-colors"
-          >
-            나의 AI 대체 가능성 확인하기 →
-          </Link>
-        </div>
-      </section>
 
       {/* 푸터 */}
       <footer className="px-5 py-6 border-t border-slate-100 text-center text-slate-400 text-xs">

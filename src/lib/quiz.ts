@@ -57,7 +57,7 @@ export const questions: Question[] = [
   {
     id: 6,
     part: 'B',
-    text: 'AI가 내 일의 몇 %를 대신할 수 있을 것 같나요?',
+    text: 'AI가 내 업무를 몇 % 대신할 수 있을까?',
     options: [
       { label: '50% 이상 — AI가 많은 부분을 커버 가능', value: 'A' },
       { label: '30% 미만 — 내 일은 내가 해야 한다', value: 'S' },

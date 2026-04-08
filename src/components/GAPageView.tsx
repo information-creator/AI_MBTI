@@ -4,8 +4,9 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
 const PAGE_TITLES: Record<string, string> = {
-  '/': '랜딩',
+  '/': '시작페이지',
   '/test': '테스트',
+  '/analyzing': '로딩',
   '/privacy': '개인정보처리방침',
   '/guide': '가이드',
 }

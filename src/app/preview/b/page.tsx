@@ -19,7 +19,7 @@ export default function PreviewB() {
       {/* 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <span className="text-slate-900 font-bold text-lg tracking-tight">
-          AI<span className="text-indigo-600">MBTI</span>
+          AI<span className="text-indigo-500">MBTI</span>
         </span>
         <Link
           href="/test"
@@ -118,23 +118,6 @@ export default function PreviewB() {
         </Link>
       </section>
 
-      {/* 바이럴 섹션 */}
-      <section className="px-5 py-10 bg-indigo-50">
-        <div className="text-center space-y-4">
-          <h2 className="text-xl font-bold text-slate-900">
-            친구 AI 유형이 궁금하지 않나요? 😏
-          </h2>
-          <p className="text-slate-500 text-sm">
-            결과 공유하고 서로 유형 비교해보세요
-          </p>
-          <Link
-            href="/test"
-            className="inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base px-8 py-3 rounded-2xl transition-colors"
-          >
-            나의 AI 유형 확인하기 →
-          </Link>
-        </div>
-      </section>
 
       {/* 푸터 */}
       <footer className="px-5 py-6 border-t border-slate-100 text-center text-slate-400 text-xs">
