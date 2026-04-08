@@ -39,7 +39,7 @@ function onFormSubmit(e) {
     method: 'post',
     contentType: 'application/json',
     payload: JSON.stringify({
-      text: `🔔 새 상담 신청이 들어왔어요!\n*이름:* ${data.name || '-'}\n*연락처:* ${data.phone || '-'}\n*관심 과정:* ${data.interest || '-'}\n*AIMBTI 유형:* ${data.type_code || '-'}\n*현재 상황:* ${data.source || '-'}\n*고민:* ${data.concern || '-'}`
+      text: `🔔 새 상담 신청이 들어왔어요!\n*이름:* ${data.name || '-'}\n*연락처:* ${data.phone || '-'}\n*관심 과정:* ${data.interest || '-'}\n*현재 상황:* ${data.source || '-'}\n*고민:* ${data.concern || '-'}`
     })
   })
 }

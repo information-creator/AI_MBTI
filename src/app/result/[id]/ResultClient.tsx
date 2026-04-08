@@ -412,7 +412,7 @@ export default function ResultClient({
 
   function handleKakaoShare() {
     const BASE = window.location.origin
-    const IMAGE_BASE = 'https://aimbti.vercel.app'
+    const IMAGE_BASE = 'https://aimbti-seven.vercel.app'
     const shareUrl = `${BASE}/result/${resultId}`
     const K = (window as any).Kakao
     if (K) {
