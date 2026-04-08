@@ -25,8 +25,8 @@ function AnalyzingContent() {
   // 고정 타이머 — API와 무관하게 진행
   useEffect(() => {
     const t = setInterval(() => {
-      setPct((p) => (p >= 95 ? p : p + 2))
-    }, 80)
+      setPct((p) => (p >= 95 ? p : p + 3))
+    }, 50)
     return () => clearInterval(t)
   }, [])
 
