@@ -388,7 +388,7 @@ export const typeInfo: Record<
       ],
       transitions: [
         { from: '콘텐츠 기획자', via: 'LLM 활용', to: 'AI LLM 기획자' },
-        { from: '마케터', via: 'LLM 활용', to: 'AI LLM 기획자' },
+        { from: '마케터', via: '데이터 분석', to: '데이터 분석가' },
       ],
     },
   },
@@ -700,7 +700,7 @@ export const typeInfo: Record<
       ],
       transitions: [
         { from: '마케터', via: 'AI 마케팅 전략', to: 'AI LLM 기획자' },
-        { from: '콘텐츠팀장', via: 'LLM 활용', to: 'AI LLM 기획자' },
+        { from: '콘텐츠팀장', via: 'AI 서비스 기획', to: 'AI 서비스 개발자' },
       ],
     },
   },
@@ -778,7 +778,7 @@ export const typeInfo: Record<
       ],
       transitions: [
         { from: '마케터', via: '데이터 분석', to: '데이터 분석가' },
-        { from: '영업', via: '세일즈 데이터', to: '데이터 분석가' },
+        { from: '영업', via: 'AI 툴 기획', to: 'AI 서비스 개발자' },
       ],
     },
   },
@@ -817,7 +817,7 @@ export const typeInfo: Record<
       ],
       transitions: [
         { from: '전략기획', via: '데이터 분석', to: '데이터 분석가' },
-        { from: '조직개발', via: '피플 데이터', to: '데이터 분석가' },
+        { from: '조직개발', via: 'LLM 기획', to: 'AI LLM 기획자' },
       ],
     },
   },
@@ -856,7 +856,7 @@ export const typeInfo: Record<
       ],
       transitions: [
         { from: 'HR', via: '피플 데이터', to: '데이터 분석가' },
-        { from: '교육 담당', via: '러닝 데이터', to: '데이터 분석가' },
+        { from: '교육 담당', via: 'AI 교육 기획', to: 'AI LLM 기획자' },
       ],
     },
   },
