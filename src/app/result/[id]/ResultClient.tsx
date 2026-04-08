@@ -863,7 +863,7 @@ export default function ResultClient({
           }}
         >
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-1">{info.title}</h1>
+            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-1">{info.title}</h1>
             <p className="text-slate-600 text-base">{info.subtitle}</p>
           </div>
 
@@ -881,22 +881,22 @@ export default function ResultClient({
             <div className="flex gap-2 items-start rounded-xl p-3 border border-emerald-100" style={{ background: '#f0fdf4' }}>
               <span className="text-base mt-0.5 flex-shrink-0">💪</span>
               <div>
-                <p className="text-xs font-bold text-emerald-700 mb-1">당신의 강점</p>
-                <p className="text-xs text-emerald-800 leading-relaxed" style={{ wordBreak: 'keep-all' }}>{info.insight.strength}</p>
+                <p className="text-base font-bold text-emerald-700 mb-1">당신의 강점</p>
+                <p className="text-base text-emerald-800 leading-relaxed" style={{ wordBreak: 'keep-all' }}>{info.insight.strength}</p>
               </div>
             </div>
             <div className="flex gap-2 items-start rounded-xl p-3 border border-red-200" style={{ background: '#fff1f1' }}>
               <span className="text-base mt-0.5 flex-shrink-0">🚨</span>
               <div>
-                <p className="text-xs font-bold text-red-600 mb-1">지금의 위기</p>
-                <p className="text-xs text-red-700 leading-relaxed font-medium" style={{ wordBreak: 'keep-all' }}>{info.insight.crisis}</p>
+                <p className="text-base font-bold text-red-600 mb-1">지금의 위기</p>
+                <p className="text-base text-red-700 leading-relaxed font-medium" style={{ wordBreak: 'keep-all' }}>{info.insight.crisis}</p>
               </div>
             </div>
             <div className="flex gap-2 items-start rounded-xl p-3 border" style={{ background: info.color + '08', borderColor: info.color + '30' }}>
               <span className="text-base mt-0.5 flex-shrink-0">🎯</span>
               <div>
-                <p className="text-xs font-bold mb-1" style={{ color: info.color }}>탈출구</p>
-                <p className="text-xs leading-relaxed font-medium" style={{ color: info.color, wordBreak: 'keep-all' }}>{info.insight.direction}</p>
+                <p className="text-base font-bold mb-1" style={{ color: info.color }}>탈출구</p>
+                <p className="text-base leading-relaxed font-medium" style={{ color: info.color, wordBreak: 'keep-all' }}>{info.insight.direction}</p>
               </div>
             </div>
           </div>
