@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
+import KakaoShareButton from './KakaoShareButton'
 
 type Props = {
   typeCode: TypeCode
@@ -29,12 +30,31 @@ export default function ResultClient({
     gtagEvent('result_view', { type_code: typeCode, ai_score: aiScore })
   }, [typeCode, aiScore])
 
+  // 결과 페이지 이탈 추적 (뒤로가기 / 탭 닫기)
+  useEffect(() => {
+    const enteredAt = Date.now()
+    const handleExit = () => {
+      const timeOnPage = Math.round((Date.now() - enteredAt) / 1000)
+      gtagEvent('page_exit', { type_code: typeCode, time_on_page: timeOnPage, exit_via: 'unload' })
+    }
+    window.addEventListener('pagehide', handleExit)
+    return () => window.removeEventListener('pagehide', handleExit)
+  }, [typeCode])
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [copied, setCopied] = useState(false)
   const [shareLoading, setShareLoading] = useState(false)
   const [displayScore, setDisplayScore] = useState(0)
   const [instaToast, setInstaToast] = useState(false)
   const [ebookPage, setEbookPage] = useState(0)
+
+  const ebookLinkMap: Record<string, string> = {
+    '데이터 엔지니어': 'https://live1.metacodev.com/live/data_engineer',
+    'AI LLM': 'https://live1.metacodev.com/live/aillm',
+    '데이터 분석': 'https://live1.metacodev.com/live/data_analytics',
+    'AI 서비스 개발자': 'https://live1.metacodev.com/live/ai_service_developer',
+  }
+  const ebookLink = ebookLinkMap[info.bootcamp] ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=ebook'
 
   const FREE_PAGES = 2
   const ebookPages = [
@@ -210,15 +230,6 @@ export default function ResultClient({
     ctx.font = `bold 24px ${KR}`
     ctx.fillStyle = '#6366f1'
     ctx.fillText('AIMBTI', 50, 70)
-
-    // 타입 코드 배지
-    ctx.beginPath()
-    ctx.fillStyle = info.color + '20'
-    ctx.roundRect(50, 84, 110, 34, 8)
-    ctx.fill()
-    ctx.font = `bold 18px ${KR}`
-    ctx.fillStyle = info.color
-    ctx.fillText(typeCode, 70, 107)
 
     // 캐릭터 이미지
     try {
@@ -410,33 +421,6 @@ export default function ResultClient({
     setTimeout(() => setCopied(false), 2000)
   }
 
-  function handleKakaoShare() {
-    const BASE = window.location.origin
-    const IMAGE_BASE = 'https://aimbti-seven.vercel.app'
-    const shareUrl = `${BASE}/result/${resultId}`
-    const K = (window as any).Kakao
-    if (K) {
-      if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY)
-      K.Share.sendDefault({
-        objectType: 'feed',
-        content: {
-          title: `나는 "${info.title}"`,
-          description: `AI 대체 가능성 ${aiScore}%`,
-          imageUrl: `${IMAGE_BASE}/result/${resultId}/opengraph-image`,
-          imageWidth: 900,
-          imageHeight: 900,
-          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
-        },
-        buttons: [
-          { title: '결과 보러가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } },
-        ],
-      })
-    } else {
-      navigator.clipboard.writeText(shareUrl)
-      alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
-    }
-    gtagEvent('share_click', { method: 'kakao' })
-  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -470,12 +454,13 @@ export default function ResultClient({
       )}
 
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
-        <Link href="/" className="text-slate-900 font-bold text-lg">
+        <Link href="/" className="text-slate-900 font-bold text-lg" onClick={() => gtagEvent('exit_click', { destination: '/', label: 'home_logo', type_code: typeCode })}>
           AI<span className="text-indigo-600">MBTI</span>
         </Link>
         <Link
           href="/test"
           className="text-sm text-slate-400 hover:text-slate-700 transition-colors"
+          onClick={() => gtagEvent('exit_click', { destination: '/test', label: 'header_retest', type_code: typeCode })}
         >
           다시 테스트 →
         </Link>
@@ -710,56 +695,6 @@ export default function ResultClient({
           )
         })()}
 
-        {/* 공유 섹션 */}
-        <div
-          className="rounded-3xl p-6 animate-fade-in-up bg-white"
-          style={{ border: '1px solid #e2e8f0', animationDelay: '0.45s' }}
-        >
-          <p className="text-slate-900 font-black text-xl mb-1">친구들한테 공유하고 놀래켜줘!</p>
-          <p className="text-slate-500 text-sm mb-5">AI 대체 가능성 {aiScore}% — 친구는 몇 %일까? 😏</p>
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={handleKakaoShare}
-              className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ background: '#FEE500', color: '#3C1E1E' }}
-            >
-              💛 카카오톡으로 공유하기
-            </button>
-            <button
-              onClick={handleInstagramShare}
-              disabled={shareLoading}
-              className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
-              style={{
-                background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                color: '#fff',
-              }}
-            >
-              📷 {shareLoading ? '준비 중...' : '인스타그램에 공유하기'}
-            </button>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={handleDownloadCard}
-                disabled={shareLoading}
-                className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
-                style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }}
-              >
-                {shareLoading ? '⏳ 생성 중...' : '🖼️ 이미지 저장하기'}
-              </button>
-              <button
-                onClick={handleCopyLink}
-                className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{
-                  background: copied ? '#10b981' : '#f1f5f9',
-                  color: copied ? '#fff' : '#475569',
-                  border: `1px solid ${copied ? '#10b981' : '#e2e8f0'}`,
-                }}
-              >
-                {copied ? '✅ 복사됨!' : '🔗 링크 복사'}
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* 무료 특강 단톡방 */}
         <div
           className="rounded-3xl p-6 animate-fade-in-up"
@@ -869,15 +804,61 @@ export default function ResultClient({
           </div>
 
           <a
-            href="https://metacodes.co.kr/?utm_source=aimbti&utm_medium=ebook"
+            href={ebookLink}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => gtagEvent('ebook_click', { type_code: typeCode })}
-            className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90 mt-4"
+            className="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90 mt-4 leading-snug"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >
-            전체 보기 — 메타코드 회원가입 (무료) →
+            <span className="block text-sm font-semibold opacity-80">9만원 상당의 {info.bootcamp} 전자책</span>
+            <span className="block text-base">무료로 받기 →</span>
           </a>
+        </div>
+
+        {/* 공유 섹션 */}
+        <div
+          className="rounded-3xl p-6 animate-fade-in-up bg-white"
+          style={{ border: '1px solid #e2e8f0', animationDelay: '0.45s' }}
+        >
+          <p className="text-slate-900 font-black text-xl mb-1">친구들한테 공유하고 놀래켜줘!</p>
+          <p className="text-slate-500 text-sm mb-5">AI 대체 가능성 {aiScore}% — 친구는 몇 %일까? 😏</p>
+          <div className="flex flex-col gap-3">
+            <KakaoShareButton typeCode={typeCode} aiScore={aiScore} resultId={resultId} />
+            <button
+              onClick={handleInstagramShare}
+              disabled={shareLoading}
+              className="flex items-center justify-center gap-2 rounded-2xl font-bold text-base transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+              style={{
+                background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                color: '#fff',
+                height: 47,
+              }}
+            >
+              📷 {shareLoading ? '준비 중...' : '인스타그램에 공유하기'}
+            </button>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={handleDownloadCard}
+                disabled={shareLoading}
+                className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+                style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }}
+              >
+                {shareLoading ? '⏳ 생성 중...' : '🖼️ 이미지 저장하기'}
+              </button>
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                style={{
+                  background: copied ? '#10b981' : '#f1f5f9',
+                  color: copied ? '#fff' : '#475569',
+                  border: `1px solid ${copied ? '#10b981' : '#e2e8f0'}`,
+                }}
+              >
+                {copied ? '✅ 복사됨!' : '🔗 링크 복사'}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* 다시 테스트 */}
@@ -885,6 +866,7 @@ export default function ResultClient({
           <Link
             href="/test"
             className="inline-block text-slate-400 hover:text-slate-700 text-sm transition-colors"
+            onClick={() => gtagEvent('exit_click', { destination: '/test', label: 'bottom_retest', type_code: typeCode })}
           >
             ← 테스트 다시 하기
           </Link>
