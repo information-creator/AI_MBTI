@@ -20,7 +20,7 @@ type Props = {
 
 function RadarChart({ scores, color }: { scores: Scores; color: string }) {
   // 5각형: 위=혼자/함께, 우상=AI활용/사람감각, 우하=논리형/창의형, 좌하=빠른실행/완벽준비, 좌상=야근러/칼퇴파
-  const R = 185, cx = 320, cy = 275
+  const R = 185, cx = 325, cy = 300
   const N = 5
   const angles = Array.from({ length: N }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / N)
   const targetVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 6]
@@ -57,7 +57,7 @@ function RadarChart({ scores, color }: { scores: Scores; color: string }) {
   ]
 
   return (
-    <svg viewBox="0 0 640 540" className="w-full max-w-[640px] mx-auto">
+    <svg viewBox="0 0 670 570" className="w-full max-w-[670px] mx-auto">
       {[0.25, 0.5, 0.75, 1].map(l => (
         <polygon key={l} points={gridPts(l)} fill="none" stroke="#e2e8f0" strokeWidth="1" />
       ))}
@@ -76,7 +76,7 @@ function RadarChart({ scores, color }: { scores: Scores; color: string }) {
         const yOff = i === 0 ? -10 : (i === 2 || i === 3) ? 10 : 0
         return (
           <g key={i}>
-            <text x={lx} y={ly + yOff - 10} textAnchor={anchors[i]} fontSize="28" fontWeight="700" fill="#1e293b" fontFamily="'Apple SD Gothic Neo','Malgun Gothic',sans-serif">
+            <text x={lx} y={ly + yOff - 10} textAnchor={anchors[i]} fontSize="27" fontWeight="700" fill="#1e293b" fontFamily="'Apple SD Gothic Neo','Malgun Gothic',sans-serif">
               {dominant ? hi : lo}
             </text>
           </g>
@@ -829,7 +829,7 @@ export default function ResultClient({
 
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <Link href="/" className="text-slate-900 font-bold text-lg" onClick={() => gtagEvent('exit_click', { destination: '/', label: 'home_logo', type_code: typeCode })}>
-          AI<span className="text-indigo-600">MBTI</span>
+          AI<span className="text-red-500">MBTI</span>
         </Link>
         <Link
           href="/test"

@@ -29,11 +29,10 @@ const ebookData = [
 
 function EbookSlider({ images }: { images: string[] }) {
   const [page, setPage] = useState(0)
-  const [showPopup, setShowPopup] = useState(false)
 
   const handleNext = () => {
     if (page + 1 >= FREE_LIMIT) {
-      setShowPopup(true)
+      window.open('https://metacodes.co.kr/', '_blank')
     } else {
       setPage(page + 1)
     }
@@ -41,41 +40,6 @@ function EbookSlider({ images }: { images: string[] }) {
 
   return (
     <div>
-      {/* 팝업 */}
-      {showPopup && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-center pb-8 px-4"
-          style={{ background: 'rgba(0,0,0,0.5)' }}
-          onClick={() => setShowPopup(false)}
-        >
-          <div
-            className="w-full max-w-sm rounded-3xl p-6 space-y-4 bg-white"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-center space-y-2">
-              <div className="text-4xl">📚</div>
-              <p className="text-slate-900 font-bold text-lg">전체 전자책 보기</p>
-              <p className="text-slate-500 text-sm">메타코드 사이트에서 전체 내용을 무료로 확인하세요</p>
-            </div>
-            <a
-              href="https://metacodes.co.kr/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full text-center font-bold text-white py-3.5 rounded-2xl text-sm"
-              style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)' }}
-            >
-              메타코드 사이트로 이동 →
-            </a>
-            <button
-              onClick={() => setShowPopup(false)}
-              className="block w-full text-center text-slate-400 text-sm py-2"
-            >
-              닫기
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* 이미지 */}
       <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">
         <img
@@ -98,7 +62,7 @@ function EbookSlider({ images }: { images: string[] }) {
         ))}
         {images.length > FREE_LIMIT && (
           <button
-            onClick={() => setShowPopup(true)}
+            onClick={() => window.open('https://metacodes.co.kr/', '_blank')}
             className="w-2.5 h-2.5 rounded-full bg-slate-300"
           />
         )}

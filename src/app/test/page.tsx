@@ -73,7 +73,7 @@ export default function TestPage() {
     // 마지막 문항 — 결과 계산 후 analyzing 페이지로
     const result = calculateResult(newAnswers)
     router.push(
-      `/analyzing?type=${result.typeCode}&score=${result.aiScore}&overtime=${encodeURIComponent(result.overtimeLevel)}`
+      `/analyzing?type=${result.typeCode}&score=${result.aiScore}&overtime=${encodeURIComponent(result.overtimeLevel)}&sa=${result.scores.a}&sb=${result.scores.b}&sc=${result.scores.c}&sd=${result.scores.d}&se=${result.scores.e}`
     )
   }
 

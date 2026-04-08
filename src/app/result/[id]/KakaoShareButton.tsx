@@ -25,8 +25,8 @@ export default function KakaoShareButton({ typeCode, aiScore, resultId }: Props)
           title: `나는 "${info.title}"`,
           description: `AI 대체 가능성 ${aiScore}%`,
           imageUrl: `${IMAGE_BASE}/result/${resultId}/opengraph-image`,
-          imageWidth: 900,
-          imageHeight: 900,
+          imageWidth: 800,
+          imageHeight: 1600,
           link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
         },
         buttons: [

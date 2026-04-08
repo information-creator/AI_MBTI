@@ -218,6 +218,7 @@ export type ResultData = {
   aiScore: number
   overtimeLevel: string
   overtimeComment: string
+  scores: { a: number; b: number; c: number; d: number; e: number }
 }
 
 export const bootcampInfo: Record<
@@ -318,7 +319,7 @@ export const typeInfo: Record<
     subtitle: '완벽하게 설계한 뒤 AI로 폭발하는 LLM형',
     emoji: '🔭',
     color: '#0ea5e9',
-    aiScore: 25,
+    aiScore: 32,
     bootcamp: 'AI 서비스 개발자',
     bootcampReason: 'AI를 검증하며 쓰는 당신, 서비스 설계까지 더하면 AI 시대 핵심 인재가 됩니다.',
     description:
@@ -357,7 +358,7 @@ export const typeInfo: Record<
     subtitle: 'AI + 창의력 = 대체 불가 DA형',
     emoji: '🎨',
     color: '#10b981',
-    aiScore: 32,
+    aiScore: 38,
     bootcamp: 'AI LLM',
     bootcampReason: '창의력 + AI 도구 조합이 가장 강력합니다. LLM을 조수로 쓰는 법을 배우세요.',
     description:
@@ -396,7 +397,7 @@ export const typeInfo: Record<
     subtitle: 'AI는 도구, 완성은 나 — DA형 장인',
     emoji: '🌙',
     color: '#14b8a6',
-    aiScore: 30,
+    aiScore: 44,
     bootcamp: 'AI LLM',
     bootcampReason: '감성 + AI = 아무도 못 따라오는 창작 역량. LLM으로 완성하세요.',
     description:
@@ -435,7 +436,7 @@ export const typeInfo: Record<
     subtitle: '말 없이 혼자 데이터 다 처리하는 DA형',
     emoji: '⚙️',
     color: '#64748b',
-    aiScore: 48,
+    aiScore: 72,
     bootcamp: '데이터 엔지니어',
     bootcampReason: '논리적이고 꼼꼼한 당신, 파이프라인 설계자로 전환하면 AI가 대체 못 합니다.',
     description:
@@ -474,7 +475,7 @@ export const typeInfo: Record<
     subtitle: '아무도 모르게 혼자 시스템 다 만드는 DE형',
     emoji: '♟️',
     color: '#475569',
-    aiScore: 45,
+    aiScore: 76,
     bootcamp: '데이터 엔지니어',
     bootcampReason: '꼼꼼한 당신의 분석력 + 파이프라인 설계 = AI 시대 가장 안전한 커리어.',
     description:
@@ -513,7 +514,7 @@ export const typeInfo: Record<
     subtitle: '혼자서 빠르게 뚝딱 — AI 없이도 DA형',
     emoji: '🎭',
     color: '#f59e0b',
-    aiScore: 38,
+    aiScore: 70,
     bootcamp: '데이터 분석',
     bootcampReason: '감성 + 데이터 분석 조합은 AI 시대 크리에이터의 최강 무기입니다.',
     description:
@@ -552,7 +553,7 @@ export const typeInfo: Record<
     subtitle: '느려도 괜찮아, 결과물이 예술이니까',
     emoji: '🌸',
     color: '#f97316',
-    aiScore: 35,
+    aiScore: 74,
     bootcamp: '데이터 분석',
     bootcampReason: '완벽한 감성 + 데이터 = AI 시대에도 살아남는 크리에이터 조합.',
     description:
@@ -591,7 +592,7 @@ export const typeInfo: Record<
     subtitle: 'AI + 팀워크 = 최강 조합 LLM형',
     emoji: '⚡',
     color: '#3b82f6',
-    aiScore: 31,
+    aiScore: 52,
     bootcamp: 'AI 서비스 개발자',
     bootcampReason: 'AI를 쓰는 팀 리더, 직접 서비스를 설계하면 조직에서 독보적이 됩니다.',
     description:
@@ -630,7 +631,7 @@ export const typeInfo: Record<
     subtitle: '팀 + AI로 완벽한 시스템 설계 — LLM형',
     emoji: '🏗️',
     color: '#6366f1',
-    aiScore: 29,
+    aiScore: 55,
     bootcamp: 'AI 서비스 개발자',
     bootcampReason: '팀과 AI로 완벽하게 설계하는 당신, AI 서비스 개발로 커리어를 확장하세요.',
     description:
@@ -669,7 +670,7 @@ export const typeInfo: Record<
     subtitle: '팀 속에서 AI로 창의 폭발 — DA형',
     emoji: '🎙️',
     color: '#8b5cf6',
-    aiScore: 33,
+    aiScore: 48,
     bootcamp: 'AI LLM',
     bootcampReason: '팀 크리에이터 + AI LLM = 시장에서 가장 강력한 콘텐츠 파워.',
     description:
@@ -708,7 +709,7 @@ export const typeInfo: Record<
     subtitle: '팀 + AI + 감성 = 독보적 DA형',
     emoji: '🎭',
     color: '#a855f7',
-    aiScore: 31,
+    aiScore: 51,
     bootcamp: 'AI LLM',
     bootcampReason: '협력 + 감성 + AI LLM = 누구도 흉내 낼 수 없는 창작 역량.',
     description:
@@ -747,7 +748,7 @@ export const typeInfo: Record<
     subtitle: 'AI 없어도 사람 네트워크가 곧 데이터 — DE형',
     emoji: '📊',
     color: '#0ea5e9',
-    aiScore: 61,
+    aiScore: 82,
     bootcamp: '데이터 분석',
     bootcampReason: '당신의 강점 + 데이터 = AI 시대 생존 패키지',
     description:
@@ -786,7 +787,7 @@ export const typeInfo: Record<
     subtitle: '느리지만 팀 전체를 완벽하게 묶는 DE형',
     emoji: '🏢',
     color: '#1d4ed8',
-    aiScore: 58,
+    aiScore: 85,
     bootcamp: '데이터 분석',
     bootcampReason: '전략 + 데이터 분석 = 조직에서 독보적인 의사결정자.',
     description:
@@ -825,7 +826,7 @@ export const typeInfo: Record<
     subtitle: '감성으로 팀 살리는 DA형 에너지 메이커',
     emoji: '🤝',
     color: '#ec4899',
-    aiScore: 65,
+    aiScore: 78,
     bootcamp: '데이터 분석',
     bootcampReason: '사람 중심 강점 + 데이터 = AI 시대 HR·영업에서 최강.',
     description:
@@ -864,7 +865,7 @@ export const typeInfo: Record<
     subtitle: '느리지만 팀 + 감성으로 완벽 마무리 — DE형',
     emoji: '🛡️',
     color: '#f43f5e',
-    aiScore: 62,
+    aiScore: 88,
     bootcamp: '데이터 분석',
     bootcampReason: '완벽한 팀플레이어 + 데이터 = AI 시대에도 살아남는 조합.',
     description:
@@ -904,6 +905,7 @@ export const typeInfo: Record<
 function calcOvertimeLevel(answers: Record<number, string>): {
   overtimeLevel: string
   overtimeComment: string
+  overtimeScore: number
 } {
   const q17 = answers[17] ?? ''
   const q18 = answers[18] ?? ''
@@ -928,21 +930,25 @@ function calcOvertimeLevel(answers: Record<number, string>): {
     return {
       overtimeLevel: '칼퇴 마스터',
       overtimeComment: '워라밸 끝판왕! AI 시대에 가장 건강한 커리어를 만들고 있습니다.',
+      overtimeScore: score,
     }
   } else if (score <= 2) {
     return {
       overtimeLevel: '적당한 직장인',
       overtimeComment: '야근도 하지만 균형을 잡고 있습니다. AI로 효율을 높이면 칼퇴가 가능합니다.',
+      overtimeScore: score,
     }
   } else if (score <= 4) {
     return {
       overtimeLevel: '야근 루틴러',
       overtimeComment: 'AI 자동화 도구 하나만 도입해도 야근 2시간은 줄일 수 있습니다.',
+      overtimeScore: score,
     }
   } else {
     return {
       overtimeLevel: '야근계의 전설',
       overtimeComment: '이 정도 헌신이면 AI가 당신의 야근을 없애줄 자격이 충분합니다. 지금 당장 도입하세요.',
+      overtimeScore: score,
     }
   }
 }
@@ -979,7 +985,13 @@ export function calculateResult(answers: Record<number, string>): ResultData {
   const typeCode = `${workStyle}${aiUsage}${strength}${speed}` as TypeCode
   const aiScore = typeInfo[typeCode].aiScore
 
-  const { overtimeLevel, overtimeComment } = calcOvertimeLevel(answers)
+  const { overtimeLevel, overtimeComment, overtimeScore } = calcOvertimeLevel(answers)
 
-  return { typeCode, aiScore, overtimeLevel, overtimeComment }
+  return {
+    typeCode,
+    aiScore,
+    overtimeLevel,
+    overtimeComment,
+    scores: { a: hCount, b: aCount, c: lCount, d: fCount, e: overtimeScore },
+  }
 }

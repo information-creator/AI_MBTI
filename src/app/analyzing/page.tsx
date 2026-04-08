@@ -12,6 +12,11 @@ function AnalyzingContent() {
   const typeCode = params.get('type') ?? ''
   const aiScore = Number(params.get('score') ?? 0)
   const overtimeLevel = params.get('overtime') ?? ''
+  const scoreA = params.get('sa') !== null ? Number(params.get('sa')) : null
+  const scoreB = params.get('sb') !== null ? Number(params.get('sb')) : null
+  const scoreC = params.get('sc') !== null ? Number(params.get('sc')) : null
+  const scoreD = params.get('sd') !== null ? Number(params.get('sd')) : null
+  const scoreE = params.get('se') !== null ? Number(params.get('se')) : null
 
   const [pct, setPct] = useState(0)
   const resultIdRef = useRef<string | null>(null)
@@ -43,6 +48,11 @@ function AnalyzingContent() {
             strength: typeCode[2],
             speed: typeCode[3],
             overtime_result: overtimeLevel,
+            score_a: scoreA,
+            score_b: scoreB,
+            score_c: scoreC,
+            score_d: scoreD,
+            score_e: scoreE,
           })
           .select('id')
           .single()
@@ -73,7 +83,7 @@ function AnalyzingContent() {
       const id = resultIdRef.current
       setTimeout(() => {
         if (id === '__local__') {
-          router.push(`/result/local?type=${typeCode}&score=${aiScore}&overtime=${encodeURIComponent(overtimeLevel)}`)
+          router.push(`/result/local?type=${typeCode}&score=${aiScore}&overtime=${encodeURIComponent(overtimeLevel)}&sa=${scoreA ?? ''}&sb=${scoreB ?? ''}&sc=${scoreC ?? ''}&sd=${scoreD ?? ''}&se=${scoreE ?? ''}`)
         } else {
           router.push(`/result/${id}`)
         }
