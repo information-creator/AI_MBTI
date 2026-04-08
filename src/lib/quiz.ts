@@ -950,37 +950,29 @@ function calcOvertimeLevel(answers: Record<number, string>): {
 export function calculateResult(answers: Record<number, string>): ResultData {
   // 파트 A (1-4): H vs T
   let hCount = 0
-  let tCount = 0
   for (let i = 1; i <= 4; i++) {
     if (answers[i] === 'H') hCount++
-    else if (answers[i] === 'T') tCount++
   }
   const workStyle = hCount >= 3 ? 'H' : 'T'
 
   // 파트 B (5-8): A vs S
   let aCount = 0
-  let sCount = 0
   for (let i = 5; i <= 8; i++) {
     if (answers[i] === 'A') aCount++
-    else if (answers[i] === 'S') sCount++
   }
   const aiUsage = aCount >= 3 ? 'A' : 'S'
 
   // 파트 C (9-12): L vs C
   let lCount = 0
-  let cCount = 0
   for (let i = 9; i <= 12; i++) {
     if (answers[i] === 'L') lCount++
-    else if (answers[i] === 'C') cCount++
   }
   const strength = lCount >= 3 ? 'L' : 'C'
 
   // 파트 D (13-16): F vs P
   let fCount = 0
-  let pCount = 0
   for (let i = 13; i <= 16; i++) {
     if (answers[i] === 'F') fCount++
-    else if (answers[i] === 'P') pCount++
   }
   const speed = fCount >= 3 ? 'F' : 'P'
 

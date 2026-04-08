@@ -88,6 +88,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
               src={charImgSrc}
               width={320}
               height={320}
+              alt=""
               style={{ display: 'flex', alignSelf: 'center' }}
             />
           )}

@@ -22,7 +22,7 @@ export default function ResultClient({
   overtimeLevel,
   overtimeComment,
   resultId,
-  couponCode,
+  // couponCode reserved for future use
 }: Props) {
   const info = typeInfo[typeCode]
 
@@ -188,8 +188,10 @@ export default function ResultClient({
     }
 
     // roundRect 폴리필 (iOS 15 이하)
-    if (!(ctx as any).roundRect) {
-      (ctx as any).roundRect = function(x: number, y: number, w: number, h: number, r: number) {
+    type CtxWithRoundRect = CanvasRenderingContext2D & { roundRect?: (x: number, y: number, w: number, h: number, r: number) => void }
+    const ctxExt = ctx as CtxWithRoundRect
+    if (!ctxExt.roundRect) {
+      ctxExt.roundRect = function(x: number, y: number, w: number, h: number, r: number) {
         ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y);
         ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r);
         ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);

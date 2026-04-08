@@ -16,9 +16,9 @@ export default function KakaoShareButton({ typeCode, aiScore, resultId }: Props)
     const BASE = window.location.origin
     const IMAGE_BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aimbti-seven.vercel.app'
     const shareUrl = `${BASE}/result/${resultId}`
-    const K = (window as any).Kakao
+    const K = window.Kakao
     if (K) {
-      if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY)
+      if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY ?? '')
       K.Share.sendDefault({
         objectType: 'feed',
         content: {

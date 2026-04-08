@@ -29,7 +29,7 @@ export const supabase = new Proxy({} as SupabaseClient, {
       }
       return undefined
     }
-    return (client as any)[prop]
+    return (client as unknown as Record<string | symbol, unknown>)[prop]
   },
 })
 

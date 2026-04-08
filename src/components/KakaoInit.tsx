@@ -10,7 +10,7 @@ export default function KakaoInit({ kakaoKey }: { kakaoKey: string }) {
       crossOrigin="anonymous"
       strategy="afterInteractive"
       onLoad={() => {
-        const K = (window as any).Kakao
+        const K = window.Kakao
         if (K && !K.isInitialized()) K.init(kakaoKey)
       }}
     />

@@ -17,7 +17,7 @@ export default function GAPageView({ gaId }: { gaId: string }) {
   useEffect(() => {
     const url = pathname + (searchParams.toString() ? `?${searchParams}` : '')
     const title = pathname.startsWith('/result/') ? '결과' : (PAGE_TITLES[pathname] ?? pathname)
-    ;(window as any).gtag?.('config', gaId, { page_path: url, page_title: title })
+    window.gtag?.('config', gaId, { page_path: url, page_title: title })
   }, [pathname, searchParams, gaId])
 
   return null

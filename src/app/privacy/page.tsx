@@ -19,7 +19,7 @@ export default function PrivacyPage() {
 
         <section className="space-y-2">
           <h2 className="font-bold text-slate-900">1. 수집하는 개인정보 항목</h2>
-          <p>메타코드(이하 "회사")는 부트캠프 상담 및 혜택 제공을 위해 아래 정보를 수집합니다.</p>
+          <p>메타코드(이하 &quot;회사&quot;)는 부트캠프 상담 및 혜택 제공을 위해 아래 정보를 수집합니다.</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>전화번호 (필수)</li>
           </ul>
