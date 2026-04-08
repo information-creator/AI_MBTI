@@ -29,7 +29,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const scoreColor = aiScore >= 70 ? '#ef4444' : aiScore >= 40 ? '#f59e0b' : '#10b981'
   const scoreLabel = aiScore >= 70 ? 'AI 대체 위험' : aiScore >= 40 ? '주의 필요' : '안전 구간'
 
-  const BASE = 'https://aimbti.vercel.app'
+  const BASE = 'https://aimbti-seven.vercel.app'
   const imgUrl = `${BASE}/real_charaters/${typeCode}.png`
 
   let charImgSrc = ''

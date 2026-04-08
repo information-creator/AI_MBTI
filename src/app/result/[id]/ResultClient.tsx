@@ -420,8 +420,8 @@ export default function ResultClient({
       K.Share.sendDefault({
         objectType: 'feed',
         content: {
-          title: `나는 "${info.title}" (${typeCode}) — AI 대체 가능성 ${aiScore}%`,
-          description: info.subtitle,
+          title: `나는 "${info.title}"`,
+          description: `AI 대체 가능성 ${aiScore}%`,
           imageUrl: `${IMAGE_BASE}/result/${resultId}/opengraph-image`,
           imageWidth: 900,
           imageHeight: 900,
