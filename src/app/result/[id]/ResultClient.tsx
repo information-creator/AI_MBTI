@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { TypeCode, typeInfo } from '@/lib/quiz'
+import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
 
 type Props = {
@@ -224,7 +224,7 @@ export default function ResultClient({
     try {
       const charImg = new window.Image()
       charImg.crossOrigin = 'anonymous'
-      charImg.src = `/real_charaters/${typeCode}.png`
+      charImg.src = `/reals_ch/${encodeURIComponent(info.title)}.png`
       await new Promise<void>((resolve) => {
         charImg.onload = () => resolve()
         charImg.onerror = () => resolve()
@@ -364,7 +364,7 @@ export default function ResultClient({
     ctx.fillStyle = '#94a3b8'
     ctx.fillText('aimbti.vercel.app', 50, H - 28)
 
-    return canvas.toDataURL('image/png')
+    return canvas.toDataURL('image/jpeg', 0.95)
   }
 
   async function handleDownloadCard() {
@@ -375,7 +375,7 @@ export default function ResultClient({
       if (!dataUrl) throw new Error('canvas error')
       const a = document.createElement('a')
       a.href = dataUrl
-      a.download = `aimbti_${typeCode}.png`
+      a.download = `aimbti_${typeCode}.jpg`
       a.click()
     } catch {
       alert('이미지 저장에 실패했습니다. 다시 시도해주세요.')
@@ -393,7 +393,7 @@ export default function ResultClient({
     // 이미지 다운로드
     const a = document.createElement('a')
     a.href = dataUrl
-    a.download = `aimbti_${typeCode}.png`
+    a.download = `aimbti_${typeCode}.jpg`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -485,7 +485,7 @@ export default function ResultClient({
         {/* 캐릭터 이미지 */}
         <div className="flex justify-center float-animation">
           <Image
-            src={`/real_charaters/${typeCode}.png`}
+            src={`/reals_ch/${encodeURIComponent(info.title)}.png`}
             alt={info.title}
             width={240}
             height={240}
@@ -503,7 +503,7 @@ export default function ResultClient({
             border: `1px solid ${info.color}30`,
           }}
         >
-          <div className="text-center">
+          <div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-1">{info.title}</h1>
             <p className="text-slate-600 text-base">{info.subtitle}</p>
 
@@ -535,7 +535,7 @@ export default function ResultClient({
             </div>
           </div>
 
-          <p className="mt-5 text-slate-700 leading-relaxed text-base whitespace-pre-line text-center">
+          <p className="mt-5 text-slate-700 leading-relaxed text-base whitespace-pre-line" style={{ wordBreak: 'keep-all' }}>
             {info.description}
           </p>
 
@@ -672,6 +672,44 @@ export default function ResultClient({
           </div>
         </div>
 
+        {/* 추천 부트캠프 */}
+        {(() => {
+          const bc = bootcampInfo[info.bootcamp]
+          return (
+            <div
+              className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
+              style={{ animationDelay: '0.4s' }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{ background: bc.color + '18', color: bc.color }}
+                >
+                  {bc.title}
+                </span>
+              </div>
+              <h2 className="text-slate-900 font-bold text-xl mb-1">🎯 당신의 다음 스텝</h2>
+              <p className="text-slate-500 text-sm mb-4">{info.bootcampReason}</p>
+              <div
+                className="rounded-2xl p-4 mb-4"
+                style={{ background: bc.color + '08', border: `1px solid ${bc.color}20` }}
+              >
+                <p className="text-slate-500 text-sm">{bc.reason}</p>
+              </div>
+              <a
+                href="https://forms.gle/FF3mZtpSMQAowrGv7"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => gtagEvent('bootcamp_click', { bootcamp: info.bootcamp, type_code: typeCode })}
+                className="block text-center py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+                style={{ background: bc.color, color: '#fff' }}
+              >
+                무료 1:1 AI 커리어 상담 신청하기 →
+              </a>
+            </div>
+          )
+        })()}
+
         {/* 공유 섹션 */}
         <div
           className="rounded-3xl p-6 animate-fade-in-up bg-white"
@@ -722,6 +760,31 @@ export default function ResultClient({
           </div>
         </div>
 
+        {/* 무료 특강 단톡방 */}
+        <div
+          className="rounded-3xl p-6 animate-fade-in-up"
+          style={{ background: '#FFFDE7', border: '2px solid #FEE500', animationDelay: '0.55s' }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <span className="text-2xl">🎓</span>
+            <div>
+              <p className="font-black text-slate-900 text-lg">AIMBTI 전용 무료 특강 단톡방</p>
+              <p className="text-slate-500 text-sm">매주 무료 특강 초대 · AIMBTI 유입 전용</p>
+            </div>
+          </div>
+          <p className="text-slate-600 text-sm mb-4 ml-1">AI 시대를 같이 헤쳐나갈 사람들이 모여있어요 👀</p>
+          <a
+            href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => gtagEvent('openchat_click', { source: 'survey', type_code: typeCode })}
+            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+            style={{ background: '#FEE500', color: '#3C1E1E' }}
+          >
+            💬 AIMBTI 단톡방 입장하기 (무료)
+          </a>
+        </div>
+
         {/* 무료 전자책 */}
         <div
           className="rounded-3xl p-6 animate-fade-in-up bg-white"
@@ -752,18 +815,15 @@ export default function ResultClient({
 
           {/* 페이지 뷰어 */}
           <div className="relative rounded-2xl overflow-hidden" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', minHeight: 260 }}>
-            {/* 책 헤더 */}
             <div className="px-4 pt-4 pb-2 border-b border-slate-100 flex items-center justify-between">
               <p className="text-xs font-bold text-indigo-600">AI 시대 커리어 생존 전략</p>
               <p className="text-xs text-slate-400">{ebookPage + 1} / {ebookPages.length}</p>
             </div>
-
             <div className="p-4">
               <h3 className="text-sm font-black text-slate-900 mb-3">{ebookPages[ebookPage].title}</h3>
               {ebookPage < FREE_PAGES ? (
                 ebookPages[ebookPage].content
               ) : (
-                /* 잠금 페이지 */
                 <div className="relative">
                   <div className="space-y-2 select-none" style={{ filter: 'blur(4px)', opacity: 0.4 }}>
                     {[80, 60, 90, 50, 70].map((w, i) => (
@@ -781,8 +841,6 @@ export default function ResultClient({
                 </div>
               )}
             </div>
-
-            {/* 잠금 페이지 그라데이션 (마지막 무료 페이지 하단) */}
             {ebookPage === FREE_PAGES - 1 && (
               <div
                 className="absolute inset-x-0 bottom-0 h-16"
@@ -791,7 +849,6 @@ export default function ResultClient({
             )}
           </div>
 
-          {/* 페이지 이동 버튼 */}
           <div className="flex justify-between mt-3">
             <button
               onClick={() => setEbookPage(Math.max(0, ebookPage - 1))}
@@ -820,31 +877,6 @@ export default function ResultClient({
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >
             전체 보기 — 메타코드 회원가입 (무료) →
-          </a>
-        </div>
-
-        {/* 무료 특강 단톡방 */}
-        <div
-          className="rounded-3xl p-6 animate-fade-in-up"
-          style={{ background: '#FFFDE7', border: '2px solid #FEE500', animationDelay: '0.55s' }}
-        >
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-2xl">🎓</span>
-            <div>
-              <p className="font-black text-slate-900 text-lg">AIMBTI 전용 무료 특강 단톡방</p>
-              <p className="text-slate-500 text-sm">매주 무료 특강 초대 · AIMBTI 유입 전용</p>
-            </div>
-          </div>
-          <p className="text-slate-600 text-sm mb-4 ml-1">AI 시대를 같이 헤쳐나갈 사람들이 모여있어요 👀</p>
-          <a
-            href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => gtagEvent('openchat_click', { source: 'survey', type_code: typeCode })}
-            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90"
-            style={{ background: '#FEE500', color: '#3C1E1E' }}
-          >
-            💬 AIMBTI 단톡방 입장하기 (무료)
           </a>
         </div>
 

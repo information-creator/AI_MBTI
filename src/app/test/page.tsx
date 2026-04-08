@@ -1,10 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { questions, calculateResult } from '@/lib/quiz'
-import { supabase } from '@/lib/supabase'
-import { generateCouponCode } from '@/lib/coupon'
 import { gtagEvent } from '@/lib/ga'
 
 const PART_LABELS: Record<string, string> = {
@@ -49,29 +47,13 @@ export default function TestPage() {
   const router = useRouter()
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
-  const [submitting, setSubmitting] = useState(false)
-  const [loadingPct, setLoadingPct] = useState(0)
   const [cheerStep, setCheerStep] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (!submitting) { setLoadingPct(0); return }
-    setLoadingPct(0)
-    // 0→85% 빠르게, 85% 이후 느리게 (실제 완료 전 멈춤)
-    const interval = setInterval(() => {
-      setLoadingPct((prev) => {
-        if (prev < 85) return prev + 4
-        if (prev < 95) return prev + 0.5
-        return prev
-      })
-    }, 80)
-    return () => clearInterval(interval)
-  }, [submitting])
 
   const question = questions[current]
   const progress = (current / questions.length) * 100
   const isLast = current === questions.length - 1
 
-  async function handleAnswer(value: string) {
+  function handleAnswer(value: string) {
     const newAnswers = { ...answers, [question.id]: value }
     setAnswers(newAnswers)
 
@@ -88,96 +70,16 @@ export default function TestPage() {
       return
     }
 
-    // 마지막 문항 — 결과 계산 및 저장
-    setSubmitting(true)
-    try {
-      const result = calculateResult(newAnswers)
-      gtagEvent('test_complete', {
-        type_code: result.typeCode,
-        ai_score: result.aiScore,
-      })
-
-      // Supabase에 결과 저장
-      const { data: resultRow, error: resultError } = await supabase
-        .from('results_v2')
-        .insert({
-          type_code: result.typeCode,
-          type_name: result.typeCode,
-          ai_score: result.aiScore,
-          work_style: result.typeCode[0],
-          ai_usage: result.typeCode[1],
-          strength: result.typeCode[2],
-          speed: result.typeCode[3],
-          overtime_result: result.overtimeLevel,
-        })
-        .select('id')
-        .single()
-
-      if (resultError) throw resultError
-
-      const resultId = resultRow.id
-
-      // 쿠폰 자동 발급
-      const couponCode = generateCouponCode()
-      await supabase.from('coupons').insert({
-        code: couponCode,
-        result_id: resultId,
-      })
-
-      setLoadingPct(100)
-      await new Promise((r) => setTimeout(r, 300))
-      router.push(`/result/${resultId}`)
-    } catch (err) {
-      const detail =
-        err instanceof Error
-          ? err.message
-          : typeof err === 'object' && err !== null
-          ? JSON.stringify(err)
-          : String(err)
-      console.error('결과 저장 실패:', detail, err)
-      // 저장 실패해도 임시 결과 페이지로 이동
-      const result = calculateResult(newAnswers)
-      router.push(
-        `/result/local?type=${result.typeCode}&score=${result.aiScore}&overtime=${encodeURIComponent(result.overtimeLevel)}`
-      )
-    }
+    // 마지막 문항 — 결과 계산 후 analyzing 페이지로
+    const result = calculateResult(newAnswers)
+    router.push(
+      `/analyzing?type=${result.typeCode}&score=${result.aiScore}&overtime=${encodeURIComponent(result.overtimeLevel)}`
+    )
   }
 
   function handleBack() {
     if (current === 0) router.push('/')
     else setCurrent((c) => c - 1)
-  }
-
-  if (submitting) {
-    const pct = Math.round(loadingPct)
-    const label =
-      pct < 30 ? '답변 수집 중...' :
-      pct < 60 ? 'AI 패턴 분석 중...' :
-      pct < 85 ? '유형 계산 중...' :
-      pct < 100 ? '결과 생성 중...' : '완료!'
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center space-y-5 w-64">
-          <div className="text-6xl float-animation">🤖</div>
-          <div>
-            <p className="text-slate-900 text-xl font-bold">AI가 분석 중...</p>
-            <p className="text-slate-400 text-sm mt-1">{label}</p>
-          </div>
-          <div className="space-y-2">
-            <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-150"
-                style={{
-                  width: `${pct}%`,
-                  background: 'linear-gradient(to right, #6366f1, #a855f7)',
-                }}
-              />
-            </div>
-            <p className="text-right text-xs font-semibold text-indigo-500">{pct}%</p>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   const part = question.part

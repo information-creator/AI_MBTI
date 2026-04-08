@@ -72,7 +72,7 @@ export default function LandingPage() {
           {[
             { num: '16가지', label: '생존 유형' },
             { num: '20문항', label: '정밀 진단' },
-            { num: '무료', label: '쿠폰 제공' },
+            { num: '무료', label: '완전 무료' },
           ].map((item) => (
             <div
               key={item.label}
@@ -100,7 +100,7 @@ export default function LandingPage() {
               style={{ border: `1px solid ${info.color}30`, background: info.color + '10' }}
             >
               <Image
-                src={`/real_charaters/${code}.png`}
+                src={`/reals_ch/${info.title}.png`}
                 alt={info.title} width={52} height={52} className="object-contain shrink-0" unoptimized
               />
               <div className="min-w-0">
