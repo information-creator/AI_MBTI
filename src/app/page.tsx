@@ -16,17 +16,17 @@ export default function LandingPage() {
     <main className="flex flex-col min-h-screen bg-white">
       {/* 상단 경고 배너 */}
       <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-center py-2 px-4 text-sm font-medium">
-        ⚠️ 직장인 10명 중 6명, 자기 직업 AI 대체 가능성 모른 채 출근 중
+        ⚠️ 직장인 10명 중 6명, 직업 AI 대체 가능성 모르고 출근 중
       </div>
 
       {/* 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <span className="text-slate-900 font-bold text-lg tracking-tight">
-          AI<span className="text-red-500">MBTI</span>
+            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-MBTI</span>
         </span>
         <CTAButton
           location="header"
-          className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
+          className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
         >
           테스트 시작 →
         </CTAButton>
@@ -35,15 +35,15 @@ export default function LandingPage() {
       {/* 히어로 섹션 */}
       <section className="flex-1 flex flex-col items-center justify-center px-5 py-12 text-center">
         <div className="w-full space-y-5 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-1.5 text-red-600 text-xs font-medium">
-            <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
-            지금 당신 직업이 위험합니다
+          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-full px-4 py-1.5 text-indigo-600 text-xs font-medium">
+            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+            2026년 가장 무서운 질문
           </div>
 
           <h1 className="text-4xl font-black text-slate-900 leading-tight">
             AI가 당신 월급을
             <br />
-            <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               노리고 있습니다
             </span>
           </h1>
@@ -56,7 +56,7 @@ export default function LandingPage() {
 
           <CTAButton
             location="hero"
-            className="block bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all shadow-lg shadow-red-100"
+            className="block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200"
           >
             나의 AI 대체 가능성 확인하기 (무료) →
           </CTAButton>
@@ -87,14 +87,14 @@ export default function LandingPage() {
       {/* 유형 미리보기 */}
       <section className="px-5 py-10 bg-slate-50">
         <div className="flex justify-center mb-4">
-        <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-1.5 text-red-600 text-xs font-medium">
-          <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+        <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-full px-4 py-1.5 text-indigo-600 text-xs font-medium">
+          <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
           AI 유형 미리보기
         </div>
         </div>
         <h2 className="text-2xl font-black text-slate-900 leading-tight mb-2 text-center">
           유형마다{' '}
-          <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             대체 가능성
           </span>
           이 다릅니다
@@ -123,7 +123,7 @@ export default function LandingPage() {
 
         <CTAButton
           location="type_preview"
-          className="block mt-6 text-center bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all"
+          className="block mt-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all"
         >
           내 대체 가능성 확인하기 →
         </CTAButton>
@@ -132,12 +132,11 @@ export default function LandingPage() {
       {/* 푸터 */}
       <footer className="px-5 py-6 border-t border-slate-100 text-center text-slate-400 text-xs">
         <p>
-          © 2026 AIMBTI ·{' '}
+          © 2026 AI-MBTI ·{' '}
           <a href="https://metacode.kr" className="hover:text-slate-600 transition-colors">
             metacode.kr
           </a>
         </p>
-        <p className="mt-1">개인정보 미수집 · 익명 저장</p>
       </footer>
     </main>
   )

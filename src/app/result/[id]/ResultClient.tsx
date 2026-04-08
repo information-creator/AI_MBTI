@@ -348,12 +348,63 @@ export default function ResultClient({
     ctx.fillText(info.subtitle, W / 2, titleBottom + 22)
     ctx.textAlign = 'left'
 
-    // 구분선
-    ctx.fillStyle = '#e2e8f0'
-    ctx.fillRect(50, titleBottom + 52, W - 100, 1)
+
+    // 성향 5각형 (유형명 바로 아래)
+    const pentaStartY = titleBottom + 78
+    ctx.font = `bold 20px ${KR}`
+    ctx.fillStyle = '#94a3b8'
+    ctx.textAlign = 'left'
+    ctx.fillText('나의 성향 DNA', 50, pentaStartY)
+
+    const pCx = W / 2, pCy = pentaStartY + 170, pR = 130
+    const pN = 5
+    const pAngles = Array.from({ length: pN }, (_,i) => -Math.PI/2 + i * 2*Math.PI/pN)
+    const pVals = [scores.a/4, scores.b/4, scores.c/4, scores.d/4, scores.e/6]
+    const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
+    const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
+
+    for (const level of [0.25, 0.5, 0.75, 1.0]) {
+      ctx.beginPath()
+      pAngles.forEach((a, i) => {
+        const x = pCx + pR * level * Math.cos(a)
+        const y = pCy + pR * level * Math.sin(a)
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+      })
+      ctx.closePath(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; ctx.stroke()
+    }
+    pAngles.forEach(a => {
+      ctx.beginPath(); ctx.moveTo(pCx, pCy)
+      ctx.lineTo(pCx + pR * Math.cos(a), pCy + pR * Math.sin(a))
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; ctx.stroke()
+    })
+    ctx.beginPath()
+    pVals.forEach((v, i) => {
+      const r = pR * Math.max(v, 0.05)
+      if (i === 0) ctx.moveTo(pCx + r * Math.cos(pAngles[i]), pCy + r * Math.sin(pAngles[i]))
+      else ctx.lineTo(pCx + r * Math.cos(pAngles[i]), pCy + r * Math.sin(pAngles[i]))
+    })
+    ctx.closePath(); ctx.fillStyle = info.color + '30'; ctx.fill()
+    ctx.strokeStyle = info.color; ctx.lineWidth = 3; ctx.stroke()
+    pVals.forEach((v, i) => {
+      const r = pR * Math.max(v, 0.05)
+      ctx.beginPath(); ctx.arc(pCx + r * Math.cos(pAngles[i]), pCy + r * Math.sin(pAngles[i]), 7, 0, Math.PI * 2)
+      ctx.fillStyle = info.color; ctx.fill()
+    })
+    const labelR = pR + 44
+    pAngles.forEach((a, i) => {
+      const lx = pCx + labelR * Math.cos(a), ly = pCy + labelR * Math.sin(a)
+      const dominant = pVals[i] >= 0.5
+      const mainLabel = dominant ? pLabelsHi[i] : (pLabelsLo[i] || pLabelsHi[i])
+      const subLabel = dominant ? pLabelsLo[i] : pLabelsHi[i]
+      const cosA = Math.cos(a)
+      ctx.textAlign = cosA > 0.1 ? 'left' : cosA < -0.1 ? 'right' : 'center'
+      ctx.font = `bold 18px ${KR}`; ctx.fillStyle = '#1e293b'; ctx.fillText(mainLabel, lx, ly - 4)
+      if (subLabel) { ctx.font = `14px ${KR}`; ctx.fillStyle = '#94a3b8'; ctx.fillText(subLabel, lx, ly + 16) }
+    })
+    ctx.textAlign = 'left'
 
     // AI 대체 점수 섹션 배경
-    const scoreY = titleBottom + 80
+    const scoreY = pCy + pR + 80
     ctx.beginPath()
     ctx.fillStyle = '#f8fafc'
     ctx.roundRect(50, scoreY - 20, W - 100, 130, 16)
@@ -388,9 +439,6 @@ export default function ResultClient({
     ctx.roundRect(80, barY, (W - 160) * (aiScore / 100), 14, 7)
     ctx.fill()
 
-    // 구분선
-    ctx.fillStyle = '#e2e8f0'
-    ctx.fillRect(50, scoreY + 112, W - 100, 1)
 
     // 인사이트 섹션
     const insightY = scoreY + 140
@@ -449,98 +497,8 @@ export default function ResultClient({
     ctx.fillStyle = '#1e293b'
     ctx.fillText(info.jobs.slice(0, 3).join('  ·  '), 50, jobY + 36)
 
-    // 성향 5각형
-    const pentaStartY = jobY + 80
-    ctx.font = `bold 20px ${KR}`
-    ctx.fillStyle = '#94a3b8'
-    ctx.fillText('나의 성향 DNA', 50, pentaStartY)
-
-    const pCx = W / 2, pCy = pentaStartY + 170, pR = 130
-    const pN = 5
-    const pAngles = Array.from({ length: pN }, (_,i) => -Math.PI/2 + i * 2*Math.PI/pN)
-    const pVals = [scores.a/4, scores.b/4, scores.c/4, scores.d/4, scores.e/6]
-    const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
-    const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
-
-    // 그리드
-    for (const level of [0.25, 0.5, 0.75, 1.0]) {
-      ctx.beginPath()
-      pAngles.forEach((a, i) => {
-        const x = pCx + pR * level * Math.cos(a)
-        const y = pCy + pR * level * Math.sin(a)
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
-      })
-      ctx.closePath()
-      ctx.strokeStyle = '#e2e8f0'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-    }
-
-    // 축선
-    pAngles.forEach(a => {
-      ctx.beginPath()
-      ctx.moveTo(pCx, pCy)
-      ctx.lineTo(pCx + pR * Math.cos(a), pCy + pR * Math.sin(a))
-      ctx.strokeStyle = '#e2e8f0'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-    })
-
-    // 데이터 다각형
-    ctx.beginPath()
-    pVals.forEach((v, i) => {
-      const r = pR * Math.max(v, 0.05)
-      const x = pCx + r * Math.cos(pAngles[i])
-      const y = pCy + r * Math.sin(pAngles[i])
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
-    })
-    ctx.closePath()
-    ctx.fillStyle = info.color + '30'
-    ctx.fill()
-    ctx.strokeStyle = info.color
-    ctx.lineWidth = 3
-    ctx.stroke()
-
-    // 점
-    pVals.forEach((v, i) => {
-      const r = pR * Math.max(v, 0.05)
-      const x = pCx + r * Math.cos(pAngles[i])
-      const y = pCy + r * Math.sin(pAngles[i])
-      ctx.beginPath()
-      ctx.arc(x, y, 7, 0, Math.PI * 2)
-      ctx.fillStyle = info.color
-      ctx.fill()
-    })
-
-    // 레이블
-    const labelR = pR + 44
-    pAngles.forEach((a, i) => {
-      const lx = pCx + labelR * Math.cos(a)
-      const ly = pCy + labelR * Math.sin(a)
-      const dominant = pVals[i] >= 0.5
-      const mainLabel = dominant ? pLabelsHi[i] : (pLabelsLo[i] || pLabelsHi[i])
-      const subLabel = dominant ? pLabelsLo[i] : pLabelsHi[i]
-      const cosA = Math.cos(a)
-      ctx.textAlign = cosA > 0.1 ? 'left' : cosA < -0.1 ? 'right' : 'center'
-      ctx.font = `bold 18px ${KR}`
-      ctx.fillStyle = '#1e293b'
-      ctx.fillText(mainLabel, lx, ly - 4)
-      if (subLabel) {
-        ctx.font = `14px ${KR}`
-        ctx.fillStyle = '#94a3b8'
-        ctx.fillText(subLabel, lx, ly + 16)
-      }
-    })
-    ctx.textAlign = 'left'
 
     // 하단 CTA 띠
-    ctx.fillStyle = '#f8fafc'
-    ctx.fillRect(0, H - 110, W, 110)
-    ctx.fillStyle = '#e2e8f0'
-    ctx.fillRect(0, H - 111, W, 1)
-    ctx.font = `bold 22px ${KR}`
-    ctx.fillStyle = '#6366f1'
-    ctx.fillText('나도 진단해보기 →', 50, H - 60)
     ctx.font = `18px ${KR}`
     ctx.fillStyle = '#94a3b8'
     ctx.fillText('aimbti.vercel.app', 50, H - 28)
@@ -550,7 +508,7 @@ export default function ResultClient({
 
   async function handleDownloadCard() {
     setShareLoading(true)
-    gtagEvent('share_click', { method: 'card_download' })
+    gtagEvent('exit_click', { label: 'share_image_download', type_code: typeCode })
     try {
       const dataUrl = await drawShareCard()
       if (!dataUrl) throw new Error('canvas error')
@@ -565,7 +523,7 @@ export default function ResultClient({
   }
 
   async function handleInstagramShare() {
-    gtagEvent('share_click', { method: 'instagram' })
+    gtagEvent('exit_click', { label: 'share_instagram', type_code: typeCode })
     setShareLoading(true)
 
     const dataUrl = await drawShareCard()
@@ -642,38 +600,8 @@ export default function ResultClient({
     ctx.font = `18px ${KR}`; ctx.fillStyle = '#64748b'
     ctx.fillText(info.subtitle, 50, titleBottom + 20)
 
-    const scoreY = titleBottom + 54
-    ctx.beginPath(); ctx.fillStyle = '#f8fafc'; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.fill()
-    ctx.beginPath(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.stroke()
-
-    ctx.font = `bold 15px ${KR}`; ctx.fillStyle = '#64748b'; ctx.fillText('AI 대체 가능성', 80, scoreY + 26)
-    ctx.font = `bold 50px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(`${aiScore}%`, 80, scoreY + 78)
-    ctx.font = `17px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(scoreLabel, 220, scoreY + 78)
-
-    const barY = scoreY + 92
-    ctx.beginPath(); ctx.fillStyle = '#e2e8f0'; ctxR.roundRect!(80, barY, W - 160, 12, 6); ctx.fill()
-    const bg = ctx.createLinearGradient(80, 0, W - 160, 0)
-    bg.addColorStop(0, '#6366f1'); bg.addColorStop(1, scoreColor)
-    ctx.beginPath(); ctx.fillStyle = bg; ctxR.roundRect!(80, barY, (W - 160) * (aiScore / 100), 12, 6); ctx.fill()
-
-    const insightItems = [
-      { emoji: '💪', label: '강점', text: info.insight.strength, bg: '#f0fdf4', border: '#bbf7d0', labelColor: '#15803d', textColor: '#166534' },
-      { emoji: '🚨', label: '현실', text: info.insight.crisis, bg: '#fff1f2', border: '#fecdd3', labelColor: '#dc2626', textColor: '#9f1239' },
-      { emoji: '🎯', label: '할 것', text: info.insight.direction, bg: info.color + '0d', border: info.color + '30', labelColor: info.color, textColor: info.color },
-    ]
-    let iy = scoreY + 128
-    for (const item of insightItems) {
-      ctx.beginPath(); ctx.fillStyle = item.bg; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.fill()
-      ctx.beginPath(); ctx.strokeStyle = item.border; ctx.lineWidth = 1.5; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.stroke()
-      ctx.font = `20px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(item.emoji, 74, iy + 26)
-      ctx.font = `bold 13px ${KR}`; ctx.fillStyle = item.labelColor; ctx.fillText(item.label, 110, iy + 20)
-      const short = item.text.length > 32 ? item.text.slice(0, 32) + '…' : item.text
-      ctx.font = `14px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(short, 110, iy + 42)
-      iy += 78
-    }
-
-    // 성향 5각형
-    const pentaStartY = iy + 20
+    // 성향 5각형 (유형명 바로 아래)
+    const pentaStartY = titleBottom + 50
     ctx.font = `bold 18px ${KR}`; ctx.fillStyle = '#94a3b8'
     ctx.fillText('나의 성향 DNA', 50, pentaStartY)
 
@@ -728,18 +656,44 @@ export default function ResultClient({
     })
     ctx.textAlign = 'left'
 
-    // 하단 CTA (pentagon 바로 아래)
-    const ctaY = pCy + pR + 70
-    ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, ctaY, W, 52)
-    ctx.fillStyle = '#e2e8f0'; ctx.fillRect(0, ctaY, W, 1)
-    ctx.font = `bold 17px ${KR}`; ctx.fillStyle = '#6366f1'; ctx.fillText('나도 진단해보기 →', 50, ctaY + 34)
-    ctx.font = `15px ${KR}`; ctx.fillStyle = '#94a3b8'; ctx.fillText('aimbti.vercel.app', W - 195, ctaY + 34)
+    // AI 점수 (pentagon 아래)
+    const scoreY = pCy + pR + 56
+    ctx.beginPath(); ctx.fillStyle = '#f8fafc'; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.fill()
+    ctx.beginPath(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.stroke()
+    ctx.font = `bold 15px ${KR}`; ctx.fillStyle = '#64748b'; ctx.fillText('AI 대체 가능성', 80, scoreY + 26)
+    ctx.font = `bold 50px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(`${aiScore}%`, 80, scoreY + 78)
+    ctx.font = `17px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(scoreLabel, 220, scoreY + 78)
+    const barY = scoreY + 92
+    ctx.beginPath(); ctx.fillStyle = '#e2e8f0'; ctxR.roundRect!(80, barY, W - 160, 12, 6); ctx.fill()
+    const bg = ctx.createLinearGradient(80, 0, W - 160, 0)
+    bg.addColorStop(0, '#6366f1'); bg.addColorStop(1, scoreColor)
+    ctx.beginPath(); ctx.fillStyle = bg; ctxR.roundRect!(80, barY, (W - 160) * (aiScore / 100), 12, 6); ctx.fill()
+
+    // 인사이트 카드
+    const insightItems = [
+      { emoji: '💪', label: '강점', text: info.insight.strength, bg: '#f0fdf4', border: '#bbf7d0', labelColor: '#15803d', textColor: '#166534' },
+      { emoji: '🚨', label: '현실', text: info.insight.crisis, bg: '#fff1f2', border: '#fecdd3', labelColor: '#dc2626', textColor: '#9f1239' },
+      { emoji: '🎯', label: '할 것', text: info.insight.direction, bg: info.color + '0d', border: info.color + '30', labelColor: info.color, textColor: info.color },
+    ]
+    let iy = scoreY + 128
+    for (const item of insightItems) {
+      ctx.beginPath(); ctx.fillStyle = item.bg; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.fill()
+      ctx.beginPath(); ctx.strokeStyle = item.border; ctx.lineWidth = 1.5; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.stroke()
+      ctx.font = `20px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(item.emoji, 74, iy + 26)
+      ctx.font = `bold 13px ${KR}`; ctx.fillStyle = item.labelColor; ctx.fillText(item.label, 110, iy + 20)
+      const short = item.text.length > 32 ? item.text.slice(0, 32) + '…' : item.text
+      ctx.font = `14px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(short, 110, iy + 42)
+      iy += 78
+    }
+
+    ctx.font = `15px ${KR}`; ctx.fillStyle = '#94a3b8'
+    ctx.fillText('aimbti.vercel.app', W - 195, iy + 40)
 
     return canvas.toDataURL('image/jpeg', 0.95)
   }
 
     async function handleKakaoShare() {
-    gtagEvent('share_click', { method: 'kakao' })
+    gtagEvent('exit_click', { label: 'share_kakao', type_code: typeCode })
     setShareLoading(true)
     const K = window.Kakao
     if (!K) {
@@ -790,7 +744,7 @@ export default function ResultClient({
   async function handleCopyLink() {
     const url = window.location.href
     await navigator.clipboard.writeText(url)
-    gtagEvent('share_click', { method: 'link' })
+    gtagEvent('exit_click', { label: 'share_link_copy', type_code: typeCode })
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -829,7 +783,7 @@ export default function ResultClient({
 
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <Link href="/" className="text-slate-900 font-bold text-lg" onClick={() => gtagEvent('exit_click', { destination: '/', label: 'home_logo', type_code: typeCode })}>
-          AI<span className="text-red-500">MBTI</span>
+          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-MBTI</span>
         </Link>
         <Link
           href="/test"
@@ -872,7 +826,7 @@ export default function ResultClient({
             <RadarChart scores={scores} color={info.color} />
           </div>
 
-          <p className="mt-6 text-slate-700 leading-relaxed text-base whitespace-pre-line" style={{ wordBreak: 'keep-all', lineHeight: '2' }}>
+          <p className="mt-6 text-slate-700 leading-relaxed text-base whitespace-pre-line pl-3" style={{ wordBreak: 'keep-all', lineHeight: '2' }}>
             {info.description}
           </p>
 
@@ -943,55 +897,34 @@ export default function ResultClient({
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
           style={{ animationDelay: '0.2s' }}
         >
-          {/* 경고 메시지 */}
-          <div className="rounded-2xl p-4 mb-5" style={{ background: '#fef2f2', border: '1px solid #fecaca' }}>
-            <p className="text-base font-bold text-red-600 mb-0.5">⚠️ 지금 당신이 하는 일</p>
-            <p className="text-sm text-red-500 whitespace-pre-line">{info.jobSection.warning}</p>
+          {/* 안전 스킬 박스 */}
+          <div className="rounded-2xl p-4 mb-3" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+            <p className="text-base font-bold text-emerald-700 mb-1">✅ 아직 살아있는 스킬</p>
+            <p className="text-base text-emerald-600 leading-relaxed">
+              {info.jobSection.tasks.filter(t => t.rate < 70).map(t => t.name).join(' · ')}
+              {info.jobSection.tasks.filter(t => t.rate < 70).length === 1
+                ? ' 능력은 아직 AI가 대체하지 못합니다. 이게 당신의 핵심 무기입니다.'
+                : ' — 이게 당신의 무기입니다'}
+            </p>
           </div>
 
-          {/* 업무별 AI 대체율 바 */}
-          <div className="flex flex-col gap-3 mb-5">
-            {info.jobSection.tasks.map((task) => {
-              const isDangerous = task.rate >= 70
-              return (
-                <div key={task.name}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className={`text-sm font-medium ${isDangerous ? 'text-red-500' : 'text-slate-700'}`}>
-                      {isDangerous ? `🤖 ${task.name}` : `✅ ${task.name}`}
-                    </span>
-                    <span className={`text-xs font-bold ${isDangerous ? 'text-red-500' : 'text-emerald-500'}`}>
-                      {isDangerous ? `AI 대체 ${task.rate}%` : '아직 안전'}
-                    </span>
-                  </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{
-                        width: `${task.rate}%`,
-                        background: isDangerous
-                          ? 'linear-gradient(to right, #f87171, #ef4444)'
-                          : 'linear-gradient(to right, #6ee7b7, #10b981)',
-                      }}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* 살아남는 방법 */}
-          <div className="rounded-2xl p-4" style={{ background: info.color + '08', border: `1px solid ${info.color}20` }}>
-            <p className="text-sm font-bold mb-2" style={{ color: info.color }}>살아남는 사람의 전환 루트</p>
-            <div className="flex flex-col gap-2">
+          {/* 전환 공식 박스 */}
+          <div className="rounded-2xl p-4 mb-3" style={{ background: info.color + '08', border: `1px solid ${info.color}30` }}>
+            <p className="text-base font-bold text-slate-500 mb-3">대체 안 되는 포지션의 공식</p>
+            <div className="flex flex-col gap-2.5">
               {info.jobSection.transitions.map((t) => (
-                <div key={t.from} className="flex items-center gap-2 text-sm">
-                  <span className="text-slate-400 text-sm">{t.from}</span>
-                  <span className="text-slate-400 text-sm">→</span>
-                  <span className="font-bold" style={{ color: info.color }}>{t.to}</span>
+                <div key={t.from} className="flex items-center gap-1.5 flex-wrap">
+                  <span className="px-2 py-1 rounded-lg bg-white text-slate-500 font-medium text-sm border border-slate-200">{t.from} 경험</span>
+                  <span className="font-black text-slate-300 text-base">+</span>
+                  <span className="px-2 py-1 rounded-lg text-white font-bold text-sm" style={{ background: info.color }}>{t.via}</span>
+                  <span className="font-black text-slate-300 text-base">=</span>
+                  <span className="px-2 py-1 rounded-lg font-black text-sm" style={{ background: info.color + '15', color: info.color }}>{t.to}</span>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* CTA 연결 문구 */}
         </div>
 
         {/* 퇴근 보너스 */}
@@ -1017,15 +950,15 @@ export default function ResultClient({
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">🎓</span>
             <div>
-              <p className="text-slate-900 text-xl font-black">매주 글로벌 / 대기업 현직자</p>
-              <p className="text-slate-900 text-base font-semibold">커리어 무료 특강</p>
+              <p className="text-slate-900 text-xl font-black">온라인 커리어 무료 특강</p>
+              <p className="text-slate-600 text-sm">매주 대기업 · AI/데이터 현직자</p>
             </div>
           </div>
           <a
             href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => gtagEvent('openchat_click', { source: 'survey', type_code: typeCode })}
+            onClick={() => gtagEvent('exit_click', { label: 'openchat', type_code: typeCode })}
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
             style={{ background: '#FEE500', color: '#3C1E1E' }}
           >
@@ -1038,73 +971,55 @@ export default function ResultClient({
           className="rounded-3xl p-6 animate-fade-in-up bg-white"
           style={{ border: '1px solid rgba(99,102,241,0.25)', animationDelay: '0.5s' }}
         >
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">📖</span>
             <h2 className="text-slate-900 font-bold text-2xl">무료 전자책 다운받기</h2>
           </div>
-          <div className="flex gap-2 mb-4">
-            <span className="bg-green-50 text-green-600 text-xs px-2.5 py-1 rounded-full font-medium">✅ 1~7페이지 무료</span>
-            <span className="bg-slate-100 text-slate-500 text-xs px-2.5 py-1 rounded-full font-medium">🔒 더 보려면 →</span>
-          </div>
+          <p className="text-slate-500 text-sm mb-4">총 50페이지 분량</p>
 
-          {ebookImages ? (
+          {ebookImages && (
             <div>
-              {/* 이미지 슬라이더 */}
-              <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">
-                <img
-                  src={ebookImages[ebookPage]}
-                  alt={`전자책 ${ebookPage + 1}`}
-                  className="w-full h-auto block"
-                />
-              </div>
+              {/* 슬라이더 */}
+              <div className="relative">
+                <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">
+                  <img
+                    src={ebookImages[ebookPage]}
+                    alt={`전자책 ${ebookPage + 1}`}
+                    className="w-full h-auto block"
+                  />
+                </div>
 
-              {/* 인디케이터 */}
-              <div className="flex justify-center gap-2 mt-3 flex-wrap">
-                {ebookImages.slice(0, EBOOK_FREE_LIMIT).map((_, i) => (
+                {ebookPage > 0 && (
                   <button
-                    key={i}
-                    onClick={() => setEbookPage(i)}
-                    className="w-2 h-2 rounded-full transition-all"
-                    style={{ background: i === ebookPage ? '#6366f1' : '#e2e8f0' }}
-                  />
-                ))}
-                {ebookImages.length > EBOOK_FREE_LIMIT && (
-                  <button
-                    onClick={() => { gtagEvent('ebook_click', { type_code: typeCode, action: 'metacode' }); window.open(ebookLink, '_blank') }}
-                    className="w-2 h-2 rounded-full bg-slate-300"
-                  />
+                    onClick={() => setEbookPage(ebookPage - 1)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center shadow-md text-xl font-bold"
+                    style={{ background: 'rgba(255,255,255,0.9)' }}
+                  >‹</button>
                 )}
-              </div>
-
-              {/* 화살표 */}
-              <div className="flex gap-3 mt-4">
-                <button
-                  onClick={() => setEbookPage(Math.max(0, ebookPage - 1))}
-                  disabled={ebookPage === 0}
-                  className="flex-1 py-3 rounded-xl font-bold text-sm border border-slate-200 text-slate-500 disabled:opacity-30 transition-all"
-                >
-                  ← 이전
-                </button>
                 <button
                   onClick={() => {
                     if (ebookPage + 1 >= EBOOK_FREE_LIMIT) {
-                      gtagEvent('ebook_click', { type_code: typeCode, action: 'metacode' })
+                      gtagEvent('exit_click', { label: 'ebook_metacode', type_code: typeCode })
                       window.open(ebookLink, '_blank')
                     } else {
                       setEbookPage(ebookPage + 1)
                     }
                   }}
-                  className="flex-1 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 text-white"
-                  style={{ background: '#6366f1' }}
-                >
-                  {ebookPage + 1 >= EBOOK_FREE_LIMIT ? '전체 보기 →' : '다음 →'}
-                </button>
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center shadow-md text-xl font-bold"
+                  style={{ background: 'rgba(255,255,255,0.9)' }}
+                >›</button>
               </div>
-            </div>
-          ) : (
-            <div className="rounded-2xl flex flex-col items-center justify-center gap-2 bg-slate-50 border border-slate-200 py-16">
-              <span className="text-3xl">📚</span>
-              <p className="text-sm font-bold text-slate-700">전자책 준비 중이에요</p>
+
+              {/* 인디케이터 */}
+              <div className="flex justify-center gap-2 mt-3">
+                {ebookImages.slice(0, EBOOK_FREE_LIMIT).map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-2 h-2 rounded-full transition-all"
+                    style={{ background: i === ebookPage ? '#6366f1' : '#e2e8f0' }}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
@@ -1112,11 +1027,11 @@ export default function ResultClient({
             href={ebookLink}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => gtagEvent('ebook_click', { type_code: typeCode })}
+            onClick={() => gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >
-            무료로 다운받기 →
+            50페이지 분량 전자책 무료 다운받기
           </a>
         </div>
 

@@ -249,7 +249,7 @@ export const bootcampInfo: Record<
 
 export type Insight = { strength: string; crisis: string; direction: string }
 export type JobTask = { name: string; rate: number }
-export type JobTransition = { from: string; to: string }
+export type JobTransition = { from: string; via: string; to: string }
 export type JobSection = {
   tasks: JobTask[]
   transitions: JobTransition[]
@@ -309,8 +309,8 @@ export const typeInfo: Record<
         { name: 'AI 서비스 설계', rate: 19 },
       ],
       transitions: [
-        { from: '기획자', to: 'AI 서비스 기획자' },
-        { from: 'PM', to: 'LLM 제품 설계자' },
+        { from: '기획자', via: 'AI 서비스 설계', to: 'AI 서비스 기획자' },
+        { from: 'PM', via: 'LLM 이해', to: 'LLM 제품 설계자' },
       ],
     },
   },
@@ -326,7 +326,7 @@ export const typeInfo: Record<
       '꼼꼼하게 AI를 씁니다. 지금은 강점입니다.\n하지만 GitHub Copilot이 이미 코드를 완성하고 있습니다.\n\n코드 잘 짜는 것은 더 이상 차별점이 아닙니다.\n시스템을 설계하는 사람만 대체되지 않습니다.',
     aiTip:
       'AI 도구를 테스트하는 습관이 강점입니다. 자동화 파이프라인 설계에 이 역량을 쏟으세요.',
-    jobs: ['데이터 엔지니어', 'ML 엔지니어', 'AI 아키텍트'],
+    jobs: ['데이터 엔지니어', 'AI 서비스 개발자', 'AI 아키텍트'],
     threat: 'AI 속도를 따라가지 못하면 완벽주의가 발목을 잡습니다.',
     scoreComment: (s) =>
       s <= 30
@@ -348,8 +348,8 @@ export const typeInfo: Record<
         { name: '시스템 설계', rate: 24 },
       ],
       transitions: [
-        { from: '개발자', to: 'AI 시스템 설계자' },
-        { from: '분석가', to: 'ML 아키텍트' },
+        { from: '개발자', via: '시스템 설계', to: 'AI 시스템 설계자' },
+        { from: '분석가', via: 'AI 서비스 설계', to: 'AI 서비스 개발자' },
       ],
     },
   },
@@ -387,8 +387,8 @@ export const typeInfo: Record<
         { name: '브랜드 전략', rate: 37 },
       ],
       transitions: [
-        { from: '콘텐츠 기획자', to: 'AI 크리에이티브 디렉터' },
-        { from: '마케터', to: 'LLM 마케터' },
+        { from: '콘텐츠 기획자', via: 'AI 도구 활용', to: 'AI 크리에이티브 디렉터' },
+        { from: '마케터', via: 'LLM 활용', to: 'LLM 마케터' },
       ],
     },
   },
@@ -426,8 +426,8 @@ export const typeInfo: Record<
         { name: '아트 디렉션', rate: 31 },
       ],
       transitions: [
-        { from: '아트 디렉터', to: 'AI 아트 디렉터' },
-        { from: '크리에이터', to: 'AI 콘텐츠 기획자' },
+        { from: '아트 디렉터', via: '생성AI 활용', to: 'AI 아트 디렉터' },
+        { from: '크리에이터', via: 'AI 기획', to: 'AI 콘텐츠 기획자' },
       ],
     },
   },
@@ -465,8 +465,8 @@ export const typeInfo: Record<
         { name: '파이프라인 설계', rate: 22 },
       ],
       transitions: [
-        { from: '개발자', to: '데이터 엔지니어' },
-        { from: '분석가', to: 'ML 파이프라인 엔지니어' },
+        { from: '개발자', via: '데이터 파이프라인', to: '데이터 엔지니어' },
+        { from: '분석가', via: '데이터 파이프라인', to: '데이터 엔지니어' },
       ],
     },
   },
@@ -504,8 +504,8 @@ export const typeInfo: Record<
         { name: '아키텍처 설계', rate: 21 },
       ],
       transitions: [
-        { from: '개발자', to: '데이터 파이프라인 엔지니어' },
-        { from: '시스템 관리자', to: '클라우드 데이터 설계자' },
+        { from: '개발자', via: '클라우드+데이터', to: '데이터 파이프라인 엔지니어' },
+        { from: '시스템 관리자', via: '클라우드 설계', to: '클라우드 데이터 설계자' },
       ],
     },
   },
@@ -543,8 +543,8 @@ export const typeInfo: Record<
         { name: '브랜드 기획', rate: 34 },
       ],
       transitions: [
-        { from: '디자이너', to: 'AI 크리에이티브 디렉터' },
-        { from: '콘텐츠 작가', to: 'AI 콘텐츠 전략가' },
+        { from: '디자이너', via: 'AI 크리에이티브', to: 'AI 크리에이티브 디렉터' },
+        { from: '콘텐츠 작가', via: 'AI 전략 기획', to: 'AI 콘텐츠 전략가' },
       ],
     },
   },
@@ -582,8 +582,8 @@ export const typeInfo: Record<
         { name: '나만의 감성 디렉션', rate: 27 },
       ],
       transitions: [
-        { from: '독립 크리에이터', to: 'AI 아트 디렉터' },
-        { from: '디자이너', to: 'AI 브랜드 전략가' },
+        { from: '독립 크리에이터', via: 'AI 디렉션', to: 'AI 아트 디렉터' },
+        { from: '디자이너', via: 'AI 브랜딩', to: 'AI 브랜드 전략가' },
       ],
     },
   },
@@ -621,8 +621,8 @@ export const typeInfo: Record<
         { name: '팀 방향 설정', rate: 23 },
       ],
       transitions: [
-        { from: '팀장', to: '데이터 기반 의사결정자' },
-        { from: 'PM', to: 'AI 프로덕트 매니저' },
+        { from: '팀장', via: '데이터 의사결정', to: '데이터 기반 의사결정자' },
+        { from: 'PM', via: 'AI 프로덕트', to: 'AI 프로덕트 매니저' },
       ],
     },
   },
@@ -660,8 +660,8 @@ export const typeInfo: Record<
         { name: '서비스 설계', rate: 26 },
       ],
       transitions: [
-        { from: '기획자', to: 'AI 서비스 기획자' },
-        { from: 'PM', to: '데이터 기반 기획자' },
+        { from: '기획자', via: 'AI 서비스 설계', to: 'AI 서비스 기획자' },
+        { from: 'PM', via: '데이터 분석', to: '데이터 기반 기획자' },
       ],
     },
   },
@@ -699,8 +699,8 @@ export const typeInfo: Record<
         { name: 'AI 마케팅 전략', rate: 28 },
       ],
       transitions: [
-        { from: '마케터', to: 'AI 마케팅 디렉터' },
-        { from: '콘텐츠팀장', to: 'LLM 크리에이티브 디렉터' },
+        { from: '마케터', via: 'AI 마케팅 전략', to: 'AI 마케팅 디렉터' },
+        { from: '콘텐츠팀장', via: 'LLM 활용', to: 'LLM 크리에이티브 디렉터' },
       ],
     },
   },
@@ -738,8 +738,8 @@ export const typeInfo: Record<
         { name: '크리에이티브 디렉션', rate: 29 },
       ],
       transitions: [
-        { from: '크리에이터', to: 'AI 크리에이티브 디렉터' },
-        { from: '아트 디렉터', to: '협업 AI 아티스트' },
+        { from: '크리에이터', via: 'AI 디렉션', to: 'AI 크리에이티브 디렉터' },
+        { from: '아트 디렉터', via: 'AI 협업', to: '협업 AI 아티스트' },
       ],
     },
   },
@@ -777,8 +777,8 @@ export const typeInfo: Record<
         { name: '데이터 기반 의사결정', rate: 18 },
       ],
       transitions: [
-        { from: '마케터', to: '데이터 마케터' },
-        { from: '영업', to: '세일즈 애널리스트' },
+        { from: '마케터', via: '데이터 분석', to: '데이터 마케터' },
+        { from: '영업', via: '세일즈 데이터', to: '세일즈 애널리스트' },
       ],
     },
   },
@@ -816,8 +816,8 @@ export const typeInfo: Record<
         { name: '조직 전략 수립', rate: 21 },
       ],
       transitions: [
-        { from: '전략기획', to: '데이터 기반 전략가' },
-        { from: '조직개발', to: '피플 애널리틱스' },
+        { from: '전략기획', via: '데이터 분석', to: '데이터 기반 전략가' },
+        { from: '조직개발', via: '피플 데이터', to: '피플 애널리틱스' },
       ],
     },
   },
@@ -855,8 +855,8 @@ export const typeInfo: Record<
         { name: '조직 문화 설계', rate: 19 },
       ],
       transitions: [
-        { from: 'HR', to: '피플 애널리틱스' },
-        { from: '교육 담당', to: '러닝 데이터 분석가' },
+        { from: 'HR', via: '피플 데이터', to: '피플 애널리틱스' },
+        { from: '교육 담당', via: '러닝 데이터', to: '러닝 데이터 분석가' },
       ],
     },
   },
@@ -894,8 +894,8 @@ export const typeInfo: Record<
         { name: '조직 문화 설계', rate: 22 },
       ],
       transitions: [
-        { from: 'PM', to: '데이터 기반 PM' },
-        { from: '팀 리더', to: '조직 애널리틱스' },
+        { from: 'PM', via: '조직 데이터', to: '데이터 기반 PM' },
+        { from: '팀 리더', via: '조직 분석', to: '조직 애널리틱스' },
       ],
     },
   },
