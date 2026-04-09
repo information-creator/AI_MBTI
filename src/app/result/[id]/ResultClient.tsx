@@ -913,12 +913,12 @@ export default function ResultClient({
             <p className="text-base font-bold text-slate-500 mb-3">대체 안 되는 포지션의 공식</p>
             <div className="flex flex-col gap-2.5">
               {info.jobSection.transitions.map((t) => (
-                <div key={t.from} className="flex items-center gap-1.5 flex-wrap">
-                  <span className="px-2 py-1 rounded-lg bg-white text-slate-500 font-medium text-sm border border-slate-200">{t.from}</span>
+                <div key={t.from} className="flex items-center gap-1.5 overflow-x-auto">
+                  <span className="px-2 py-1 rounded-lg bg-white text-slate-500 font-medium text-sm border border-slate-200 whitespace-nowrap">{t.from}</span>
                   <span className="font-black text-slate-300 text-base">+</span>
-                  <span className="px-2 py-1 rounded-lg text-white font-bold text-sm" style={{ background: info.color }}>{t.via}</span>
+                  <span className="px-2 py-1 rounded-lg text-white font-bold text-sm whitespace-nowrap" style={{ background: info.color }}>{t.via}</span>
                   <span className="font-black text-slate-300 text-base">=</span>
-                  <span className="px-2 py-1 rounded-lg font-black text-sm" style={{ background: info.color + '15', color: info.color }}>{t.to}</span>
+                  <span className="px-2 py-1 rounded-lg font-black text-sm whitespace-nowrap" style={{ background: info.color + '15', color: info.color }}>{t.to}</span>
                 </div>
               ))}
             </div>
