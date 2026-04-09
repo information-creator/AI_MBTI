@@ -113,7 +113,10 @@ export default function LandingPage() {
                 alt={info.title} width={52} height={52} className="object-contain shrink-0" unoptimized
               />
               <div className="min-w-0">
-                <div className="font-bold text-[14px] leading-snug line-clamp-2" style={{ color: info.color }}>{info.title}</div>
+                <div className="font-bold text-[18px] leading-tight" style={{ color: info.color }}>
+                  <span className="block">{info.title.split(' ')[0]}</span>
+                  <span className="block">{info.title.split(' ').slice(1).join(' ')}</span>
+                </div>
               </div>
             </div>
           ))}
