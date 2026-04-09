@@ -97,8 +97,8 @@ export default function TestPage() {
           >
             <span className="text-3xl">{cheer.emoji}</span>
             <div>
-              <p className="text-base font-black text-slate-900">{cheer.title}</p>
-              <p className="text-slate-500 text-sm">{cheer.sub}</p>
+              <p className="text-base font-black text-slate-900 whitespace-nowrap">{cheer.title}</p>
+              <p className="text-slate-500 text-sm whitespace-nowrap">{cheer.sub}</p>
             </div>
           </div>
         </div>

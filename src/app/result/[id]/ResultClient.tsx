@@ -153,7 +153,7 @@ export default function ResultClient({
           </p>
           <div className="space-y-2">
             {[
-              { icon: '🧠', title: 'AI를 두려워하지 않고, 도구로 씁니다', desc: 'ChatGPT·Copilot·Midjourney를 매일 씁니다.' },
+              { icon: '🧠', title: 'AI를 두려워하지 않고, 도구로 씁니다', desc: 'ChatGPT·Copilot·Canva AI를 매일 씁니다.' },
               { icon: '🔗', title: '도메인 지식 + AI를 조합합니다', desc: '업무 맥락을 AI에게 가장 잘 설명하는 사람이 이깁니다.' },
               { icon: '🎯', title: '빠르게 실험하고 학습합니다', desc: '6개월마다 툴킷을 업데이트합니다.' },
             ].map((item) => (
@@ -903,7 +903,7 @@ export default function ResultClient({
             <p className="text-base text-emerald-600 leading-relaxed">
               {info.jobSection.tasks.filter(t => t.rate < 70).map(t => t.name).join(' · ')}
               {info.jobSection.tasks.filter(t => t.rate < 70).length === 1
-                ? ' 능력은 아직 AI가 대체하지 못합니다. 이게 당신의 핵심 무기입니다.'
+                ? <> 능력은 아직 AI가 대체하지 못합니다.<br />이게 당신의 핵심 무기입니다.</>
                 : ' — 이게 당신의 무기입니다'}
             </p>
           </div>
@@ -914,7 +914,7 @@ export default function ResultClient({
             <div className="flex flex-col gap-2.5">
               {info.jobSection.transitions.map((t) => (
                 <div key={t.from} className="flex items-center gap-1.5 flex-wrap">
-                  <span className="px-2 py-1 rounded-lg bg-white text-slate-500 font-medium text-sm border border-slate-200">{t.from} 경험</span>
+                  <span className="px-2 py-1 rounded-lg bg-white text-slate-500 font-medium text-sm border border-slate-200">{t.from}</span>
                   <span className="font-black text-slate-300 text-base">+</span>
                   <span className="px-2 py-1 rounded-lg text-white font-bold text-sm" style={{ background: info.color }}>{t.via}</span>
                   <span className="font-black text-slate-300 text-base">=</span>
@@ -975,7 +975,7 @@ export default function ResultClient({
             <span className="text-2xl">📖</span>
             <h2 className="text-slate-900 font-bold text-2xl">무료 전자책 다운받기</h2>
           </div>
-          <p className="text-slate-500 text-sm mb-4">총 50페이지 분량</p>
+          <p className="text-slate-500 text-sm mb-4"></p>
 
           {ebookImages && (
             <div>
@@ -1031,7 +1031,7 @@ export default function ResultClient({
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >
-            50페이지 분량 전자책 무료 다운받기
+            전자책 무료 다운받기
           </a>
         </div>
 

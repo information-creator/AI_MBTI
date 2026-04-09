@@ -16,7 +16,7 @@ export default function LandingPage() {
     <main className="flex flex-col min-h-screen bg-white">
       {/* 상단 경고 배너 */}
       <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-center py-2 px-4 text-sm font-medium">
-        ⚠️ 직장인 10명 중 6명, 직업 AI 대체 가능성 모르고 출근 중
+        ⚠️ 직장인 10명 중 6명, AI 대체 가능성 모르고 출근 중
       </div>
 
       {/* 헤더 */}
@@ -48,17 +48,15 @@ export default function LandingPage() {
             </span>
           </h1>
 
-          <p className="text-slate-500 text-base leading-relaxed">
-            AI 대체 가능성 진단 — 16가지 AI 유형으로 알아보는
-            <br />
-            <strong className="text-slate-900">나의 대체 위험도</strong>
+          <p className="text-slate-500 text-base">
+            AI 대체 가능성 진단 — 16가지 AI 유형
           </p>
 
           <CTAButton
             location="hero"
             className="block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200"
           >
-            나의 AI 대체 가능성 확인하기 (무료) →
+            나의 AI 대체 가능성 확인 (무료) →
           </CTAButton>
 
           <p className="text-slate-400 text-xs">

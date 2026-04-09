@@ -35,13 +35,13 @@ const tools = [
     tip: '회의 후 음성 녹음 → Notion AI로 요약 → 액션 아이템 자동 추출',
   },
   {
-    name: 'Midjourney',
+    name: 'Canva AI',
     icon: '🎨',
-    use: '프레젠테이션 이미지, 마케팅 비주얼, UI 목업',
-    tip: '디자이너 없어도 시안 퀄리티 이미지 10초 만에 생성',
+    use: '프레젠테이션, SNS 카드뉴스, 썸네일, 마케팅 이미지 제작',
+    tip: '템플릿 + AI로 디자이너 없어도 퀄리티 결과물 5분 만에 완성',
   },
   {
-    name: 'GitHub Copilot',
+    name: 'Copilot',
     icon: '💻',
     use: '코드 자동 완성, 버그 수정, 테스트 코드 생성',
     tip: '개발자라면 월 $10으로 코딩 속도 2배 가능',
