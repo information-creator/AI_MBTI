@@ -230,28 +230,28 @@ export const bootcampInfo: Record<
     shortLabel: 'LLM',
     color: '#6366f1',
     reason: 'ChatGPT를 도구로 쓰는 사람 vs 도구가 되는 사람',
-    fieldDescription: 'ChatGPT 같은 언어 모델을 직접 설계하고 활용하는 직무. AI를 쓰는 사람이 아닌, AI를 만드는 사람.',
+    fieldDescription: '큰 그림을 보고 언어 모델의 방향을 정하는 유형. AI를 쓰는 사람이 아닌, AI를 만드는 사람.',
   },
   '데이터 분석': {
     title: '데이터 분석 부트캠프',
     shortLabel: 'DA',
     color: '#0ea5e9',
     reason: '당신의 강점 + 데이터 = AI 시대 생존 패키지',
-    fieldDescription: '데이터로 비즈니스 의사결정을 이끄는 직무. 숫자 뒤에 숨은 인사이트를 찾아내는 사람.',
+    fieldDescription: '숫자 뒤에 숨은 패턴을 읽어내는 유형. 데이터로 비즈니스 판단을 이끄는 인사이트 발굴자.',
   },
   '데이터 엔지니어': {
     title: '데이터 엔지니어 부트캠프',
     shortLabel: 'DE',
     color: '#10b981',
     reason: 'AI가 대체 못 하는 파이프라인 설계자로 전환하세요',
-    fieldDescription: 'AI가 학습할 데이터를 수집·정제·공급하는 직무. AI가 존재하는 한 절대 사라지지 않는 포지션.',
+    fieldDescription: '체계와 정확성으로 데이터 흐름을 설계하는 유형. 보이지 않는 곳에서 AI 전체를 받치는 구조 설계자.',
   },
   'AI 서비스 개발자': {
     title: 'AI 서비스 개발자 부트캠프',
     shortLabel: 'AI',
     color: '#f59e0b',
     reason: 'AI 서비스를 만드는 사람이 AI에 대체되지 않습니다',
-    fieldDescription: 'AI 기능을 실제 서비스에 탑재하는 개발자. ChatGPT API를 제품에 붙이는 사람.',
+    fieldDescription: 'AI 기능을 실제 서비스로 만들어내는 유형. 아이디어를 제품으로 구현하는 실행형 빌더.',
   },
 }
 

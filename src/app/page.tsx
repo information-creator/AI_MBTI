@@ -56,11 +56,11 @@ export default function LandingPage() {
             location="hero"
             className="block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200"
           >
-            AI 대체 가능성 진단 →
+            AI 대체 가능성 진단하기 (무료) →
           </CTAButton>
 
           <p className="text-slate-400 text-xs">
-            ⏱ 약 1분 · 로그인 불필요 · 완전 무료
+            ⏱ 약 1분 · 로그인 불필요 · 비용 무료
           </p>
         </div>
 
@@ -126,7 +126,7 @@ export default function LandingPage() {
           location="type_preview"
           className="block mt-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all"
         >
-          AI 대체 가능성 진단 →
+          AI 대체 가능성 진단하기 (무료) →
         </CTAButton>
       </section>
 
