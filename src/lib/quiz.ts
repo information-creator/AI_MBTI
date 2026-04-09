@@ -223,27 +223,35 @@ export type ResultData = {
 
 export const bootcampInfo: Record<
   BootcampType,
-  { title: string; color: string; reason: string }
+  { title: string; shortLabel: string; color: string; reason: string; fieldDescription: string }
 > = {
   'AI LLM': {
     title: 'AI LLM 부트캠프',
+    shortLabel: 'LLM',
     color: '#6366f1',
     reason: 'ChatGPT를 도구로 쓰는 사람 vs 도구가 되는 사람',
+    fieldDescription: 'ChatGPT 같은 언어 모델을 직접 설계하고 활용하는 직무. AI를 쓰는 사람이 아닌, AI를 만드는 사람.',
   },
   '데이터 분석': {
     title: '데이터 분석 부트캠프',
+    shortLabel: 'DA',
     color: '#0ea5e9',
     reason: '당신의 강점 + 데이터 = AI 시대 생존 패키지',
+    fieldDescription: '데이터로 비즈니스 의사결정을 이끄는 직무. 숫자 뒤에 숨은 인사이트를 찾아내는 사람.',
   },
   '데이터 엔지니어': {
     title: '데이터 엔지니어 부트캠프',
+    shortLabel: 'DE',
     color: '#10b981',
     reason: 'AI가 대체 못 하는 파이프라인 설계자로 전환하세요',
+    fieldDescription: 'AI가 학습할 데이터를 수집·정제·공급하는 직무. AI가 존재하는 한 절대 사라지지 않는 포지션.',
   },
   'AI 서비스 개발자': {
     title: 'AI 서비스 개발자 부트캠프',
+    shortLabel: 'AI',
     color: '#f59e0b',
     reason: 'AI 서비스를 만드는 사람이 AI에 대체되지 않습니다',
+    fieldDescription: 'AI 기능을 실제 서비스에 탑재하는 개발자. ChatGPT API를 제품에 붙이는 사람.',
   },
 }
 
@@ -320,7 +328,7 @@ export const typeInfo: Record<
     emoji: '🔭',
     color: '#0ea5e9',
     aiScore: 32,
-    bootcamp: 'AI 서비스 개발자',
+    bootcamp: 'AI LLM',
     bootcampReason: 'AI를 검증하며 쓰는 당신, 서비스 설계까지 더하면 AI 시대 핵심 인재가 됩니다.',
     description:
       '꼼꼼하게 AI를 씁니다. 지금은 강점입니다.\n하지만 Copilot이 이미 코드를 완성하고 있습니다.\n\n코드 잘 짜는 것은 더 이상 차별점이 아닙니다.\n시스템을 설계하는 사람만 대체되지 않습니다.',
@@ -398,7 +406,7 @@ export const typeInfo: Record<
     emoji: '🌙',
     color: '#14b8a6',
     aiScore: 44,
-    bootcamp: 'AI LLM',
+    bootcamp: '데이터 분석',
     bootcampReason: '감성 + AI = 아무도 못 따라오는 창작 역량. LLM으로 완성하세요.',
     description:
       '감성과 AI가 공존하는 드문 유형입니다.\n하지만 AI가 이미 당신의 스타일을 학습하고 있습니다.\n\n완벽함을 추구하는 동안 시장은 AI를 앞세운 경쟁자에게 넘어갑니다.\n지금 속도를 더하지 않으면 뒤처집니다.',
@@ -437,7 +445,7 @@ export const typeInfo: Record<
     emoji: '⚙️',
     color: '#64748b',
     aiScore: 72,
-    bootcamp: '데이터 엔지니어',
+    bootcamp: '데이터 분석',
     bootcampReason: '논리적이고 꼼꼼한 당신, 파이프라인 설계자로 전환하면 AI가 대체 못 합니다.',
     description:
       '혼자서 빠르고 정확하게 해냅니다.\n하지만 AI를 쓰는 경쟁자가 당신의 속도를 이미 넘어섰습니다.\n\nAI 없는 실행력은 점점 평균이 됩니다.\n지금 데이터 파이프라인 역량을 더하지 않으면 대체됩니다.',
@@ -628,11 +636,11 @@ export const typeInfo: Record<
   },
   TALP: {
     title: 'LLM 설계자',
-    subtitle: '팀 + AI로 완벽한 시스템 설계 — LLM형',
+    subtitle: '팀 + AI로 완벽한 시스템 설계',
     emoji: '🏗️',
     color: '#6366f1',
     aiScore: 55,
-    bootcamp: 'AI 서비스 개발자',
+    bootcamp: 'AI LLM',
     bootcampReason: '팀과 AI로 완벽하게 설계하는 당신, AI 서비스 개발로 커리어를 확장하세요.',
     description:
       'AI를 쓰며 팀과 완벽하게 설계합니다.\n하지만 기획서, 회의록, 데이터 정리 — 당신이 하는 일의 82%가 자동화 가능합니다.\n\n완벽하게 준비하다 기회를 놓치고 있을 수 있습니다.\n설계 역량만이 남은 차별점입니다.',
@@ -710,7 +718,7 @@ export const typeInfo: Record<
     emoji: '🎭',
     color: '#a855f7',
     aiScore: 51,
-    bootcamp: 'AI LLM',
+    bootcamp: '데이터 분석',
     bootcampReason: '협력 + 감성 + AI LLM = 누구도 흉내 낼 수 없는 창작 역량.',
     description:
       '팀과 함께, AI로, 감성까지 — 셋을 동시에 다루는 당신.\n그런데 이제 AI가 아이디어도 콘텐츠도 혼자 만들기 시작했습니다.\n\n만드는 것만으로는 더 이상 특별해질 수 없습니다.\n무엇을 만들지 결정하는 사람이 살아남습니다.',
@@ -749,7 +757,7 @@ export const typeInfo: Record<
     emoji: '📊',
     color: '#0ea5e9',
     aiScore: 82,
-    bootcamp: '데이터 분석',
+    bootcamp: '데이터 엔지니어',
     bootcampReason: '당신의 강점 + 데이터 = AI 시대 생존 패키지',
     description:
       '사람을 읽고 팀을 움직이는 능력이 있습니다.\n하지만 보고서, 데이터 정리, 고객 응대 — 당신이 하는 일을 AI가 이미 하고 있습니다.\n\n관계력만으론 더 이상 안전하지 않습니다.\n데이터로 설득하는 사람만 조직에서 살아남습니다.',
@@ -788,7 +796,7 @@ export const typeInfo: Record<
     emoji: '🏢',
     color: '#1d4ed8',
     aiScore: 85,
-    bootcamp: '데이터 분석',
+    bootcamp: '데이터 엔지니어',
     bootcampReason: '전략 + 데이터 분석 = 조직에서 독보적인 의사결정자.',
     description:
       '신중하게 준비하고 팀을 이끄는 전략가입니다.\n하지만 전략 보고서, 데이터 분석, 회의 준비 — 핵심 업무 84%가 자동화 가능합니다.\n\n준비하는 동안 AI가 더 빠르게 같은 결과를 냅니다.\n데이터로 설득하는 전략가만 대체되지 않습니다.',
@@ -866,7 +874,7 @@ export const typeInfo: Record<
     emoji: '🛡️',
     color: '#f43f5e',
     aiScore: 88,
-    bootcamp: '데이터 분석',
+    bootcamp: '데이터 엔지니어',
     bootcampReason: '완벽한 팀플레이어 + 데이터 = AI 시대에도 살아남는 조합.',
     description:
       '팀을 완성시키고 마무리를 책임지는 사람입니다.\n하지만 일정 관리, 진행 보고, 피드백 정리 — 당신의 핵심 업무가 자동화되고 있습니다.\n\n완벽한 팀 관리만으론 더 이상 안전하지 않습니다.\n데이터로 팀을 설계하는 PM만 살아남습니다.',

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'AI 자동화 가이드 | AIMBTI',
+  title: '가이드',
   description: 'AI 시대에 살아남는 자동화 도구 활용법. ChatGPT, Notion AI 등 직군별 맞춤 가이드.',
   alternates: {
     canonical: 'https://aimbti-seven.vercel.app/guide',

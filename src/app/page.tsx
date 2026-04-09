@@ -4,7 +4,7 @@ import CTAButton from '@/components/CTAButton'
 import { typeInfo } from '@/lib/quiz'
 
 export const metadata: Metadata = {
-  title: 'AIMBTI',
+  title: 'AI-MBTI',
   description: 'MBTI 기반 AI 시대 생존 역량 진단. 20문항으로 알아보는 나의 AI 대체 가능성과 미래 직업 추천.',
   alternates: {
     canonical: 'https://aimbti-seven.vercel.app',
@@ -56,7 +56,7 @@ export default function LandingPage() {
             location="hero"
             className="block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200"
           >
-            나의 AI 대체 가능성 확인 (무료) →
+            AI 대체 가능성 진단 →
           </CTAButton>
 
           <p className="text-slate-400 text-xs">
@@ -69,7 +69,7 @@ export default function LandingPage() {
           {[
             { num: '16가지', label: 'AI 유형' },
             { num: '20문항', label: '정밀 진단' },
-            { num: '무료', label: '완전 무료' },
+            { num: '무료', label: '비용 무료' },
           ].map((item) => (
             <div
               key={item.label}
@@ -126,7 +126,7 @@ export default function LandingPage() {
           location="type_preview"
           className="block mt-6 text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base px-6 py-4 rounded-2xl transition-all"
         >
-          내 대체 가능성 확인하기 →
+          AI 대체 가능성 진단 →
         </CTAButton>
       </section>
 
@@ -134,8 +134,8 @@ export default function LandingPage() {
       <footer className="px-5 py-6 border-t border-slate-100 text-center text-slate-400 text-xs">
         <p>
           © 2026 AI-MBTI ·{' '}
-          <a href="https://metacode.kr" className="hover:text-slate-600 transition-colors">
-            metacode.kr
+          <a href="https://metacodes.co.kr/" className="hover:text-slate-600 transition-colors">
+            metacodes.co.kr
           </a>
         </p>
       </footer>

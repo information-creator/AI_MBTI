@@ -103,6 +103,7 @@ export default function ResultClient({
     e: 2,
   }
   const info = typeInfo[typeCode]
+  const bInfo = bootcampInfo[info.bootcamp]
 
   useEffect(() => {
     gtagEvent('result_view', { type_code: typeCode, ai_score: aiScore })
@@ -126,7 +127,13 @@ export default function ResultClient({
   const [instaToast, setInstaToast] = useState(false)
   const [ebookPage, setEbookPage] = useState(0)
 
-  const ebookLink = 'https://metacodes.co.kr/'
+  const ebookLinkMap: Record<string, string> = {
+    '데이터 분석': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27422&EM_IDX=27263',
+    '데이터 엔지니어': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27426&EM_IDX=27267',
+    'AI LLM': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27427&EM_IDX=27268',
+    'AI 서비스 개발자': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27433&EM_IDX=27274',
+  }
+  const ebookLink = ebookLinkMap[info.bootcamp] ?? 'https://metacodes.co.kr/'
 
   const EBOOK_FREE_LIMIT = 7
 
@@ -832,6 +839,13 @@ export default function ResultClient({
 
           {/* 강점 → 위기 → 방향 */}
           <div className="mt-8 flex flex-col gap-4">
+            <div className="flex gap-2 items-start rounded-xl p-3 border" style={{ background: bInfo.color + '08', borderColor: bInfo.color + '30' }}>
+              <span className="text-base mt-0.5 flex-shrink-0">💡</span>
+              <div>
+                <p className="text-base font-bold mb-1" style={{ color: bInfo.color }}>{bInfo.shortLabel} 유형</p>
+                <p className="text-base leading-relaxed font-medium" style={{ color: bInfo.color, wordBreak: 'keep-all' }}>{bInfo.fieldDescription}</p>
+              </div>
+            </div>
             <div className="flex gap-2 items-start rounded-xl p-3 border border-emerald-100" style={{ background: '#f0fdf4' }}>
               <span className="text-base mt-0.5 flex-shrink-0">💪</span>
               <div>
@@ -842,14 +856,14 @@ export default function ResultClient({
             <div className="flex gap-2 items-start rounded-xl p-3 border border-red-200" style={{ background: '#fff1f1' }}>
               <span className="text-base mt-0.5 flex-shrink-0">🚨</span>
               <div>
-                <p className="text-base font-bold text-red-600 mb-1">지금의 위기</p>
+                <p className="text-base font-bold text-red-600 mb-1">AI 대체 위험</p>
                 <p className="text-base text-red-700 leading-relaxed font-medium" style={{ wordBreak: 'keep-all' }}>{info.insight.crisis}</p>
               </div>
             </div>
             <div className="flex gap-2 items-start rounded-xl p-3 border" style={{ background: info.color + '08', borderColor: info.color + '30' }}>
               <span className="text-base mt-0.5 flex-shrink-0">🎯</span>
               <div>
-                <p className="text-base font-bold mb-1" style={{ color: info.color }}>탈출구</p>
+                <p className="text-base font-bold mb-1" style={{ color: info.color }}>생존 전략</p>
                 <p className="text-base leading-relaxed font-medium" style={{ color: info.color, wordBreak: 'keep-all' }}>{info.insight.direction}</p>
               </div>
             </div>
@@ -899,7 +913,7 @@ export default function ResultClient({
         >
           {/* 안전 스킬 박스 */}
           <div className="rounded-2xl p-4 mb-3" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-            <p className="text-base font-bold text-emerald-700 mb-1">✅ 아직 살아있는 스킬</p>
+            <p className="text-base font-bold text-emerald-700 mb-1">✅ AI도 못 뺏는 스킬</p>
             <p className="text-base text-emerald-600 leading-relaxed">
               {info.jobSection.tasks.filter(t => t.rate < 70).map(t => t.name).join(' · ')}
               {info.jobSection.tasks.filter(t => t.rate < 70).length === 1
@@ -932,7 +946,7 @@ export default function ResultClient({
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
           style={{ animationDelay: '0.38s' }}
         >
-          <h2 className="text-slate-900 font-bold text-xl mb-2">😴 퇴근</h2>
+          <h2 className="text-slate-900 font-bold text-xl mb-2">😴 나의 야근 지수</h2>
           <div
             className="rounded-xl p-4"
             style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.15)' }}
@@ -951,14 +965,14 @@ export default function ResultClient({
             <span className="text-2xl">🎓</span>
             <div>
               <p className="text-slate-900 text-xl font-black">온라인 커리어 무료 특강</p>
-              <p className="text-slate-600 text-sm">매주 대기업 · AI/데이터 현직자</p>
+              <p className="text-slate-600 text-sm">매주 대기업 · AI/데이터 현직자 노하우</p>
             </div>
           </div>
           <a
             href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => gtagEvent('exit_click', { label: 'openchat', type_code: typeCode })}
+            onClick={() => gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })}
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
             style={{ background: '#FEE500', color: '#3C1E1E' }}
           >
@@ -999,7 +1013,7 @@ export default function ResultClient({
                 <button
                   onClick={() => {
                     if (ebookPage + 1 >= EBOOK_FREE_LIMIT) {
-                      gtagEvent('exit_click', { label: 'ebook_metacode', type_code: typeCode })
+                      gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
                       window.open(ebookLink, '_blank')
                     } else {
                       setEbookPage(ebookPage + 1)
