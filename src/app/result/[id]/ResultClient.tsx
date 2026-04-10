@@ -121,17 +121,22 @@ export default function ResultClient({
   }, [typeCode])
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const ebookScrollRef = useRef<HTMLDivElement>(null)
   const [copied, setCopied] = useState(false)
   const [shareLoading, setShareLoading] = useState(false)
   const [displayScore, setDisplayScore] = useState(0)
   const [instaToast, setInstaToast] = useState(false)
   const [ebookPage, setEbookPage] = useState(0)
 
+  useEffect(() => {
+    if (ebookScrollRef.current) ebookScrollRef.current.scrollTop = 0
+  }, [ebookPage])
+
   const ebookLinkMap: Record<string, string> = {
-    '데이터 분석': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27422&EM_IDX=27263',
-    '데이터 엔지니어': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27426&EM_IDX=27267',
-    'AI LLM': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27427&EM_IDX=27268',
-    'AI 서비스 개발자': 'https://www.metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27433&EM_IDX=27274',
+    '데이터 분석': 'https://metacodes.co.kr/',
+    '데이터 엔지니어': 'https://metacodes.co.kr/',
+    'AI LLM': 'https://metacodes.co.kr/',
+    'AI 서비스 개발자': 'https://metacodes.co.kr/',
   }
   const ebookLink = ebookLinkMap[info.bootcamp] ?? 'https://metacodes.co.kr/'
 
@@ -1000,12 +1005,11 @@ export default function ResultClient({
             <div>
               {/* 슬라이더 */}
               <div className="relative">
-                <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                <div ref={ebookScrollRef} className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50" style={{ height: '70vh', overflowY: 'auto' }}>
                   <img
                     src={ebookImages[ebookPage]}
                     alt={`전자책 ${ebookPage + 1}`}
-                    className="w-full block"
-                    style={{ aspectRatio: '860/1216' }}
+                    className="w-full h-auto block"
                   />
                 </div>
 
