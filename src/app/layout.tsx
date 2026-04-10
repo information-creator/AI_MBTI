@@ -11,13 +11,16 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  icons: {
+    icon: '/favicon.png',
+  },
   title: 'AI-MBTI',
   description:
     'MBTI 기반 AI 시대 생존 역량 진단. 20문항으로 알아보는 나의 AI 대체 가능성과 미래 직업 추천.',
   keywords: ['MBTI 테스트', 'AI 직업 추천', '나 대체될까', 'AI 시대 직업', 'ChatGPT 대체'],
   openGraph: {
     title: 'AI 시대 생존력 진단',
-    description: '20문항으로 알아보는 나의 AI 대체 가능성과 미래 직업 추천',
+    description: '20문항으로 알아보는 나의 AI 대체 가능성',
     type: 'website',
     locale: 'ko_KR',
   },

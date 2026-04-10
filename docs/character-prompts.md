@@ -71,7 +71,7 @@ Royal blue (#3b82f6). Flat design, thick outlines, pure white background, 400x40
 ```
 A precise kawaii robot standing straight, holding rolled-up blueprints under one arm and a ruler in the other hand. 
 Calm intelligent eyes, composed neutral expression. Surrounded by floating wireframe grids, LLM node-and-edge diagrams, and tiny compasses. 
-Indigo (#6366f1). Flat design, thick outlines, pure white background, 400x400px PNG. No text.
+Indigo (#6366f1). Flat design, thick outlines, pure white background only, no ground, no floor, no shadow, no surface, 400x400px PNG. No text.
 ```
 
 ## TACF — LLM 크리에이터 `#8b5cf6`
