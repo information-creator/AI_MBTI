@@ -16,7 +16,7 @@ export default function LandingPage() {
     <main className="flex flex-col min-h-screen bg-white">
       {/* 상단 경고 배너 */}
       <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-center py-2 px-4 text-sm font-medium">
-        ⚠️ 직장인 10명 중 6명, AI 대체 가능성 모르고 출근 중
+        ⚠️ 직장인 10명 중 8명 AI 대체 위험
       </div>
 
       {/* 헤더 */}
@@ -49,7 +49,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-slate-500 text-base">
-            16가지 AI 유형
+            16가지 AI 생존유형
           </p>
 
           <CTAButton
@@ -67,7 +67,7 @@ export default function LandingPage() {
         {/* 통계 배지 */}
         <div className="mt-10 grid grid-cols-3 gap-3 w-full">
           {[
-            { num: '16가지', label: 'AI 유형' },
+            { num: '16가지', label: 'AI 생존유형' },
             { num: '20문항', label: '정밀 진단' },
             { num: '무료', label: '비용 무료' },
           ].map((item) => (
@@ -98,7 +98,7 @@ export default function LandingPage() {
           이 다릅니다
         </h2>
         <p className="text-slate-500 text-sm mb-6 text-center">
-          내 유형은 총 16가지 — 지금 바로 확인해보세요
+          AI 생존유형 총 16가지 — 지금 바로 확인해보세요
         </p>
 
         <div className="grid grid-cols-2 gap-2.5">
