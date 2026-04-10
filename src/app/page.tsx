@@ -49,7 +49,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-slate-500 text-base">
-            AI 대체 가능성 진단 — 16가지 AI 유형
+            16가지 AI 유형
           </p>
 
           <CTAButton
@@ -109,8 +109,9 @@ export default function LandingPage() {
               style={{ border: `1px solid ${info.color}30`, background: info.color + '10' }}
             >
               <Image
-                src={`/reals_ch/${info.title}.png`}
+                src={`/characters/${info.title}.png`}
                 alt={info.title} width={52} height={52} className="object-contain shrink-0" unoptimized
+                style={{ mixBlendMode: 'multiply' }}
               />
               <div className="min-w-0">
                 <div className="font-bold text-[18px] leading-tight" style={{ color: info.color }}>

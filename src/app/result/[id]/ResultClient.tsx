@@ -333,7 +333,7 @@ export default function ResultClient({
     try {
       const charImg = new window.Image()
       charImg.crossOrigin = 'anonymous'
-      charImg.src = `/reals_ch/${encodeURIComponent(info.title)}.png`
+      charImg.src = `/characters/${encodeURIComponent(info.title)}.png`
       await new Promise<void>((resolve) => {
         charImg.onload = () => resolve()
         charImg.onerror = () => resolve()
@@ -597,7 +597,7 @@ export default function ResultClient({
     try {
       const charImg = new window.Image()
       charImg.crossOrigin = 'anonymous'
-      charImg.src = `/reals_ch/${encodeURIComponent(info.title)}.png`
+      charImg.src = `/characters/${encodeURIComponent(info.title)}.png`
       await new Promise<void>((resolve) => {
         charImg.onload = () => resolve(); charImg.onerror = () => resolve(); setTimeout(resolve, 3000)
       })
@@ -810,7 +810,7 @@ export default function ResultClient({
         {/* 캐릭터 이미지 */}
         <div className="flex justify-center float-animation">
           <Image
-            src={`/reals_ch/${encodeURIComponent(info.title)}.png`}
+            src={`/characters/${encodeURIComponent(info.title)}.png`}
             alt={info.title}
             width={240}
             height={240}
@@ -1004,7 +1004,8 @@ export default function ResultClient({
                   <img
                     src={ebookImages[ebookPage]}
                     alt={`전자책 ${ebookPage + 1}`}
-                    className="w-full h-auto block"
+                    className="w-full block"
+                    style={{ aspectRatio: '860/1216' }}
                   />
                 </div>
 
