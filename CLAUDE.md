@@ -88,7 +88,7 @@ NEXT_PUBLIC_OPENCHAT_SURVEY_URL
 
 ## 주요 비즈니스 로직
 
-- **전자책**: 1-2페이지 무료, 3-4페이지 잠금. 잠금 해제 링크는 `ebookLinkMap`에서 부트캠프별 분기
+- **전자책**: 1-2페이지 무료, 3-4페이지 잠금. 잠금 해제 링크는 `ebookLinkMap`에서 부트캠프별 분기. 이미지 규격 **860×1216px PNG**, `public/zunza/{부트캠프}/` 폴더에 `da_ebook_01.png` 형식으로 저장
 - **쿠폰**: 결과 저장 시 자동 생성 (`"AI" + 6자리`), 현재 UI 미노출
 - **공유 카드**: `<canvas>`로 800×1600px 이미지 생성 후 다운로드/인스타 공유
 - **OG 이미지**: `/result/[id]/opengraph-image` 동적 생성 (`ImageResponse`)

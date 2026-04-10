@@ -139,11 +139,16 @@ export default function ResultClient({
 
   const testImages = Array.from({ length: 10 }, (_, i) => `/zunza/DE/DE_테스트_${String(i + 1).padStart(2, '0')}.png`)
 
+  const daImages = Array.from({ length: 7 }, (_, i) => `/zunza/DA/${i + 1}.png`)
+  const deImages = Array.from({ length: 7 }, (_, i) => `/zunza/DE/${i + 1}.png`)
+  const llmImages = Array.from({ length: 10 }, (_, i) => `/zunza/AILLM/${i + 1}.png`)
+  const aiServiceImages = Array.from({ length: 8 }, (_, i) => `/zunza/AISERVICE/${i + 1}.png`)
+
   const ebookImageMap: Record<string, string[]> = {
-    '데이터 엔지니어': testImages,
-    '데이터 분석': testImages,
-    'AI LLM': testImages,
-    'AI 서비스 개발자': testImages,
+    '데이터 엔지니어': deImages,
+    '데이터 분석': daImages,
+    'AI LLM': llmImages,
+    'AI 서비스 개발자': aiServiceImages,
   }
   const ebookImages = ebookImageMap[info.bootcamp] ?? null
 
@@ -995,7 +1000,7 @@ export default function ResultClient({
             <div>
               {/* 슬라이더 */}
               <div className="relative">
-                <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">
+                <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
                   <img
                     src={ebookImages[ebookPage]}
                     alt={`전자책 ${ebookPage + 1}`}
@@ -1045,7 +1050,7 @@ export default function ResultClient({
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >
-            전자책 무료 다운받기
+            (50페이지 분량) 전자책 무료 다운받기
           </a>
         </div>
 
