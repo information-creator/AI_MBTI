@@ -715,14 +715,13 @@ export default function ResultClient({
     const K = window.Kakao
     if (!K) {
       const url = window.location.href
-      const baseUrl = `${window.location.origin}/result/${resultId}`
-      await navigator.clipboard.writeText(`${baseUrl}?utm_source=kakao&utm_medium=share`)
+      await navigator.clipboard.writeText(`${window.location.origin}?utm_source=kakao&utm_medium=share`)
       alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
       setShareLoading(false)
       return
     }
     if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY ?? '')
-    const shareUrl = `${window.location.origin}/result/${resultId}?utm_source=kakao&utm_medium=share`
+    const shareUrl = `${window.location.origin}?utm_source=kakao&utm_medium=share`
     try {
       const dataUrl = await drawKakaoCard()
       if (!dataUrl) throw new Error('no image')
@@ -760,7 +759,7 @@ export default function ResultClient({
   }
 
   async function handleCopyLink() {
-    const url = `${window.location.origin}/result/${resultId}?utm_source=link&utm_medium=share`
+    const url = `${window.location.origin}?utm_source=link&utm_medium=share`
     await navigator.clipboard.writeText(url)
     gtagEvent('exit_click', { label: 'share_link_copy', type_code: typeCode })
     setCopied(true)
