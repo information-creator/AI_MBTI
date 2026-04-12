@@ -12,7 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params
-  const BASE_URL = 'https://aimbti-seven.vercel.app'
+  const BASE_URL = 'https://mcodegc.com'
 
   if (id === 'local') {
     return { title: '결과' }

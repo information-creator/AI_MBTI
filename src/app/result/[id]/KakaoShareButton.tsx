@@ -14,7 +14,7 @@ export default function KakaoShareButton({ typeCode, aiScore, resultId }: Props)
 
   function handleKakaoShare() {
     const BASE = window.location.origin
-    const IMAGE_BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aimbti-seven.vercel.app'
+    const IMAGE_BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mcodegc.com'
     const shareUrl = `${BASE}/result/${resultId}?utm_source=kakao&utm_medium=share`
     const K = window.Kakao
     if (K) {
