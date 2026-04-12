@@ -12,7 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params
-  const BASE_URL = 'https://mcodegc.com'
+  const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mcodegc.com'
 
   if (id === 'local') {
     return { title: '결과' }

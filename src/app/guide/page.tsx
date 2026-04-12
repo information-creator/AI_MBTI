@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: '가이드',
   description: 'AI 시대에 살아남는 자동화 도구 활용법. ChatGPT, Notion AI 등 직군별 맞춤 가이드.',
   alternates: {
-    canonical: 'https://mcodegc.com/guide',
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mcodegc.com'}/guide`,
   },
 }
 
