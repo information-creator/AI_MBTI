@@ -982,7 +982,10 @@ export default function ResultClient({
             href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })}
+            onClick={() => {
+              gtagEvent('openchat_click', { type_code: typeCode })
+              gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })
+            }}
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
             style={{ background: '#FEE500', color: '#3C1E1E' }}
           >
@@ -1023,6 +1026,7 @@ export default function ResultClient({
                 <button
                   onClick={() => {
                     if (ebookPage + 1 >= EBOOK_FREE_LIMIT) {
+                      gtagEvent('ebook_click', { type_code: typeCode, action: 'unlock' })
                       gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
                       window.open(ebookLink, '_blank')
                     } else {
@@ -1051,7 +1055,10 @@ export default function ResultClient({
             href={ebookLink}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })}
+            onClick={() => {
+              gtagEvent('ebook_click', { type_code: typeCode, action: 'download' })
+              gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })
+            }}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >

@@ -81,9 +81,8 @@ NEXT_PUBLIC_OPENCHAT_SURVEY_URL
 | `page_exit` | pagehide (time_on_page 포함) |
 | `exit_click` | 내부 링크 이탈 (destination, label) |
 | `share_click` | 공유 버튼 (method: kakao/link/instagram/card_download) |
-| `bootcamp_click` | 커리어 상담 신청 |
-| `openchat_click` | 단톡방 입장 |
-| `ebook_click` | 전자책 버튼 |
+| `openchat_click` | 단톡방 입장 (type_code) |
+| `ebook_click` | 전자책 버튼 (type_code, action: unlock/download) |
 | `cta_click` | CTA 버튼 (location) |
 
 ## 주요 비즈니스 로직
