@@ -15,7 +15,7 @@ export default function KakaoShareButton({ typeCode, aiScore, resultId }: Props)
   function handleKakaoShare() {
     const BASE = window.location.origin
     const IMAGE_BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aimbti-seven.vercel.app'
-    const shareUrl = `${BASE}/result/${resultId}`
+    const shareUrl = `${BASE}/result/${resultId}?utm_source=kakao&utm_medium=share`
     const K = window.Kakao
     if (K) {
       if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY ?? '')
@@ -34,7 +34,7 @@ export default function KakaoShareButton({ typeCode, aiScore, resultId }: Props)
         ],
       })
     } else {
-      navigator.clipboard.writeText(shareUrl)
+      navigator.clipboard.writeText(`${BASE}/result/${resultId}?utm_source=link&utm_medium=share`)
       alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
     }
     gtagEvent('share_click', { method: 'kakao' })
