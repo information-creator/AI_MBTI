@@ -21,7 +21,7 @@ function RadarChart({ scores, color }: { scores: Scores; color: string }) {
   const R = 185, cx = 325, cy = 300
   const N = 5
   const angles = Array.from({ length: N }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / N)
-  const targetVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4]
+  const targetVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4].map(v => Math.max(v, 0.15))
 
   const [animVals, setAnimVals] = useState([0, 0, 0, 0, 0])
 
@@ -367,7 +367,7 @@ export default function ResultClient({
     const pCx = W / 2, pCy = pentaStartY + 170, pR = 130
     const pN = 5
     const pAngles = Array.from({ length: pN }, (_,i) => -Math.PI/2 + i * 2*Math.PI/pN)
-    const pVals = [scores.a/4, scores.b/4, scores.c/4, scores.d/4, scores.e/4]
+    const pVals = [scores.a/4, scores.b/4, scores.c/4, scores.d/4, scores.e/4].map(v => Math.max(v, 0.15))
     const pLabelsHi = ['AI 활용도', 'AI 민감도', '독립성', '논리력', '실행력']
     const pLabelsLo = ['', '', '', '', '']
 
@@ -616,7 +616,7 @@ export default function ResultClient({
     const pCx = W / 2, pCy = pentaStartY + 160, pR = 120
     const pN = 5
     const pAngles = Array.from({ length: pN }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / pN)
-    const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4]
+    const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4].map(v => Math.max(v, 0.15))
     const pLabelsHi = ['AI 활용도', 'AI 민감도', '독립성', '논리력', '실행력']
     const pLabelsLo = ['', '', '', '', '']
 
