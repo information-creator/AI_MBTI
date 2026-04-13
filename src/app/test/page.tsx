@@ -38,7 +38,7 @@ const PART_TEXT_COLORS: Record<string, string> = {
 }
 
 const CHEER_MESSAGES: Record<number, { emoji: string; title: string; sub: string }> = {
-  5:  { emoji: '🔥', title: '벌써 25%!', sub: '조금만 더 가보자!' },
+  5:  { emoji: '🔥', title: '벌써 5개 완료!', sub: '조금만 더 가보자!' },
   10: { emoji: '💪', title: '절반 달성!', sub: '이제 반 왔어요!' },
   15: { emoji: '🚀', title: '거의 다 왔어요!', sub: '5개만 더!' },
 }
@@ -73,7 +73,7 @@ export default function TestPage() {
     // 마지막 문항 — 결과 계산 후 analyzing 페이지로
     const result = calculateResult(newAnswers)
     router.push(
-      `/analyzing?type=${result.typeCode}&score=${result.aiScore}&overtime=${encodeURIComponent(result.overtimeLevel)}&sa=${result.scores.a}&sb=${result.scores.b}&sc=${result.scores.c}&sd=${result.scores.d}&se=${result.scores.e}`
+      `/analyzing?type=${result.typeCode}&score=${result.aiScore}&sa=${result.scores.a}&sb=${result.scores.b}&sc=${result.scores.c}&sd=${result.scores.d}&se=${result.scores.e}`
     )
   }
 
@@ -92,7 +92,7 @@ export default function TestPage() {
       {cheer && (
         <div className="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
           <div
-            className="animate-cheer-pop flex items-center gap-4 bg-white rounded-2xl shadow-lg px-7 py-4"
+            className="animate-cheer-pop flex items-center gap-4 bg-white rounded-2xl shadow-lg px-7 py-4 select-none"
             style={{ border: '1.5px solid #6366f1' }}
           >
             <span className="text-3xl">{cheer.emoji}</span>
