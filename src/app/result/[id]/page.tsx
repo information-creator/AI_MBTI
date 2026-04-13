@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 
 type Props = {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ type?: string; score?: string; overtime?: string; sa?: string; sb?: string; sc?: string; sd?: string; se?: string }>
+  searchParams: Promise<{ type?: string; score?: string; sa?: string; sb?: string; sc?: string; sd?: string; se?: string }>
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -61,42 +61,24 @@ export default async function ResultPage({ params, searchParams }: Props) {
 
   let typeCode: TypeCode
   let aiScore: number
-  let overtimeLevel: string
-  let overtimeComment: string
   let resultId: string
   let couponCode: string | null = null
   let scores: { a: number; b: number; c: number; d: number; e: number } | null = null
 
-  function derivedScores(tc: TypeCode): { a: number; b: number; c: number; d: number; e: number } {
-    return {
-      a: tc[0] === 'H' ? 3 : 1,
-      b: tc[1] === 'A' ? 3 : 1,
-      c: tc[2] === 'L' ? 3 : 1,
-      d: tc[3] === 'F' ? 3 : 1,
-      e: 2,
-    }
-  }
-
   if (id === 'local') {
-    // Supabase 저장 실패 fallback
     typeCode = (sp.type as TypeCode) ?? 'TSLF'
     aiScore = Number(sp.score ?? 50)
-    overtimeLevel = decodeURIComponent(sp.overtime ?? '적당한 직장인')
-    overtimeComment = '저장에 실패했지만 결과는 정확합니다.'
     resultId = 'local'
     scores = sp.sa
       ? { a: Number(sp.sa), b: Number(sp.sb), c: Number(sp.sc), d: Number(sp.sd), e: Number(sp.se) }
-      : derivedScores(typeCode)
+      : { a: 2, b: 2, c: 2, d: 2, e: 2 }
   } else {
     const db = getSupabaseServer()
     if (!db) {
-      // Supabase 미설정 — 기본값으로 표시
       typeCode = 'TSLF'
       aiScore = 61
-      overtimeLevel = '적당한 직장인'
-      overtimeComment = 'AI 자동화 도구 하나만 도입해도\n야근 2시간은 줄일 수 있습니다.'
       resultId = id
-      scores = derivedScores(typeCode)
+      scores = { a: 2, b: 2, c: 2, d: 2, e: 2 }
     } else {
       const { data: result, error } = await db
         .from('results_v2')
@@ -110,14 +92,11 @@ export default async function ResultPage({ params, searchParams }: Props) {
 
       typeCode = (result.type_code as TypeCode) ?? 'TSLF'
       aiScore = result.ai_score
-      overtimeLevel = result.overtime_result ?? '적당한 직장인'
-      overtimeComment = 'AI 자동화 도구 하나만 도입해도\n야근 2시간은 줄일 수 있습니다.'
       resultId = result.id
       scores = result.score_a !== null
         ? { a: result.score_a, b: result.score_b, c: result.score_c, d: result.score_d, e: result.score_e }
-        : derivedScores(typeCode)
+        : { a: 2, b: 2, c: 2, d: 2, e: 2 }
 
-      // 쿠폰 조회
       const { data: coupon } = await db
         .from('coupons')
         .select('code')
@@ -132,8 +111,6 @@ export default async function ResultPage({ params, searchParams }: Props) {
     <ResultClient
       typeCode={typeCode}
       aiScore={aiScore}
-      overtimeLevel={overtimeLevel}
-      overtimeComment={overtimeComment}
       resultId={resultId}
       couponCode={couponCode}
       scores={scores}

@@ -62,9 +62,9 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     charImgSrc = `data:image/png;base64,${Buffer.from(buf).toString('base64')}`
   } catch {}
 
-  const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 6]
-  const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
-  const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
+  const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4].map(v => Math.max(v, 0.15))
+  const pLabelsHi = ['AI 활용도', 'AI 민감도', '독립성', '논리력', '실행력']
+  const pLabelsLo = ['', '', '', '', '']
   const cx = 400, cy = 170, pR = 130
 
   const insightItems = [

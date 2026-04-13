@@ -6,19 +6,19 @@ import { questions, calculateResult } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
 
 const PART_LABELS: Record<string, string> = {
-  A: '업무방식',
-  B: 'AI 활용도',
-  C: '강점영역',
-  D: '실행속도',
-  E: '퇴근',
+  A: 'AI 활용도',
+  B: 'AI 민감도',
+  C: '독립성',
+  D: '논리력',
+  E: '실행력',
 }
 
 const PART_ICONS: Record<string, string> = {
-  A: '🧠',
-  B: '🤖',
-  C: '✨',
-  D: '⚡',
-  E: '😴',
+  A: '🤖',
+  B: '📡',
+  C: '🧠',
+  D: '🔬',
+  E: '⚡',
 }
 
 const PART_COLORS: Record<string, string> = {
@@ -73,7 +73,7 @@ export default function TestPage() {
     // 마지막 문항 — 결과 계산 후 analyzing 페이지로
     const result = calculateResult(newAnswers)
     router.push(
-      `/analyzing?type=${result.typeCode}&score=${result.aiScore}&overtime=${encodeURIComponent(result.overtimeLevel)}&sa=${result.scores.a}&sb=${result.scores.b}&sc=${result.scores.c}&sd=${result.scores.d}&se=${result.scores.e}`
+      `/analyzing?type=${result.typeCode}&score=${result.aiScore}&sa=${result.scores.a}&sb=${result.scores.b}&sc=${result.scores.c}&sd=${result.scores.d}&se=${result.scores.e}`
     )
   }
 
@@ -92,7 +92,7 @@ export default function TestPage() {
       {cheer && (
         <div className="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
           <div
-            className="animate-cheer-pop flex items-center gap-4 bg-white rounded-2xl shadow-lg px-7 py-4"
+            className="animate-cheer-pop flex items-center gap-4 bg-white rounded-2xl shadow-lg px-7 py-4 select-none"
             style={{ border: '1.5px solid #6366f1' }}
           >
             <span className="text-3xl">{cheer.emoji}</span>

@@ -11,19 +11,17 @@ type Scores = { a: number; b: number; c: number; d: number; e: number }
 type Props = {
   typeCode: TypeCode
   aiScore: number
-  overtimeLevel: string
-  overtimeComment: string
   resultId: string
   couponCode: string | null
   scores: Scores | null
 }
 
 function RadarChart({ scores, color }: { scores: Scores; color: string }) {
-  // 5각형: 위=혼자/함께, 우상=AI활용/사람감각, 우하=논리형/창의형, 좌하=빠른실행/완벽준비, 좌상=야근러/칼퇴파
+  // 5각형: 위=AI활용도, 우상=AI민감도, 우하=독립성, 좌하=논리력, 좌상=실행력
   const R = 185, cx = 325, cy = 300
   const N = 5
   const angles = Array.from({ length: N }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / N)
-  const targetVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 6]
+  const targetVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4].map(v => Math.max(v, 0.15))
 
   const [animVals, setAnimVals] = useState([0, 0, 0, 0, 0])
 
@@ -49,11 +47,11 @@ function RadarChart({ scores, color }: { scores: Scores; color: string }) {
   const labelR = R + 48
   const anchors = ['middle', 'start', 'start', 'end', 'end'] as const
   const labels = [
-    { hi: '혼자', lo: '함께' },
-    { hi: 'AI 활용', lo: '사람감각' },
-    { hi: '논리형', lo: '창의형' },
-    { hi: '빠른 실행', lo: '완벽 준비' },
-    { hi: '야근러', lo: '칼퇴파' },
+    { hi: 'AI 활용도', lo: '' },
+    { hi: 'AI 민감도', lo: '' },
+    { hi: '독립성', lo: '' },
+    { hi: '논리력', lo: '' },
+    { hi: '실행력', lo: '' },
   ]
 
   return (
@@ -70,14 +68,13 @@ function RadarChart({ scores, color }: { scores: Scores; color: string }) {
         const [x, y] = pt(R * Math.max(v, 0.04), angles[i])
         return <circle key={i} cx={x} cy={y} r="6" fill={color} />
       })}
-      {labels.map(({ hi, lo }, i) => {
+      {labels.map(({ hi }, i) => {
         const [lx, ly] = pt(labelR, angles[i])
-        const dominant = targetVals[i] >= 0.5
         const yOff = i === 0 ? -10 : (i === 2 || i === 3) ? 10 : 0
         return (
           <g key={i}>
             <text x={lx} y={ly + yOff - 10} textAnchor={anchors[i]} fontSize="27" fontWeight="700" fill="#1e293b" fontFamily="'Apple SD Gothic Neo','Malgun Gothic',sans-serif">
-              {dominant ? hi : lo}
+              {hi}
             </text>
           </g>
         )
@@ -89,19 +86,11 @@ function RadarChart({ scores, color }: { scores: Scores; color: string }) {
 export default function ResultClient({
   typeCode,
   aiScore,
-  overtimeLevel,
-  overtimeComment,
   resultId,
   scores: scoresProp,
   // couponCode reserved for future use
 }: Props) {
-  const scores: Scores = scoresProp ?? {
-    a: typeCode[0] === 'H' ? 3 : 1,
-    b: typeCode[1] === 'A' ? 3 : 1,
-    c: typeCode[2] === 'L' ? 3 : 1,
-    d: typeCode[3] === 'F' ? 3 : 1,
-    e: 2,
-  }
+  const scores: Scores = scoresProp ?? { a: 2, b: 2, c: 2, d: 2, e: 2 }
   const info = typeInfo[typeCode]
   const bInfo = bootcampInfo[info.bootcamp]
 
@@ -376,9 +365,9 @@ export default function ResultClient({
     const pCx = W / 2, pCy = pentaStartY + 170, pR = 130
     const pN = 5
     const pAngles = Array.from({ length: pN }, (_,i) => -Math.PI/2 + i * 2*Math.PI/pN)
-    const pVals = [scores.a/4, scores.b/4, scores.c/4, scores.d/4, scores.e/6]
-    const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
-    const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
+    const pVals = [scores.a/4, scores.b/4, scores.c/4, scores.d/4, scores.e/4]
+    const pLabelsHi = ['AI 활용도', 'AI 민감도', '독립성', '논리력', '실행력']
+    const pLabelsLo = ['', '', '', '', '']
 
     for (const level of [0.25, 0.5, 0.75, 1.0]) {
       ctx.beginPath()
@@ -625,9 +614,9 @@ export default function ResultClient({
     const pCx = W / 2, pCy = pentaStartY + 160, pR = 120
     const pN = 5
     const pAngles = Array.from({ length: pN }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / pN)
-    const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 6]
-    const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
-    const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
+    const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4]
+    const pLabelsHi = ['AI 활용도', 'AI 민감도', '독립성', '논리력', '실행력']
+    const pLabelsLo = ['', '', '', '', '']
 
     // 그리드
     for (const level of [0.25, 0.5, 0.75, 1.0]) {
@@ -949,21 +938,6 @@ export default function ResultClient({
           </div>
 
           {/* CTA 연결 문구 */}
-        </div>
-
-        {/* 퇴근 보너스 */}
-        <div
-          className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
-          style={{ animationDelay: '0.38s' }}
-        >
-          <h2 className="text-slate-900 font-bold text-xl mb-2">😴 나의 야근 지수</h2>
-          <div
-            className="rounded-xl p-4"
-            style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.15)' }}
-          >
-            <p className="font-bold text-orange-600 text-lg mb-1">{overtimeLevel}</p>
-            <p className="text-slate-600 text-sm whitespace-pre-line">{overtimeComment}</p>
-          </div>
         </div>
 
         {/* 무료 특강 단톡방 */}
