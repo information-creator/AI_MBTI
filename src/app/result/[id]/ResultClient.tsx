@@ -133,10 +133,10 @@ export default function ResultClient({
   }, [ebookPage])
 
   const ebookLinkMap: Record<string, string> = {
-    '데이터 분석': 'https://metacodes.co.kr/',
-    '데이터 엔지니어': 'https://metacodes.co.kr/',
-    'AI LLM': 'https://metacodes.co.kr/',
-    'AI 서비스 개발자': 'https://metacodes.co.kr/',
+    '데이터 분석': 'https://metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27422&EM_IDX=27263',
+    '데이터 엔지니어': 'https://metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27426&EM_IDX=27267',
+    'AI LLM': 'https://metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27427&EM_IDX=27268',
+    'AI 서비스 개발자': 'https://metacodes.co.kr/edu/read2.nx?M2_IDX=30656&page=1&sc_is_discount=&sc_is_new=&EP_IDX=27433&EM_IDX=27274',
   }
   const ebookLink = ebookLinkMap[info.bootcamp] ?? 'https://metacodes.co.kr/'
 
@@ -144,10 +144,10 @@ export default function ResultClient({
 
   const testImages = Array.from({ length: 10 }, (_, i) => `/zunza/DE/DE_테스트_${String(i + 1).padStart(2, '0')}.png`)
 
-  const daImages = Array.from({ length: 7 }, (_, i) => `/zunza/DA/${i + 1}.png`)
-  const deImages = Array.from({ length: 7 }, (_, i) => `/zunza/DE/${i + 1}.png`)
-  const llmImages = Array.from({ length: 10 }, (_, i) => `/zunza/AILLM/${i + 1}.png`)
-  const aiServiceImages = Array.from({ length: 8 }, (_, i) => `/zunza/AISERVICE/${i + 1}.png`)
+  const daImages = Array.from({ length: 6 }, (_, i) => `/zunza/DA/${i + 1}.png`)
+  const deImages = Array.from({ length: 6 }, (_, i) => `/zunza/DE/${i + 1}.png`)
+  const llmImages = Array.from({ length: 8 }, (_, i) => `/zunza/AILLM/${i + 1}.png`)
+  const aiServiceImages = Array.from({ length: 6 }, (_, i) => `/zunza/AISERVICE/${i + 1}.png`)
 
   const ebookImageMap: Record<string, string[]> = {
     '데이터 엔지니어': deImages,
@@ -1025,7 +1025,7 @@ export default function ResultClient({
                 )}
                 <button
                   onClick={() => {
-                    if (ebookPage + 1 >= EBOOK_FREE_LIMIT) {
+                    if (ebookPage + 1 >= ebookImages.length) {
                       gtagEvent('ebook_click', { type_code: typeCode, action: 'unlock' })
                       gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
                       window.open(ebookLink, '_blank')
@@ -1040,7 +1040,7 @@ export default function ResultClient({
 
               {/* 인디케이터 */}
               <div className="flex justify-center gap-2 mt-3">
-                {ebookImages.slice(0, EBOOK_FREE_LIMIT).map((_, i) => (
+                {ebookImages.map((_, i) => (
                   <div
                     key={i}
                     className="w-2 h-2 rounded-full transition-all"
