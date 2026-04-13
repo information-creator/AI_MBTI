@@ -49,7 +49,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-slate-500 text-base">
-            16가지 AI 생존유형
+            8가지 AI 생존유형
           </p>
 
           <CTAButton
@@ -67,7 +67,7 @@ export default function LandingPage() {
         {/* 통계 배지 */}
         <div className="mt-10 grid grid-cols-3 gap-3 w-full">
           {[
-            { num: '16가지', label: 'AI 생존유형' },
+            { num: '8가지', label: 'AI 생존유형' },
             { num: '20문항', label: '정밀 진단' },
             { num: '무료', label: '비용 무료' },
           ].map((item) => (
@@ -98,7 +98,7 @@ export default function LandingPage() {
           이 다릅니다
         </h2>
         <p className="text-slate-500 text-sm mb-6 text-center">
-          AI 생존유형 총 16가지 — 지금 바로 확인해보세요
+          AI 생존유형 총 8가지 — 지금 바로 확인해보세요
         </p>
 
         <div className="grid grid-cols-2 gap-2.5">
