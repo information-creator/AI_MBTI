@@ -24,9 +24,9 @@ function pentaGridPoints(cx: number, cy: number, r: number, level: number): stri
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  let typeCode: TypeCode = 'DA_LOG'
+  let typeCode: TypeCode = 'TSLF'
   let aiScore = 50
-  let scores = { a: 2, b: 2, c: 2, d: 2, e: 2 }
+  let scores = { a: 2, b: 2, c: 2, d: 2, e: 3 }
 
   if (id !== 'local') {
     try {
@@ -34,7 +34,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
       if (db) {
         const { data } = await db.from('results_v2').select('*').eq('id', id).single()
         if (data) {
-          typeCode = (data.type_code as TypeCode) ?? 'DA_LOG'
+          typeCode = (data.type_code as TypeCode) ?? 'TSLF'
           aiScore = data.ai_score
           if (data.score_a != null) scores = {
             a: data.score_a, b: data.score_b, c: data.score_c,
@@ -62,9 +62,9 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     charImgSrc = `data:image/png;base64,${Buffer.from(buf).toString('base64')}`
   } catch {}
 
-  const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4].map(v => Math.max(v, 0.15))
-  const pLabelsHi = ['AI 활용도', 'AI 민감도', '독립성', '논리력', '실행력']
-  const pLabelsLo = ['', '', '', '', '']
+  const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 6]
+  const pLabelsHi = ['혼자', 'AI 활용', '논리형', '빠른 실행', '야근 내성']
+  const pLabelsLo = ['함께', '사람 감각', '창의형', '완벽 준비', '']
   const cx = 400, cy = 170, pR = 130
 
   const insightItems = [

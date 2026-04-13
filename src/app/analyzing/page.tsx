@@ -11,6 +11,7 @@ function AnalyzingContent() {
   const params = useSearchParams()
   const typeCode = params.get('type') ?? ''
   const aiScore = Number(params.get('score') ?? 0)
+  const overtimeLevel = params.get('overtime') ?? ''
   const scoreA = params.get('sa') !== null ? Number(params.get('sa')) : null
   const scoreB = params.get('sb') !== null ? Number(params.get('sb')) : null
   const scoreC = params.get('sc') !== null ? Number(params.get('sc')) : null
@@ -42,6 +43,11 @@ function AnalyzingContent() {
             type_code: typeCode,
             type_name: typeCode,
             ai_score: aiScore,
+            work_style: typeCode[0],
+            ai_usage: typeCode[1],
+            strength: typeCode[2],
+            speed: typeCode[3],
+            overtime_result: overtimeLevel,
             score_a: scoreA,
             score_b: scoreB,
             score_c: scoreC,
@@ -61,8 +67,7 @@ function AnalyzingContent() {
       }
     }
     save()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [typeCode, aiScore])
+  }, [typeCode, aiScore, overtimeLevel])
 
   // 95% 도달 후 저장 완료 대기 → 이동
   useEffect(() => {
@@ -78,15 +83,14 @@ function AnalyzingContent() {
       const id = resultIdRef.current
       setTimeout(() => {
         if (id === '__local__') {
-          router.push(`/result/local?type=${typeCode}&score=${aiScore}&sa=${scoreA ?? ''}&sb=${scoreB ?? ''}&sc=${scoreC ?? ''}&sd=${scoreD ?? ''}&se=${scoreE ?? ''}`)
+          router.push(`/result/local?type=${typeCode}&score=${aiScore}&overtime=${encodeURIComponent(overtimeLevel)}&sa=${scoreA ?? ''}&sb=${scoreB ?? ''}&sc=${scoreC ?? ''}&sd=${scoreD ?? ''}&se=${scoreE ?? ''}`)
         } else {
           router.push(`/result/${id}`)
         }
       }, 300)
     }
     tryNavigate()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pct, typeCode, aiScore, router])
+  }, [pct, typeCode, aiScore, overtimeLevel, router])
 
   const label =
     pct < 30 ? '답변 수집 중...' :
