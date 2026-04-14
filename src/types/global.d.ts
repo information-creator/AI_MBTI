@@ -1,5 +1,6 @@
 interface Window {
   gtag?: (...args: unknown[]) => void
+  fbq?: (...args: unknown[]) => void
   Kakao?: {
     isInitialized: () => boolean
     init: (key: string) => void

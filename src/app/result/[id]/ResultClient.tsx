@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
+import { fbqEvent } from '@/lib/meta'
 import { trackEvent } from '@/lib/track'
 
 type Scores = { a: number; b: number; c: number; d: number; e: number }
@@ -965,6 +966,7 @@ export default function ResultClient({
               gtagEvent('openchat_click', { type_code: typeCode })
               gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })
               trackEvent('openchat_click', typeCode)
+              fbqEvent('Lead', { content_name: 'openchat', type_code: typeCode })
             }}
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
             style={{ background: '#FEE500', color: '#3C1E1E' }}
@@ -1010,6 +1012,7 @@ export default function ResultClient({
                       gtagEvent('ebook_click', { type_code: typeCode, action: 'unlock' })
                       gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
                       trackEvent('ebook_click', typeCode, { action: 'unlock' })
+                      fbqEvent('Lead', { content_name: 'ebook_unlock', type_code: typeCode })
                       window.open(ebookLink, '_blank')
                     } else {
                       setEbookPage(ebookPage + 1)
@@ -1041,6 +1044,7 @@ export default function ResultClient({
               gtagEvent('ebook_click', { type_code: typeCode, action: 'download' })
               gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })
               trackEvent('ebook_click', typeCode, { action: 'download' })
+              fbqEvent('Lead', { content_name: 'ebook_download', type_code: typeCode })
             }}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}

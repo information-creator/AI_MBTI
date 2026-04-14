@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { generateCouponCode } from '@/lib/coupon'
 import { gtagEvent } from '@/lib/ga'
+import { fbqEvent } from '@/lib/meta'
 import { trackEvent } from '@/lib/track'
 
 function AnalyzingContent() {
@@ -35,6 +36,7 @@ function AnalyzingContent() {
     if (!typeCode) return
     gtagEvent('test_complete', { type_code: typeCode, ai_score: aiScore })
     trackEvent('test_complete', typeCode, { ai_score: aiScore })
+    fbqEvent('CompleteRegistration', { type_code: typeCode, ai_score: aiScore })
 
     async function save() {
       try {
