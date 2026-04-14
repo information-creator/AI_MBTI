@@ -12,7 +12,7 @@ function getClient() {
   // 로컬: 파일에서 읽기
   const path = require('path')
   return new BetaAnalyticsDataClient({
-    keyFilename: path.join(process.cwd(), 'ga4-key.json'),
+    keyFilename: path.join(process.cwd(), 'cred', 'ga4-key.json'),
   })
 }
 

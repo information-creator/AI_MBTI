@@ -43,5 +43,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# GCP service account key
-ga4-key.json
+# GCP credentials
+/cred/
