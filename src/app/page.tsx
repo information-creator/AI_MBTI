@@ -23,9 +23,9 @@ export default function LandingPage() {
 
       {/* 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
-        <span className="text-slate-900 font-bold text-lg tracking-tight">
+        <a href="https://mcodegc.com/" className="text-slate-900 font-bold text-lg tracking-tight">
             <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-MBTI</span>
-        </span>
+        </a>
         <CTAButton
           location="header"
           className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"

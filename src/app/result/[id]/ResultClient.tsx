@@ -790,9 +790,9 @@ export default function ResultClient({
       )}
 
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
-        <Link href="/" className="text-slate-900 font-bold text-lg" onClick={() => gtagEvent('exit_click', { destination: '/', label: 'home_logo', type_code: typeCode })}>
+        <a href="https://mcodegc.com/" className="text-slate-900 font-bold text-lg" onClick={() => gtagEvent('exit_click', { destination: 'https://mcodegc.com/', label: 'home_logo', type_code: typeCode })}>
           <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-MBTI</span>
-        </Link>
+        </a>
         <Link
           href="/test"
           className="text-sm text-slate-400 hover:text-slate-700 transition-colors"
@@ -989,7 +989,7 @@ export default function ResultClient({
             <div>
               {/* 슬라이더 */}
               <div className="relative">
-                <div ref={ebookScrollRef} className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50" style={{ height: '70vh', overflowY: 'auto' }}>
+                <div ref={ebookScrollRef} className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50" style={{ height: '60vh', overflow: 'hidden' }}>
                   <img
                     src={ebookImages[ebookPage]}
                     alt={`전자책 ${ebookPage + 1}`}
