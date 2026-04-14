@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
+import { trackEvent } from '@/lib/track'
 
 type Scores = { a: number; b: number; c: number; d: number; e: number }
 
@@ -96,6 +97,7 @@ export default function ResultClient({
 
   useEffect(() => {
     gtagEvent('result_view', { type_code: typeCode, ai_score: aiScore })
+    trackEvent('result_view', typeCode, { ai_score: aiScore })
   }, [typeCode, aiScore])
 
   // 결과 페이지 이탈 추적 (뒤로가기 / 탭 닫기)
@@ -816,6 +818,7 @@ export default function ResultClient({
 
         {/* 결과 카드 */}
         <div
+
           className="rounded-3xl p-6 animate-fade-in-up"
           style={{
             background: `linear-gradient(135deg, ${info.color}12 0%, #ffffff 100%)`,
@@ -907,6 +910,7 @@ export default function ResultClient({
 
         {/* 직무 추천 */}
         <div
+
           className="rounded-3xl p-6 animate-fade-in-up bg-white border border-slate-200"
           style={{ animationDelay: '0.2s' }}
         >
@@ -942,6 +946,7 @@ export default function ResultClient({
 
         {/* 무료 특강 단톡방 */}
         <div
+
           className="rounded-3xl p-6 animate-fade-in-up"
           style={{ background: '#FFFDE7', border: '2px solid #FEE500', animationDelay: '0.55s' }}
         >
@@ -959,6 +964,7 @@ export default function ResultClient({
             onClick={() => {
               gtagEvent('openchat_click', { type_code: typeCode })
               gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })
+              trackEvent('openchat_click', typeCode)
             }}
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
             style={{ background: '#FEE500', color: '#3C1E1E' }}
@@ -969,6 +975,7 @@ export default function ResultClient({
 
         {/* 무료 전자책 */}
         <div
+
           className="rounded-3xl p-6 animate-fade-in-up bg-white"
           style={{ border: '1px solid rgba(99,102,241,0.25)', animationDelay: '0.5s' }}
         >
@@ -1002,6 +1009,7 @@ export default function ResultClient({
                     if (ebookPage + 1 >= ebookImages.length) {
                       gtagEvent('ebook_click', { type_code: typeCode, action: 'unlock' })
                       gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
+                      trackEvent('ebook_click', typeCode, { action: 'unlock' })
                       window.open(ebookLink, '_blank')
                     } else {
                       setEbookPage(ebookPage + 1)
@@ -1032,6 +1040,7 @@ export default function ResultClient({
             onClick={() => {
               gtagEvent('ebook_click', { type_code: typeCode, action: 'download' })
               gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })
+              trackEvent('ebook_click', typeCode, { action: 'download' })
             }}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
@@ -1042,6 +1051,7 @@ export default function ResultClient({
 
         {/* 공유 섹션 */}
         <div
+
           className="rounded-3xl p-6 animate-fade-in-up bg-white"
           style={{ border: '1px solid #e2e8f0', animationDelay: '0.45s' }}
         >

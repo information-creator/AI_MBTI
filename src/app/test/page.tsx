@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { questions, calculateResult } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
+import { trackEvent } from '@/lib/track'
 
 const PART_LABELS: Record<string, string> = {
   A: 'AI 활용도',
@@ -57,7 +58,14 @@ export default function TestPage() {
     const newAnswers = { ...answers, [question.id]: value }
     setAnswers(newAnswers)
 
-    if (current === 0) gtagEvent('test_start')
+    if (current === 0) { gtagEvent('test_start'); trackEvent('test_start') }
+
+    // 파트 완료 시점 추적 (Q4=idx3, Q8=idx7, Q12=idx11, Q16=idx15)
+    if (current === 3 || current === 7 || current === 11 || current === 15) {
+      const step = current + 1
+      gtagEvent('test_progress', { part: question.part, step })
+      trackEvent('test_progress', null, { part: question.part, step })
+    }
 
     if (!isLast) {
       const next = current + 1

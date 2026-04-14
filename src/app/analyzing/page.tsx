@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { generateCouponCode } from '@/lib/coupon'
 import { gtagEvent } from '@/lib/ga'
+import { trackEvent } from '@/lib/track'
 
 function AnalyzingContent() {
   const router = useRouter()
@@ -33,6 +34,7 @@ function AnalyzingContent() {
   useEffect(() => {
     if (!typeCode) return
     gtagEvent('test_complete', { type_code: typeCode, ai_score: aiScore })
+    trackEvent('test_complete', typeCode, { ai_score: aiScore })
 
     async function save() {
       try {

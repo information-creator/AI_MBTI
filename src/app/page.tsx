@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import CTAButton from '@/components/CTAButton'
+import PageViewTracker from '@/components/PageViewTracker'
 import { typeInfo } from '@/lib/quiz'
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default function LandingPage() {
   return (
     <main className="flex flex-col min-h-screen bg-white">
+      <PageViewTracker />
       {/* 상단 경고 배너 */}
       <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-center py-2 px-4 text-sm font-medium">
         ⚠️ 직장인 10명 중 8명 AI 대체 위험
