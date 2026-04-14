@@ -1,12 +1,20 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data'
 import { NextResponse } from 'next/server'
-import path from 'path'
 
 const PROPERTY_ID = '531252719'
 
-const client = new BetaAnalyticsDataClient({
-  keyFilename: path.join(process.cwd(), 'ga4-key.json'),
-})
+function getClient() {
+  // Vercel: 환경변수에서 읽기
+  if (process.env.GA4_SERVICE_ACCOUNT_KEY) {
+    const credentials = JSON.parse(process.env.GA4_SERVICE_ACCOUNT_KEY)
+    return new BetaAnalyticsDataClient({ credentials })
+  }
+  // 로컬: 파일에서 읽기
+  const path = require('path')
+  return new BetaAnalyticsDataClient({
+    keyFilename: path.join(process.cwd(), 'ga4-key.json'),
+  })
+}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -19,6 +27,8 @@ export async function GET(req: Request) {
   const endDate = searchParams.get('end') || 'today'
 
   try {
+    const client = getClient()
+
     const [response] = await client.runReport({
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [{ startDate, endDate }],
@@ -38,7 +48,6 @@ export async function GET(req: Request) {
       }
     }
 
-    // 총 사용자 수 조회
     const [totalResponse] = await client.runReport({
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [{ startDate, endDate }],
