@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   keywords: ['MBTI 테스트', 'AI 직업 추천', '나 대체될까', 'AI 시대 직업', 'ChatGPT 대체'],
   openGraph: {
     title: 'AI 시대 생존력 진단',
-    description: '20문항으로 알아보는 나의 AI 대체 가능성',
+    description: '20문항으로 알아보는 나의 AI 대체 가능성 (AI-MBTI)',
     type: 'website',
     locale: 'ko_KR',
   },

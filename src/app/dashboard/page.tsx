@@ -1,228 +1,147 @@
-import { createClient } from '@supabase/supabase-js'
-import type { Result } from '@/lib/supabase'
+'use client'
 
-async function getResults(): Promise<Result[]> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return []
-  const sb = createClient(url, key)
-  const { data } = await sb
-    .from('results_v2')
-    .select('*')
-    .order('created_at', { ascending: true })
-  return data ?? []
+import { useState, useCallback } from 'react'
+
+const PASS = '720972'
+
+type GA4Data = {
+  events: Record<string, { events: number; users: number }>
+  totalUsers: number
+  startDate: string
+  endDate: string
 }
 
-function Bar({ value, max, color = 'bg-indigo-500' }: { value: number; max: number; color?: string }) {
-  const pct = max === 0 ? 0 : Math.round((value / max) * 100)
-  return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 bg-slate-100 rounded-full h-2.5">
-        <div className={`${color} h-2.5 rounded-full transition-all`} style={{ width: `${pct}%` }} />
-      </div>
-      <span className="text-xs text-slate-500 w-8 text-right">{value}</span>
-    </div>
-  )
-}
+export default function DashboardPage() {
+  const [authed, setAuthed] = useState(false)
+  const [input, setInput] = useState('')
+  const [data, setData] = useState<GA4Data | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
-  return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-4">
-      <div className="text-slate-500 text-xs mb-1">{label}</div>
-      <div className="text-2xl font-black text-slate-900">{value}</div>
-      {sub && <div className="text-slate-400 text-xs mt-0.5">{sub}</div>}
-    </div>
-  )
-}
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch(`/api/ga4?pass=${PASS}&start=2026-03-03&end=today`)
+      if (!res.ok) throw new Error('API 오류')
+      const json = await res.json()
+      setData(json)
+    } catch {
+      setError('데이터를 불러올 수 없습니다')
+    }
+    setLoading(false)
+  }, [])
 
-const TYPE_LABEL: Record<string, string> = {
-  HALF: 'AI 시대 지휘관', HALP: '완벽주의 AI 설계자',
-  HACF: '데이터로 판치는 크리에이터', HACP: '느린 듯 정확한 AI 예술가',
-  HSLF: '조용한 논리 장인', HSLP: '철저한 혼자형 전략가',
-  HSCF: '감성 독립군', HSCP: '나만의 세계 완성형',
-  TALF: '팀 이끄는 AI 선봉장', TALP: '함께 만드는 AI 설계자',
-  TACF: 'AI 부리는 크리에이터', TACP: '협력형 AI 아티스트',
-  TSLF: '사람으로 굴러가는 분석가', TSLP: '신중한 팀 전략가',
-  TSCF: '감성으로 팀 살리는 사람', TSCP: '완벽한 팀의 완성자',
-}
-
-export default async function DashboardPage() {
-  const results = await getResults()
-  const total = results.length
-
-  // 오늘 / 이번 주
-  const now = new Date()
-  const todayStr = now.toISOString().slice(0, 10)
-  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  const today = results.filter(r => r.created_at.startsWith(todayStr)).length
-  const thisWeek = results.filter(r => new Date(r.created_at) >= weekAgo).length
-  const shared = results.filter(r => r.shared).length
-  const shareRate = total === 0 ? 0 : Math.round((shared / total) * 100)
-
-  // 일별 추이 (최근 14일)
-  const dailyMap: Record<string, number> = {}
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000)
-    dailyMap[d.toISOString().slice(0, 10)] = 0
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (input === PASS) {
+      setAuthed(true)
+      fetchData()
+    }
   }
-  results.forEach(r => {
-    const d = r.created_at.slice(0, 10)
-    if (d in dailyMap) dailyMap[d]++
-  })
-  const dailyEntries = Object.entries(dailyMap)
-  const dailyMax = Math.max(...dailyEntries.map(([, v]) => v), 1)
 
-  // 유형 분포
-  const typeMap: Record<string, number> = {}
-  results.forEach(r => { typeMap[r.type_code] = (typeMap[r.type_code] ?? 0) + 1 })
-  const typeSorted = Object.entries(typeMap).sort((a, b) => b[1] - a[1])
+  if (!authed) {
+    return (
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <form onSubmit={handleLogin} className="w-full max-w-xs text-center">
+          <h1 className="text-slate-900 text-lg font-bold mb-6">AIMBTI 대시보드</h1>
+          <input
+            type="password" value={input} onChange={e => setInput(e.target.value)}
+            placeholder="비밀번호" autoFocus
+            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-center text-slate-900 text-lg tracking-widest mb-3 focus:outline-none focus:border-indigo-500"
+          />
+          <button type="submit" className="w-full bg-indigo-500 text-white rounded-xl py-3 font-bold">확인</button>
+        </form>
+      </main>
+    )
+  }
 
-  // 특성 분포
-  const ws = { H: 0, T: 0 }
-  const au = { A: 0, S: 0 }
-  const st = { L: 0, C: 0 }
-  const sp = { F: 0, P: 0 }
-  results.forEach(r => {
-    if (r.work_style === 'H') ws.H++; else ws.T++
-    if (r.ai_usage === 'A') au.A++; else au.S++
-    if (r.strength === 'L') st.L++; else st.C++
-    if (r.speed === 'F') sp.F++; else sp.P++
-  })
+  if (loading && !data) {
+    return <main className="min-h-screen bg-slate-50 flex items-center justify-center"><p className="text-slate-400">GA4 데이터 불러오는 중...</p></main>
+  }
 
-  // AI 점수 구간
-  const scoreMap: Record<number, number> = {}
-  results.forEach(r => { scoreMap[r.ai_score] = (scoreMap[r.ai_score] ?? 0) + 1 })
-  const scoreEntries = Object.entries(scoreMap)
-    .map(([k, v]) => ({ score: Number(k), count: v }))
-    .sort((a, b) => a.score - b.score)
-  const scoreMax = Math.max(...scoreEntries.map(e => e.count), 1)
+  if (error && !data) {
+    return <main className="min-h-screen bg-slate-50 flex items-center justify-center"><p className="text-red-400">{error}</p></main>
+  }
 
-  // 퍼널 단계 (Supabase 기준)
-  const funnelSteps = [
-    { label: '랜딩 방문', value: null, note: 'GA4', color: 'bg-slate-200' },
-    { label: 'CTA 클릭', value: null, note: 'GA4', color: 'bg-slate-200' },
-    { label: '테스트 완주', value: total, note: null, color: 'bg-indigo-500' },
-    { label: '결과 공유', value: shared, note: null, color: shared > 0 ? 'bg-purple-500' : 'bg-slate-300' },
+  if (!data) return null
+
+  const ev = data.events
+  const get = (name: string) => ev[name] ?? { events: 0, users: 0 }
+  const pct = (v: number, base: number) => base === 0 ? '-' : `${Math.round((v / base) * 100)}%`
+
+  const totalUsers = data.totalUsers
+  const testStart = get('test_start').users
+  const testComplete = get('test_complete').users
+  const resultView = get('result_view').users
+  const openchat = get('openchat_click').users
+  const ebook = get('ebook_click').users
+  const share = get('share_click').users
+  const ctaClick = get('cta_click').users
+
+  const funnel = [
+    { label: '페이지 방문', value: totalUsers },
+    { label: '시작 버튼 클릭', value: ctaClick },
+    { label: '첫 문항 응답', value: testStart },
+    { label: '20문항 완료', value: testComplete },
+    { label: '결과 확인', value: resultView },
+    { label: '오픈채팅 클릭', value: openchat },
+    { label: '전자책 클릭', value: ebook },
   ]
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8 max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-black text-slate-900">AIMBTI 대시보드</h1>
-        <p className="text-slate-500 text-xs mt-1">Supabase 기준 · 실시간</p>
+    <main className="min-h-screen bg-slate-50 px-4 py-6 max-w-lg mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-slate-900 font-bold">AIMBTI 대시보드</h1>
+          <p className="text-slate-400 text-xs mt-1">GA4 실시간 · {data.startDate} ~ today</p>
+        </div>
+        <button onClick={fetchData} disabled={loading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
+          {loading ? '...' : '↻ 새로고침'}
+        </button>
       </div>
 
-      {/* 요약 카드 */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <StatCard label="총 완주" value={total} sub="누적" />
-        <StatCard label="오늘" value={today} sub={todayStr} />
-        <StatCard label="이번 주 (7일)" value={thisWeek} />
-        <StatCard label="공유율" value={`${shareRate}%`} sub={`${shared}명 공유`} />
+      {/* 핵심 숫자 */}
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 text-center">
+          <div className="text-3xl font-black text-slate-900">{totalUsers}</div>
+          <div className="text-slate-400 text-xs mt-1">총 방문자</div>
+        </div>
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 text-center">
+          <div className="text-3xl font-black text-indigo-500">{testComplete}</div>
+          <div className="text-slate-400 text-xs mt-1">테스트 완료</div>
+        </div>
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 text-center">
+          <div className="text-3xl font-black text-purple-500">{resultView}</div>
+          <div className="text-slate-400 text-xs mt-1">결과 확인</div>
+        </div>
       </div>
 
-      {/* 퍼널 */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
-        <h2 className="text-sm font-bold text-slate-700 mb-4">퍼널</h2>
-        <div className="space-y-2">
-          {funnelSteps.map((step, i) => {
-            const width = step.value === null ? 100
-              : total === 0 ? 0
-              : Math.max(Math.round((step.value / total) * 100), step.value > 0 ? 4 : 0)
+      {/* 전체 퍼널 */}
+      <section className="bg-white rounded-2xl border border-slate-200 p-5 mb-4">
+        <h2 className="text-slate-900 font-bold text-sm mb-4">전체 퍼널</h2>
+        <div className="space-y-3">
+          {funnel.map((step, i) => {
+            const width = Math.max(Math.round((step.value / funnel[0].value) * 100), step.value > 0 ? 3 : 0)
+            const dropoff = i > 0 && funnel[i - 1].value > 0
+              ? Math.round(((funnel[i - 1].value - step.value) / funnel[i - 1].value) * 100)
+              : 0
             return (
               <div key={i}>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs text-slate-600 font-medium">{step.label}</span>
-                  {step.note ? (
-                    <span className="text-xs text-slate-400">{step.note} 필요</span>
-                  ) : (
-                    <span className="text-xs font-bold text-slate-900">{step.value?.toLocaleString()}</span>
-                  )}
-                </div>
-                <div className="bg-slate-100 rounded-full h-6 relative overflow-hidden">
-                  <div
-                    className={`${step.color} h-6 rounded-full flex items-center justify-end pr-2 transition-all`}
-                    style={{ width: `${width}%` }}
-                  >
-                    {step.value !== null && step.value > 0 && (
-                      <span className="text-white text-xs font-bold">{width}%</span>
+                <div className="flex justify-between items-baseline mb-1">
+                  <span className="text-slate-600 text-xs">{step.label}</span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-slate-900 text-sm font-bold">{step.value}명</span>
+                    {i > 0 && dropoff > 0 && (
+                      <span className="text-red-500 text-xs font-medium">-{dropoff}%</span>
                     )}
                   </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
-        <p className="text-slate-400 text-xs mt-3">* 방문·CTA 클릭은 GA4 연동 시 표시</p>
-      </section>
-
-      {/* 일별 추이 */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
-        <h2 className="text-sm font-bold text-slate-700 mb-4">일별 완주 추이 (14일)</h2>
-        <div className="flex items-end gap-1 h-24">
-          {dailyEntries.map(([date, count]) => {
-            const heightPct = Math.round((count / dailyMax) * 100)
-            const isToday = date === todayStr
-            return (
-              <div key={date} className="flex-1 flex flex-col items-center gap-1" title={`${date}: ${count}명`}>
-                <span className="text-slate-500 text-[9px]">{count > 0 ? count : ''}</span>
-                <div
-                  className={`w-full rounded-t ${isToday ? 'bg-indigo-500' : 'bg-indigo-200'} transition-all`}
-                  style={{ height: `${Math.max(heightPct, count > 0 ? 8 : 2)}%`, minHeight: count > 0 ? '4px' : '2px' }}
-                />
-                <span className="text-slate-400 text-[9px]">{date.slice(5)}</span>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* 유형 분포 */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
-        <h2 className="text-sm font-bold text-slate-700 mb-3">유형 분포 (상위)</h2>
-        <div className="space-y-2.5">
-          {typeSorted.slice(0, 8).map(([code, count]) => (
-            <div key={code}>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="font-mono text-slate-700">{code} <span className="text-slate-400 font-sans">{TYPE_LABEL[code]}</span></span>
-                <span className="text-slate-500">{Math.round((count / total) * 100)}%</span>
-              </div>
-              <Bar value={count} max={typeSorted[0][1]} color="bg-indigo-400" />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 특성 분포 */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
-        <h2 className="text-sm font-bold text-slate-700 mb-3">특성 분포</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {[
-            { title: '업무 방식', a: { label: '혼자 (H)', v: ws.H }, b: { label: '팀 (T)', v: ws.T } },
-            { title: 'AI 활용', a: { label: '적극 (A)', v: au.A }, b: { label: '신중 (S)', v: au.S } },
-            { title: '강점', a: { label: '논리 (L)', v: st.L }, b: { label: '창의 (C)', v: st.C } },
-            { title: '속도', a: { label: '빠름 (F)', v: sp.F }, b: { label: '신중 (P)', v: sp.P } },
-          ].map(({ title, a, b }) => {
-            const tot = a.v + b.v || 1
-            return (
-              <div key={title}>
-                <div className="text-xs text-slate-500 mb-1.5">{title}</div>
-                <div className="flex rounded-full overflow-hidden h-5 text-[10px] font-bold">
+                <div className="bg-slate-100 rounded-full h-3 overflow-hidden">
                   <div
-                    className="bg-indigo-500 flex items-center justify-center text-white"
-                    style={{ width: `${Math.round((a.v / tot) * 100)}%` }}
-                  >
-                    {Math.round((a.v / tot) * 100) > 20 ? `${a.label.split(' ')[0]}` : ''}
-                  </div>
-                  <div
-                    className="bg-purple-400 flex items-center justify-center text-white"
-                    style={{ width: `${Math.round((b.v / tot) * 100)}%` }}
-                  >
-                    {Math.round((b.v / tot) * 100) > 20 ? `${b.label.split(' ')[0]}` : ''}
-                  </div>
-                </div>
-                <div className="flex justify-between text-[10px] text-slate-400 mt-0.5">
-                  <span>{a.label} {a.v}</span>
-                  <span>{b.label} {b.v}</span>
+                    className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                    style={{ width: `${width}%` }}
+                  />
                 </div>
               </div>
             )
@@ -230,29 +149,31 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* AI 점수 분포 */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
-        <h2 className="text-sm font-bold text-slate-700 mb-3">AI 점수 분포</h2>
-        <div className="flex items-end gap-1.5 h-20">
-          {scoreEntries.map(({ score, count }) => (
-            <div key={score} className="flex-1 flex flex-col items-center gap-1" title={`${score}점: ${count}명`}>
-              <span className="text-slate-500 text-[10px]">{count}</span>
-              <div
-                className="w-full bg-gradient-to-t from-indigo-500 to-purple-400 rounded-t"
-                style={{ height: `${Math.max(Math.round((count / scoreMax) * 100), 8)}%` }}
-              />
-              <span className="text-slate-400 text-[10px]">{score}</span>
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-between text-[10px] text-slate-400 mt-1 px-1">
-          <span>← AI 대체 위험</span>
-          <span>AI 생존 강자 →</span>
+      {/* 결과 페이지 전환 */}
+      <section className="bg-white rounded-2xl border border-slate-200 p-5 mb-4">
+        <h2 className="text-slate-900 font-bold text-sm mb-1">결과 본 사람이 뭘 했나?</h2>
+        <p className="text-slate-400 text-xs mb-4">결과 확인 {resultView}명 기준</p>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-center">
+            <div className="text-xl font-black text-yellow-600">{openchat}</div>
+            <div className="text-slate-500 text-[10px] mt-1">오픈채팅</div>
+            <div className="text-yellow-600 text-xs font-bold">{pct(openchat, resultView)}</div>
+          </div>
+          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-center">
+            <div className="text-xl font-black text-indigo-600">{ebook}</div>
+            <div className="text-slate-500 text-[10px] mt-1">전자책</div>
+            <div className="text-indigo-600 text-xs font-bold">{pct(ebook, resultView)}</div>
+          </div>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+            <div className="text-xl font-black text-green-600">{share}</div>
+            <div className="text-slate-500 text-[10px] mt-1">공유</div>
+            <div className="text-green-600 text-xs font-bold">{pct(share, resultView)}</div>
+          </div>
         </div>
       </section>
 
-      <p className="text-center text-slate-300 text-xs pb-4">
-        마지막 갱신: 페이지 로드 시 · SSR
+      <p className="text-center text-slate-400 text-xs pb-4">
+        GA4 API 실시간 · 새로고침 시 최신 반영
       </p>
     </main>
   )
