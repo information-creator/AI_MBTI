@@ -961,7 +961,7 @@ export default function ResultClient({
             <div>
               {/* 슬라이더 */}
               <div className="relative">
-                <div ref={ebookScrollRef} className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50" style={{ height: '60vh', overflow: 'hidden' }}>
+                <div ref={ebookScrollRef} className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50" style={{ height: '50vh', overflow: 'hidden' }}>
                   <img
                     src={ebookImages[ebookPage]}
                     alt={`전자책 ${ebookPage + 1}`}
