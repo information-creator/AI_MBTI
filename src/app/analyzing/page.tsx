@@ -57,9 +57,11 @@ function AnalyzingContent() {
 
         if (error) throw error
 
-        const couponCode = generateCouponCode()
-        await supabase.from('coupons').insert({ code: couponCode, result_id: data.id })
         resultIdRef.current = data.id
+
+        // 쿠폰은 백그라운드로 — 네비게이션 차단하지 않음
+        const couponCode = generateCouponCode()
+        supabase.from('coupons').insert({ code: couponCode, result_id: data.id })
       } catch {
         resultIdRef.current = '__local__'
       }
@@ -86,7 +88,7 @@ function AnalyzingContent() {
         } else {
           router.push(`/result/${id}`)
         }
-      }, 300)
+      }, 100)
     }
     tryNavigate()
   // eslint-disable-next-line react-hooks/exhaustive-deps

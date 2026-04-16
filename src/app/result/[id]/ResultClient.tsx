@@ -945,36 +945,6 @@ export default function ResultClient({
           {/* CTA 연결 문구 */}
         </div>
 
-        {/* 무료 특강 단톡방 */}
-        <div
-
-          className="rounded-3xl p-6 animate-fade-in-up"
-          style={{ background: '#FFFDE7', border: '2px solid #FEE500', animationDelay: '0.55s' }}
-        >
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-2xl">🎓</span>
-            <div>
-              <p className="text-slate-900 text-xl font-black">온라인 커리어 무료 특강</p>
-              <p className="text-slate-600 text-sm">매주 대기업 · AI/데이터 현직자 노하우</p>
-            </div>
-          </div>
-          <a
-            href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => {
-              gtagEvent('openchat_click', { type_code: typeCode })
-              gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })
-              trackEvent('openchat_click', typeCode)
-              fbqEvent('Lead', { content_name: 'openchat', type_code: typeCode })
-            }}
-            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
-            style={{ background: '#FEE500', color: '#3C1E1E' }}
-          >
-            💬 단톡방 입장하기 (무료)
-          </a>
-        </div>
-
         {/* 무료 전자책 */}
         <div
 
@@ -1050,6 +1020,36 @@ export default function ResultClient({
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
           >
             (50페이지 분량) 전자책 무료 다운받기
+          </a>
+        </div>
+
+        {/* 무료 특강 단톡방 */}
+        <div
+
+          className="rounded-3xl p-6 animate-fade-in-up"
+          style={{ background: '#FFFDE7', border: '2px solid #FEE500', animationDelay: '0.55s' }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <span className="text-2xl">🎓</span>
+            <div>
+              <p className="text-slate-900 text-xl font-black">AI·데이터 무료 특강</p>
+              <p className="text-slate-600 text-sm">매주 대기업 · AI/데이터 현직자 노하우</p>
+            </div>
+          </div>
+          <a
+            href={process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr/?utm_source=aimbti&utm_medium=openchat'}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => {
+              gtagEvent('openchat_click', { type_code: typeCode })
+              gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })
+              trackEvent('openchat_click', typeCode)
+              fbqEvent('Lead', { content_name: 'openchat', type_code: typeCode })
+            }}
+            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
+            style={{ background: '#FEE500', color: '#3C1E1E' }}
+          >
+            💬 단톡방 입장하기 (무료)
           </a>
         </div>
 
