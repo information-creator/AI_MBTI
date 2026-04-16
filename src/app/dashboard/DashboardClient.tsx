@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
+import Link from 'next/link'
 
 const PASS = '720972'
 
@@ -345,10 +346,16 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 max-w-lg mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-slate-900 font-bold">AIMBTI 대시보드</h1>
-        <button onClick={() => fetchAll()} disabled={loading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
-          {loading ? '...' : '↻ 전체 새로고침'}
+      {/* 탭 */}
+      <div className="flex gap-2 mb-4">
+        <div className="px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white">
+          퍼널 · 광고
+        </div>
+        <Link href="/dashboard/traffic" className="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-slate-200 text-slate-500 hover:bg-slate-100">
+          트래픽 분석
+        </Link>
+        <button onClick={() => fetchAll()} disabled={loading} className="ml-auto text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
+          {loading ? '...' : '↻'}
         </button>
       </div>
 
