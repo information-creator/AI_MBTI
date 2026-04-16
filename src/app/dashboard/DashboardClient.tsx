@@ -4,6 +4,17 @@ import { useState, useCallback, useEffect } from 'react'
 
 const PASS = '720972'
 
+type EbookItem = {
+  id: number
+  title: string
+  students: number
+}
+
+type EbooksData = {
+  ebooks: EbookItem[]
+  fetchedAt: string
+}
+
 type GA4Data = {
   events: Record<string, { events: number; users: number }>
   totalUsers: number
@@ -11,19 +22,142 @@ type GA4Data = {
   endDate: string
 }
 
+type MetaCampaign = {
+  name: string
+  impressions: number
+  clicks: number
+  spend: number
+  ctr: number
+  cpc: number
+  cpm: number
+  conversions: number
+  linkClicks: number
+  pageViews: number
+}
+
+type MetaAdsData = {
+  campaigns: MetaCampaign[]
+  totals: {
+    impressions: number
+    clicks: number
+    spend: number
+    ctr: number
+    cpc: number
+    cpm: number
+    conversions: number
+    linkClicks: number
+    pageViews: number
+  }
+  since: string
+  until: string
+}
+
+type GoogleAdsCampaign = {
+  name: string
+  impressions: number
+  clicks: number
+  spend: number
+  ctr: number
+  cpc: number
+  conversions: number
+}
+
+type GoogleAdsData = {
+  campaigns: GoogleAdsCampaign[]
+  totals: {
+    impressions: number
+    clicks: number
+    spend: number
+    ctr: number
+    cpc: number
+    cpm: number
+    conversions: number
+  }
+  since: string
+  until: string
+}
+
 export default function DashboardPage() {
   const [authed, setAuthed] = useState(false)
   const [checked, setChecked] = useState(false)
   const [input, setInput] = useState('')
   const [data, setData] = useState<GA4Data | null>(null)
+  const [metaData, setMetaData] = useState<MetaAdsData | null>(null)
+  const [metaLoading, setMetaLoading] = useState(false)
+  const [metaError, setMetaError] = useState('')
+  const [gadsData, setGadsData] = useState<GoogleAdsData | null>(null)
+  const [gadsLoading, setGadsLoading] = useState(false)
+  const [gadsError, setGadsError] = useState('')
+  const [ebooksData, setEbooksData] = useState<EbooksData | null>(null)
+  const [ebooksLoading, setEbooksLoading] = useState(false)
+  const [ebooksError, setEbooksError] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [startDate, setStartDate] = useState('2026-03-03')
+  const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
 
-  const fetchData = useCallback(async () => {
+  const fetchEbooks = useCallback(async () => {
+    setEbooksLoading(true)
+    setEbooksError('')
+    try {
+      const res = await fetch(`/api/metacode-ebooks?pass=${PASS}`)
+      if (!res.ok) {
+        const json = await res.json()
+        throw new Error(json.error || '메타코드 API 오류')
+      }
+      const json = await res.json()
+      setEbooksData(json)
+    } catch (err) {
+      setEbooksError(err instanceof Error ? err.message : '전자책 데이터를 불러올 수 없습니다')
+    }
+    setEbooksLoading(false)
+  }, [])
+
+  const fetchGoogleAds = useCallback(async (start?: string, end?: string) => {
+    const s = start ?? startDate
+    const e = end ?? endDate
+    setGadsLoading(true)
+    setGadsError('')
+    try {
+      const res = await fetch(`/api/google-ads?pass=${PASS}&since=${s}&until=${e}`)
+      if (!res.ok) {
+        const json = await res.json()
+        throw new Error(json.detail || json.error || 'Google Ads API 오류')
+      }
+      const json = await res.json()
+      setGadsData(json)
+    } catch (err) {
+      setGadsError(err instanceof Error ? err.message : 'Google Ads 데이터를 불러올 수 없습니다')
+    }
+    setGadsLoading(false)
+  }, [startDate, endDate])
+
+  const fetchMetaAds = useCallback(async (start?: string, end?: string) => {
+    const s = start ?? startDate
+    const e = end ?? endDate
+    setMetaLoading(true)
+    setMetaError('')
+    try {
+      const res = await fetch(`/api/meta-ads?pass=${PASS}&since=${s}&until=${e}`)
+      if (!res.ok) {
+        const json = await res.json()
+        throw new Error(json.detail || json.error || 'Meta API 오류')
+      }
+      const json = await res.json()
+      setMetaData(json)
+    } catch (err) {
+      setMetaError(err instanceof Error ? err.message : 'Meta 데이터를 불러올 수 없습니다')
+    }
+    setMetaLoading(false)
+  }, [startDate, endDate])
+
+  const fetchData = useCallback(async (start?: string, end?: string) => {
+    const s = start ?? startDate
+    const e = end ?? endDate
     setLoading(true)
     setError('')
     try {
-      const res = await fetch(`/api/ga4?pass=${PASS}&start=2026-03-03&end=today`)
+      const res = await fetch(`/api/ga4?pass=${PASS}&start=${s}&end=${e}`)
       if (!res.ok) throw new Error('API 오류')
       const json = await res.json()
       setData(json)
@@ -31,23 +165,30 @@ export default function DashboardPage() {
       setError('데이터를 불러올 수 없습니다')
     }
     setLoading(false)
-  }, [])
+  }, [startDate, endDate])
+
+  const fetchAll = useCallback((start?: string, end?: string) => {
+    fetchData(start, end)
+    fetchMetaAds(start, end)
+    fetchGoogleAds(start, end)
+    fetchEbooks()
+  }, [fetchData, fetchMetaAds, fetchGoogleAds, fetchEbooks])
 
   useEffect(() => {
     const saved = sessionStorage.getItem('dashboard_auth') === 'true'
     if (saved) {
       setAuthed(true)
-      fetchData()
+      fetchAll()
     }
     setChecked(true)
-  }, [fetchData])
+  }, [fetchAll])
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     if (input === PASS) {
       sessionStorage.setItem('dashboard_auth', 'true')
       setAuthed(true)
-      fetchData()
+      fetchAll()
     }
   }
 
@@ -106,13 +247,33 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 max-w-lg mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-slate-900 font-bold">AIMBTI 대시보드</h1>
-          <p className="text-slate-400 text-xs mt-1">GA4 실시간 · {data.startDate} ~ today</p>
-        </div>
-        <button onClick={fetchData} disabled={loading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
-          {loading ? '...' : '↻ 새로고침'}
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-slate-900 font-bold">AIMBTI 대시보드</h1>
+        <button onClick={() => fetchAll()} disabled={loading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
+          {loading ? '...' : '↻ 전체 새로고침'}
+        </button>
+      </div>
+
+      {/* 날짜 선택 */}
+      <div className="flex items-center gap-2 mb-6">
+        <input
+          type="date"
+          value={startDate}
+          onChange={e => setStartDate(e.target.value)}
+          className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
+        />
+        <span className="text-slate-400 text-sm">~</span>
+        <input
+          type="date"
+          value={endDate}
+          onChange={e => setEndDate(e.target.value)}
+          className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
+        />
+        <button
+          onClick={() => fetchAll(startDate, endDate)}
+          className="bg-indigo-500 text-white rounded-xl px-4 py-2 text-sm font-bold hover:bg-indigo-600"
+        >
+          조회
         </button>
       </div>
 
@@ -166,29 +327,192 @@ export default function DashboardPage() {
 
       {/* 결과 페이지 전환 */}
       <section className="bg-white rounded-2xl border border-slate-200 p-5 mb-4">
-        <h2 className="text-slate-900 font-bold text-sm mb-1">결과 본 사람이 뭘 했나?</h2>
+        <h2 className="text-slate-900 font-bold text-sm mb-1">결과 → 행동 전환</h2>
         <p className="text-slate-400 text-xs mb-4">결과 확인 {resultView}명 기준</p>
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-center">
-            <div className="text-xl font-black text-yellow-600">{openchat}</div>
-            <div className="text-slate-500 text-[10px] mt-1">오픈채팅</div>
-            <div className="text-yellow-600 text-xs font-bold">{pct(openchat, resultView)}</div>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-5 text-center">
+            <div className="text-3xl font-black text-yellow-600">{openchat}</div>
+            <div className="text-slate-500 text-sm mt-1">오픈채팅</div>
+            <div className="text-yellow-600 text-base font-bold mt-1">{pct(openchat, resultView)}</div>
           </div>
-          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-center">
-            <div className="text-xl font-black text-indigo-600">{ebook}</div>
-            <div className="text-slate-500 text-[10px] mt-1">전자책</div>
-            <div className="text-indigo-600 text-xs font-bold">{pct(ebook, resultView)}</div>
+          <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 text-center">
+            <div className="text-3xl font-black text-indigo-600">{ebook}</div>
+            <div className="text-slate-500 text-sm mt-1">전자책</div>
+            <div className="text-indigo-600 text-base font-bold mt-1">{pct(ebook, resultView)}</div>
           </div>
-          <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
-            <div className="text-xl font-black text-green-600">{share}</div>
-            <div className="text-slate-500 text-[10px] mt-1">공유</div>
-            <div className="text-green-600 text-xs font-bold">{pct(share, resultView)}</div>
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-5 text-center">
+            <div className="text-3xl font-black text-green-600">{share}</div>
+            <div className="text-slate-500 text-sm mt-1">공유</div>
+            <div className="text-green-600 text-base font-bold mt-1">{pct(share, resultView)}</div>
           </div>
         </div>
       </section>
 
+      {/* Meta Ads */}
+      <div className="border-t border-slate-200 mt-6 pt-6 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-slate-900 font-bold">Meta Ads</h2>
+            {metaData && <p className="text-slate-400 text-xs mt-0.5">{metaData.since} ~ {metaData.until}</p>}
+          </div>
+          <button onClick={() => fetchMetaAds()} disabled={metaLoading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
+            {metaLoading ? '...' : '↻'}
+          </button>
+        </div>
+
+        {metaError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-600 mb-4">{metaError}</div>
+        )}
+
+        {(() => {
+          const t = metaData?.totals ?? { impressions: 0, clicks: 0, spend: 0, ctr: 0, cpc: 0, cpm: 0, conversions: 0, linkClicks: 0, pageViews: 0 }
+          const campaigns = metaData?.campaigns ?? []
+          return (
+            <>
+              {/* 핵심 지표 카드 */}
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.spend.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">총 광고비(원)</div>
+                </div>
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+                  <div className="text-3xl font-black text-blue-500">{t.clicks.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">클릭</div>
+                </div>
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+                  <div className="text-3xl font-black text-green-500">{t.conversions}</div>
+                  <div className="text-slate-400 text-sm mt-1">전환</div>
+                </div>
+              </div>
+
+              {/* 효율 지표 */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.impressions.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">노출</div>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.ctr}%</div>
+                  <div className="text-slate-400 text-sm mt-1">CTR (클릭률)</div>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.cpc.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">CPC (클릭당비용/원)</div>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.cpm.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">CPM (1000노출비용/원)</div>
+                </div>
+              </div>
+            </>
+          )
+        })()}
+      </div>
+
+      {/* Google Ads */}
+      <div className="border-t border-slate-200 mt-6 pt-6 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-slate-900 font-bold">Google Ads</h2>
+            {gadsData && <p className="text-slate-400 text-xs mt-0.5">{gadsData.since} ~ {gadsData.until}</p>}
+          </div>
+          <button onClick={() => fetchGoogleAds()} disabled={gadsLoading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
+            {gadsLoading ? '...' : '↻'}
+          </button>
+        </div>
+
+        {gadsError && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-700 mb-4">신청 완료 — Google Ads API 승인 대기중</div>
+        )}
+
+        {(() => {
+          const t = gadsData?.totals ?? { impressions: 0, clicks: 0, spend: 0, ctr: 0, cpc: 0, cpm: 0, conversions: 0 }
+          const campaigns = gadsData?.campaigns ?? []
+          return (
+            <>
+              {/* 핵심 지표 카드 */}
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.spend.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">총 광고비(원)</div>
+                </div>
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+                  <div className="text-3xl font-black text-blue-500">{t.clicks.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">클릭</div>
+                </div>
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+                  <div className="text-3xl font-black text-green-500">{t.conversions}</div>
+                  <div className="text-slate-400 text-sm mt-1">전환</div>
+                </div>
+              </div>
+
+              {/* 효율 지표 */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.impressions.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">노출</div>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.ctr}%</div>
+                  <div className="text-slate-400 text-sm mt-1">CTR (클릭률)</div>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.cpc.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">CPC (클릭당비용/원)</div>
+                </div>
+                <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                  <div className="text-2xl font-black text-slate-900">{t.cpm.toLocaleString()}</div>
+                  <div className="text-slate-400 text-sm mt-1">CPM (1000노출비용/원)</div>
+                </div>
+              </div>
+            </>
+          )
+        })()}
+      </div>
+
+      {/* 메타코드 전자책 수강생 */}
+      <div className="border-t border-slate-200 mt-6 pt-6 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-slate-900 font-bold">메타코드 전자책 수강생 (크롤링)</h2>
+            {ebooksData && <p className="text-slate-400 text-xs mt-0.5">조회: {new Date(ebooksData.fetchedAt).toLocaleString('ko-KR')}</p>}
+          </div>
+          <button onClick={() => fetchEbooks()} disabled={ebooksLoading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
+            {ebooksLoading ? '...' : '↻'}
+          </button>
+        </div>
+
+        {ebooksError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-600 mb-4">{ebooksError}</div>
+        )}
+
+        {ebooksData && (
+          <>
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center mb-4">
+              <div className="text-4xl font-black text-indigo-500">
+                {ebooksData.ebooks.reduce((sum, e) => sum + e.students, 0)}
+              </div>
+              <div className="text-slate-400 text-sm mt-1">총 전자책 수강생</div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {ebooksData.ebooks.map((ebook) => {
+                const shortTitle = ebook.title
+                  .replace(/\[무료\/26년 최신버전\]\s*/g, '')
+                  .replace(/\[무료\/26년 최신버전\]\s*/g, '')
+                return (
+                  <div key={ebook.id} className="bg-white rounded-2xl border border-slate-200 p-4 text-center">
+                    <div className="text-3xl font-black text-slate-900">{ebook.students}</div>
+                    <div className="text-slate-500 text-xs mt-1 leading-tight">{shortTitle}</div>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
       <p className="text-center text-slate-400 text-xs pb-4">
-        GA4 API 실시간 · 새로고침 시 최신 반영
+        GA4 + Meta Ads + Google Ads + 메타코드 API · 새로고침 시 최신 반영
       </p>
     </main>
   )
