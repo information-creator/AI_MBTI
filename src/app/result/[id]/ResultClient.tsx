@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
-import { gtagEvent } from '@/lib/ga'
+import { gtagEvent, gtagConversion } from '@/lib/ga'
 import { fbqEvent } from '@/lib/meta'
 import { trackEvent } from '@/lib/track'
 
@@ -707,13 +707,13 @@ export default function ResultClient({
     const K = window.Kakao
     if (!K) {
       const url = window.location.href
-      await navigator.clipboard.writeText(`${window.location.origin}?utm_source=kakao&utm_medium=share`)
+      await navigator.clipboard.writeText(`${window.location.origin}/go/ks`)
       alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
       setShareLoading(false)
       return
     }
     if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY ?? '')
-    const shareUrl = `${window.location.origin}?utm_source=kakao&utm_medium=share`
+    const shareUrl = `${window.location.origin}/go/ks`
     try {
       const dataUrl = await drawKakaoCard()
       if (!dataUrl) throw new Error('no image')
@@ -751,7 +751,7 @@ export default function ResultClient({
   }
 
   async function handleCopyLink() {
-    const url = `${window.location.origin}?utm_source=link&utm_medium=share`
+    const url = `${window.location.origin}/go/ls`
     await navigator.clipboard.writeText(url)
     gtagEvent('exit_click', { label: 'share_link_copy', type_code: typeCode })
     setCopied(true)
@@ -983,6 +983,7 @@ export default function ResultClient({
                       gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
                       trackEvent('ebook_click', typeCode, { action: 'unlock' })
                       fbqEvent('Lead', { content_name: 'ebook_unlock', type_code: typeCode })
+                      gtagConversion('ebook_unlock')
                       window.open(ebookLink, '_blank')
                     } else {
                       setEbookPage(ebookPage + 1)
@@ -1015,6 +1016,7 @@ export default function ResultClient({
               gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })
               trackEvent('ebook_click', typeCode, { action: 'download' })
               fbqEvent('Lead', { content_name: 'ebook_download', type_code: typeCode })
+              gtagConversion('ebook_download')
             }}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
             style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
@@ -1045,6 +1047,7 @@ export default function ResultClient({
               gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })
               trackEvent('openchat_click', typeCode)
               fbqEvent('Lead', { content_name: 'openchat', type_code: typeCode })
+              gtagConversion('openchat_click')
             }}
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
             style={{ background: '#FEE500', color: '#3C1E1E' }}
