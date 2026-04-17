@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import CTAButton from '@/components/CTAButton'
 import PageViewTracker from '@/components/PageViewTracker'
 import VariantAnalysis from '@/components/VariantAnalysis'
+import VariantTracker from '@/components/VariantTracker'
 
 export const metadata: Metadata = {
   title: 'AI-MBTI | V1 공포소구',
@@ -28,6 +29,7 @@ export default function V1() {
         caveat="가짜 긴급성은 역효과 — 소비자 40%가 조작된 긴급성에 불신감 (Baymard Institute)"
         fit="★★★☆ — AIMBTI의 'AI 대체 위험' 메시지와 자연스럽게 연결. 단, 과도한 공포는 이탈 유발 가능."
       />
+      <VariantTracker variant="v1" />
       <PageViewTracker />
 
       {/* 경고 배너 */}

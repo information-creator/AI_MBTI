@@ -1,16 +1,9 @@
 import Link from 'next/link'
 
 const variants = [
-  { id: 'v1', label: 'V1', color: '#ef4444' },
-  { id: 'v2', label: 'V2', color: '#a855f7' },
-  { id: 'v3', label: 'V3', color: '#3b82f6' },
-  { id: 'v4', label: 'V4', color: '#0f172a' },
-  { id: 'v5', label: 'V5', color: '#f97316' },
-  { id: 'v6', label: 'V6', color: '#10b981' },
-  { id: 'v7', label: 'V7', color: '#f59e0b' },
-  { id: 'v8', label: 'V8', color: '#64748b' },
-  { id: 'v9', label: 'V9', color: '#6366f1' },
-  { id: 'v10', label: 'V10', color: '#06b6d4' },
+  { id: 'v1', label: 'V1 공포소구', color: '#ef4444' },
+  { id: 'v3', label: 'V3 사회적 증거', color: '#3b82f6' },
+  { id: 'v4', label: 'V4 극심플', color: '#0f172a' },
 ]
 
 type Props = {

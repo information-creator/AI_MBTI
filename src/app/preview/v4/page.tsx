@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import CTAButton from '@/components/CTAButton'
 import PageViewTracker from '@/components/PageViewTracker'
 import VariantAnalysis from '@/components/VariantAnalysis'
+import VariantTracker from '@/components/VariantTracker'
 
 export const metadata: Metadata = {
   title: 'AI-MBTI | V4 심플',
@@ -28,6 +29,7 @@ export default function V4() {
         caveat="정보가 너무 적으면 신뢰 부족. 고관여 상품에는 부적합할 수 있음."
         fit="★★★★ — 1분짜리 무료 테스트에 최적. 모바일에서 로딩 빠르고 즉시 행동 유도."
       />
+      <VariantTracker variant="v4" />
       <PageViewTracker />
 
       <section className="flex-1 flex flex-col items-center justify-center px-5 py-16 text-center">

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import CTAButton from '@/components/CTAButton'
 import PageViewTracker from '@/components/PageViewTracker'
 import VariantAnalysis from '@/components/VariantAnalysis'
+import VariantTracker from '@/components/VariantTracker'
 
 export const metadata: Metadata = {
   title: 'AI-MBTI | V3 사회적 증거',
@@ -28,6 +29,7 @@ export default function V3() {
         caveat="실제 데이터 기반이어야 효과적. 조작된 후기는 신뢰도 급락."
         fit="★★★★ — 실제 참여 수치가 쌓이면 강력. 초기에는 후기 콘텐츠가 부족할 수 있음."
       />
+      <VariantTracker variant="v3" />
       <PageViewTracker />
 
       {/* 헤더 */}
