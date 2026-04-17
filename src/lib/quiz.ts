@@ -297,7 +297,6 @@ export const typeInfo: Record<
     scoreComment: (score: number) => string
     jobSection: JobSection
     insight: Insight
-    actions: [Action, Action, Action]
   }
 > = {
   HALF: {
