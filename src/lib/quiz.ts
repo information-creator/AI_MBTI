@@ -6,193 +6,218 @@ export type Question = {
 }
 
 export const questions: Question[] = [
-  // 파트 A — AI 활용도 (Q1-4)
+  // ── 파트 A — AI 활용도 (Q1-4) ──
+
+  // Q1: 시나리오형
   {
     id: 1,
     part: 'A',
-    text: '업무에 AI 도구 활용 빈도는?',
+    text: '월요일 아침, 밀린 업무가 산더미.\n당신의 첫 행동은?',
     options: [
-      { label: '매일 필수 — AI 없이는 일 못 함', value: 'Y' },
-      { label: '가끔 쓰거나 거의 안 쓴다', value: 'N' },
+      { label: 'ChatGPT 열어서 할 일 정리부터 시킨다', value: 'Y' },
+      { label: '커피 한 잔 들고 직접 우선순위를 정리한다', value: 'N' },
     ],
   },
+  // Q2: 동의형
   {
     id: 2,
     part: 'A',
-    text: 'AI가 내 업무를 몇 % 대신할 수 있을까?',
+    text: '"솔직히 AI 없으면\n업무 절반은 못 끝낸다"',
     options: [
-      { label: '50% 이상 — AI가 많은 부분을 커버 가능', value: 'Y' },
-      { label: '30% 미만 — 내 일은 내가 해야 한다', value: 'N' },
+      { label: '완전 공감 — 이미 그렇게 살고 있다', value: 'Y' },
+      { label: '아직은 아닌데? 내 손이 더 빠르다', value: 'N' },
     ],
   },
+  // Q3: 밈/대비형
   {
     id: 3,
     part: 'A',
-    text: '업무 중 막히면 가장 먼저?',
+    text: '업무 중 모르는 게 생겼다.\n당신은 어느 쪽?',
     options: [
-      { label: 'ChatGPT나 AI 도구에 물어본다', value: 'Y' },
-      { label: '구글 검색하거나 동료에게 묻는다', value: 'N' },
+      { label: '🤖 AI한테 물어보는 게 국룰', value: 'Y' },
+      { label: '🔍 구글링 or 옆자리 동료한테 물어봄', value: 'N' },
     ],
   },
+  // Q4: 워스트/베스트형
   {
     id: 4,
     part: 'A',
-    text: 'AI 도구 없이 일주일 버틸 수 있나요?',
+    text: '내일부터 AI 도구 전면 차단.\n일주일 버틸 수 있나?',
     options: [
-      { label: '솔직히 힘들다 — 이미 의존 중', value: 'Y' },
-      { label: '충분히 가능하다 — 없어도 괜찮음', value: 'N' },
+      { label: '솔직히 멘붕 온다… 의존도 높음 인정', value: 'Y' },
+      { label: '불편하겠지만 충분히 가능하다', value: 'N' },
     ],
   },
 
-  // 파트 B — AI 민감도 (Q5-8)
+  // ── 파트 B — AI 민감도 (Q5-8) ──
+
+  // Q5: 시나리오형
   {
     id: 5,
     part: 'B',
-    text: 'AI 뉴스를 접하면?',
+    text: '점심시간에 "GPT-5 출시" 뉴스를 봤다.\n오후에 당신은?',
     options: [
-      { label: '바로 업무에 적용 시도해본다', value: 'Y' },
-      { label: '일단 지켜본다 — 검증되면 쓸 것', value: 'N' },
+      { label: '바로 가입해서 업무에 테스트해본다', value: 'Y' },
+      { label: '일단 후기 모아보고 다음 주에 판단', value: 'N' },
     ],
   },
+  // Q6: 밈/대비형
   {
     id: 6,
     part: 'B',
-    text: '6개월 뒤, 내 업무에서 AI 비중은?',
+    text: '새 AI 서비스가 뜨면\n나는 어느 쪽에 가까운가?',
     options: [
-      { label: '확실히 더 늘어날 것이다', value: 'Y' },
-      { label: '지금과 비슷할 것이다', value: 'N' },
+      { label: '🏃 출시 당일 가입러 (얼리어답터)', value: 'Y' },
+      { label: '🧐 리뷰 3개는 읽고 결정하는 신중파', value: 'N' },
     ],
   },
+  // Q7: 동의형
   {
     id: 7,
     part: 'B',
-    text: '새 AI 도구가 출시되면?',
+    text: '"AI 때문에 내 직업이\n위협받고 있다고 느낀다"',
     options: [
-      { label: '당일에 가입해서 써본다', value: 'Y' },
-      { label: '후기 먼저 찾아보고 결정한다', value: 'N' },
-    ],
-  },
-  {
-    id: 8,
-    part: 'B',
-    text: 'AI가 내 직업을 위협한다고 느끼나요?',
-    options: [
-      { label: '느낀다 — 그래서 더 공부하고 있다', value: 'Y' },
+      { label: '맞다 — 그래서 지금 준비하고 있다', value: 'Y' },
       { label: '아직은 괜찮다고 본다', value: 'N' },
     ],
   },
+  // Q8: 워스트/베스트형
+  {
+    id: 8,
+    part: 'B',
+    text: '6개월 뒤, 내 업무에서\nAI가 차지하는 비중은?',
+    options: [
+      { label: '확실히 지금보다 훨씬 커져 있을 것', value: 'Y' },
+      { label: '크게 달라지진 않을 것 같다', value: 'N' },
+    ],
+  },
 
-  // 파트 C — 독립성 (Q9-12)
+  // ── 파트 C — 독립성 (Q9-12) ──
+
+  // Q9: 시나리오형
   {
     id: 9,
     part: 'C',
-    text: '혼자 vs 팀, 어디서 더 잘 되나요?',
+    text: '새 프로젝트 킥오프.\n팀장이 "자유롭게 시작해"라고 했다.',
     options: [
-      { label: '혼자 집중할 때 훨씬 잘 된다', value: 'Y' },
-      { label: '팀과 함께할 때 더 잘 된다', value: 'N' },
+      { label: '노트북 들고 카페로 — 혼자 구상부터', value: 'Y' },
+      { label: '슬랙에 "다 같이 브레인스토밍 하실?"', value: 'N' },
     ],
   },
+  // Q10: 밈/대비형
   {
     id: 10,
     part: 'C',
-    text: '새 프로젝트를 시작할 때?',
+    text: '작업할 때 나는 어느 쪽?',
     options: [
-      { label: '혼자 먼저 구상하고 정리한다', value: 'Y' },
-      { label: '팀 미팅부터 잡고 함께 방향을 잡는다', value: 'N' },
+      { label: '🎧 이어폰 끼고 혼자 몰입하는 딥워커', value: 'Y' },
+      { label: '💬 수시로 대화하며 같이 가는 협업러', value: 'N' },
     ],
   },
+  // Q11: 동의형
   {
     id: 11,
     part: 'C',
-    text: '문제가 생기면?',
+    text: '"막히면 결국 내가 직접 파고들어야\n풀리더라"',
     options: [
-      { label: '혼자 끝까지 파고들어 해결한다', value: 'Y' },
-      { label: '바로 동료에게 물어보고 같이 푼다', value: 'N' },
+      { label: '맞아, 결국 혼자 해결해야 속이 시원하다', value: 'Y' },
+      { label: '아니, 물어보면 더 빨리 풀린다', value: 'N' },
     ],
   },
+  // Q12: 워스트/베스트형
   {
     id: 12,
     part: 'C',
-    text: '나의 핵심 경쟁력은?',
+    text: '나의 진짜 무기는\n둘 중 어느 쪽에 가까운가?',
     options: [
-      { label: '전문성 — 내 분야에서 깊이 파는 것', value: 'Y' },
-      { label: '소통 — 사람과 관계를 잘 만드는 것', value: 'N' },
+      { label: '전문성 — 내 분야를 깊이 파는 힘', value: 'Y' },
+      { label: '네트워크 — 사람을 연결하는 힘', value: 'N' },
     ],
   },
 
-  // 파트 D — 논리력 (Q13-16)
+  // ── 파트 D — 논리력 (Q13-16) ──
+
+  // Q13: 시나리오형
   {
     id: 13,
     part: 'D',
-    text: '칭찬받는 이유는?',
+    text: '내일까지 프레젠테이션을 만들어야 한다.\n첫 슬라이드에 뭘 넣을까?',
     options: [
-      { label: '정확하고 논리적이라는 말을 듣는다', value: 'Y' },
-      { label: '창의적이고 감각적이라는 말을 듣는다', value: 'N' },
+      { label: '데이터 차트 — 숫자가 말하게 한다', value: 'Y' },
+      { label: '임팩트 있는 한 줄 카피 — 감성으로 시작', value: 'N' },
     ],
   },
+  // Q14: 밈/대비형
   {
     id: 14,
     part: 'D',
-    text: '보고서를 작성할 때?',
+    text: '동료들이 나를 부를 때\n더 자주 듣는 말은?',
     options: [
-      { label: '데이터와 수치 위주로 구성한다', value: 'Y' },
-      { label: '스토리와 감성 위주로 풀어낸다', value: 'N' },
+      { label: '📐 "역시 논리적이야" "꼼꼼하다"', value: 'Y' },
+      { label: '🎨 "센스 있다" "아이디어가 좋다"', value: 'N' },
     ],
   },
+  // Q15: 동의형
   {
     id: 15,
     part: 'D',
-    text: '문제를 해결하는 방식은?',
+    text: '"문제가 생기면 원인부터 쪼개서\n분석하는 게 내 스타일이다"',
     options: [
-      { label: '원인을 분석하고 논리적으로 해결책을 찾는다', value: 'Y' },
-      { label: '직관적으로 새로운 아이디어를 던진다', value: 'N' },
+      { label: '그렇다 — 구조화해야 답이 보인다', value: 'Y' },
+      { label: '나는 직감으로 먼저 방향을 잡는 편', value: 'N' },
     ],
   },
+  // Q16: 워스트/베스트형
   {
     id: 16,
     part: 'D',
-    text: '나를 한 단어로 표현하면?',
+    text: '게임 캐릭터를 고른다면\n나는 어느 쪽?',
     options: [
-      { label: '분석가', value: 'Y' },
-      { label: '크리에이터', value: 'N' },
+      { label: '⚔️ 전략가 — 판을 읽고 최적의 수를 둔다', value: 'Y' },
+      { label: '🪄 마법사 — 상상력으로 판을 뒤집는다', value: 'N' },
     ],
   },
 
-  // 파트 E — 실행력 (Q17-20)
+  // ── 파트 E — 실행력 (Q17-20) ──
+
+  // Q17: 시나리오형
   {
     id: 17,
     part: 'E',
-    text: '일 처리 스타일은?',
+    text: '좋은 아이디어가 떠올랐다.\n퇴근 후 당신은?',
     options: [
-      { label: '일단 빠르게 시작하고 고쳐나간다', value: 'Y' },
-      { label: '완벽히 준비한 다음 시작한다', value: 'N' },
+      { label: '바로 노트북 켜고 프로토타입 만든다', value: 'Y' },
+      { label: '메모해두고 충분히 구상한 뒤 시작한다', value: 'N' },
     ],
   },
+  // Q18: 밈/대비형
   {
     id: 18,
     part: 'E',
-    text: '마감이 다가오면?',
+    text: '마감 D-3.\n지금 내 상태는?',
     options: [
-      { label: '이미 다 끝내놨다', value: 'Y' },
-      { label: '막판에 몰아서 완성한다', value: 'N' },
+      { label: '✅ 이미 80% 끝남 — 여유롭게 다듬는 중', value: 'Y' },
+      { label: '🔥 지금부터 본격 시작 — 몰입은 막판에', value: 'N' },
     ],
   },
+  // Q19: 동의형
   {
     id: 19,
     part: 'E',
-    text: '새 기술이나 툴을 접하면?',
+    text: '"새로운 툴은 일단 써보면서\n배우는 게 가장 빠르다"',
     options: [
-      { label: '일단 써본다 — 쓰면서 배운다', value: 'Y' },
-      { label: '매뉴얼 다 읽고 이해한 다음 쓴다', value: 'N' },
+      { label: '당연하지 — 일단 깔고 본다', value: 'Y' },
+      { label: '매뉴얼이나 강의 먼저 보는 게 효율적', value: 'N' },
     ],
   },
+  // Q20: 워스트/베스트형
   {
     id: 20,
     part: 'E',
-    text: '회의에서 아이디어가 나오면?',
+    text: '회의에서 괜찮은 아이디어가 나왔다.\n나의 반응은?',
     options: [
-      { label: '바로 실행 계획을 세운다', value: 'Y' },
-      { label: '충분히 검토한 뒤 시작한다', value: 'N' },
+      { label: '"이번 주 안에 해봅시다" — 실행부터', value: 'Y' },
+      { label: '"좀 더 검토하고 다음 회의에서 결정하죠"', value: 'N' },
     ],
   },
 ]
@@ -245,6 +270,7 @@ export const bootcampInfo: Record<
   },
 }
 
+export type Action = { label: string; text: string }
 export type Insight = { strength: string; crisis: string; direction: string }
 export type JobTask = { name: string; rate: number }
 export type JobTransition = { from: string; via: string; to: string }
@@ -271,6 +297,7 @@ export const typeInfo: Record<
     scoreComment: (score: number) => string
     jobSection: JobSection
     insight: Insight
+    actions: [Action, Action, Action]
   }
 > = {
   HALF: {

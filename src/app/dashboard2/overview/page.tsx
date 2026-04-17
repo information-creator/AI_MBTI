@@ -90,6 +90,50 @@ export default function OverviewPage() {
         </button>
       </div>
 
+      {/* 2줄 종합 평가 */}
+      {(() => {
+        // 퍼널 전환율
+        const e2e = totalUsers > 0 ? ((secondaryTotal / totalUsers) * 100) : 0
+        const completionRate = testStart > 0 ? ((testComplete / testStart) * 100) : 0
+        const ctaRate = totalUsers > 0 ? ((ctaClick / totalUsers) * 100) : 0
+
+        // 광고 효율
+        const adEfficiency = totalSpend > 0 && secondaryTotal > 0
+        const cpaOk = effectiveCPA > 0 && effectiveCPA <= BENCHMARKS.overall.cpa_target * 1.5
+
+        // 1줄: 퍼널 상태
+        let line1 = ''
+        if (e2e >= 5) line1 = `전체 전환율 ${e2e.toFixed(1)}% — 퍼널이 잘 작동하고 있습니다. 트래픽을 늘리면 성과가 비례합니다.`
+        else if (e2e >= 1) line1 = `전체 전환율 ${e2e.toFixed(1)}% — 보통 수준입니다. 이탈이 큰 구간을 집중 개선하면 2배 이상 올릴 수 있습니다.`
+        else if (totalUsers > 0) line1 = `전체 전환율 ${e2e.toFixed(1)}% — 퍼널 어딘가에서 대량 이탈이 발생하고 있습니다. 아래 진단을 확인하세요.`
+        else line1 = '아직 데이터가 부족합니다. 광고 집행 후 다시 확인하세요.'
+
+        // 2줄: 광고 효율 + 핵심 액션 제안
+        let line2 = ''
+        if (!adEfficiency) {
+          line2 = '광고비 대비 2차 전환이 아직 없습니다. 랜딩→결과 퍼널부터 점검해주세요.'
+        } else if (cpaOk) {
+          line2 = `유효 CPA ₩${effectiveCPA.toLocaleString()} — 목표(₩${BENCHMARKS.overall.cpa_target.toLocaleString()}) 대비 적정. 현재 전략을 유지하며 스케일업하세요.`
+        } else {
+          line2 = `유효 CPA ₩${effectiveCPA.toLocaleString()} — 목표(₩${BENCHMARKS.overall.cpa_target.toLocaleString()}) 초과. 광고 소재 교체 또는 랜딩 전환율 개선이 우선입니다.`
+        }
+
+        const overallLevel = e2e >= 3 && cpaOk ? 'good' : e2e >= 1 ? 'warn' : 'bad'
+        const colors = {
+          good: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-800', icon: '✅' },
+          warn: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-800', icon: '⚠️' },
+          bad: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-800', icon: '🚨' },
+        }
+        const c = colors[overallLevel]
+
+        return (
+          <section className={`${c.bg} border ${c.border} rounded-2xl p-5`}>
+            <p className={`text-base font-bold ${c.text} mb-1`}>{c.icon} {line1}</p>
+            <p className={`text-sm ${c.text} opacity-80`}>{line2}</p>
+          </section>
+        )
+      })()}
+
       {/* 광고비 요약 */}
       <section className="bg-white rounded-2xl border border-slate-200 p-5">
         <h3 className="text-slate-500 text-xs font-bold mb-3">총 광고 성과</h3>

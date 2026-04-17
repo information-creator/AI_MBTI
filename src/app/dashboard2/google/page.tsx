@@ -37,6 +37,14 @@ export default function GooglePage() {
   const b = BENCHMARKS.ads.google
   const diag = evaluateAds('Google', t)
 
+  const cvr = t.clicks > 0 ? (t.conversions / t.clicks) * 100 : 0
+  let oneLiner = ''
+  let oneColor = ''
+  if (t.spend === 0) { oneLiner = '아직 Google 광고 집행 데이터가 없습니다'; oneColor = 'bg-slate-50 border-slate-200 text-slate-600' }
+  else if (t.ctr >= 3 && cvr >= 3) { oneLiner = `CTR ${t.ctr}% · 전환율 ${cvr.toFixed(1)}% — 검색 의도와 랜딩이 잘 맞고 있습니다. 키워드 확장 가능.`; oneColor = 'bg-green-50 border-green-200 text-green-800' }
+  else if (t.ctr >= 1.5) { oneLiner = `CTR ${t.ctr}%로 괜찮지만, 전환율 ${cvr.toFixed(1)}%가 낮습니다. 랜딩 또는 키워드 정밀도를 점검하세요.`; oneColor = 'bg-yellow-50 border-yellow-200 text-yellow-800' }
+  else { oneLiner = `CTR ${t.ctr}%로 광고 노출 대비 클릭이 적습니다. 광고 문구와 키워드 매칭을 개선하세요.`; oneColor = 'bg-red-50 border-red-200 text-red-800' }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -44,6 +52,10 @@ export default function GooglePage() {
         <button onClick={load} disabled={loading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
           {loading ? '...' : '↻ 새로고침'}
         </button>
+      </div>
+
+      <div className={`${oneColor} border rounded-2xl px-4 py-3`}>
+        <p className="text-sm font-bold">{oneLiner}</p>
       </div>
 
       <section className="grid grid-cols-2 gap-3">

@@ -101,7 +101,7 @@ function AnalyzingContent() {
     pct < 100 ? '결과 생성 중...' : '완료!'
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
+    <div className="min-h-screen bg-white flex items-center justify-center select-none cursor-default">
       <div className="text-center space-y-5 w-64">
         <div className="text-6xl float-animation">🤖</div>
         <div>

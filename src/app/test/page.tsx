@@ -96,7 +96,7 @@ export default function TestPage() {
   const cheer = cheerStep ? CHEER_MESSAGES[cheerStep] : null
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col select-none cursor-default">
       {/* 독려 토스트 */}
       {cheer && (
         <div className="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none">

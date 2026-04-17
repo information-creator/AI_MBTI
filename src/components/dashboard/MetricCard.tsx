@@ -9,8 +9,16 @@ type Props = {
   color?: string
 }
 
+function parseNumeric(v: string | number): number {
+  if (typeof v === 'number') return v
+  // "₩6,903" → 6903, "1.8%" → 1.8
+  const cleaned = v.replace(/[₩,%\s]/g, '').replace(/,/g, '')
+  const n = parseFloat(cleaned)
+  return isNaN(n) ? 0 : n
+}
+
 export default function MetricCard({ label, value, benchmark, color = 'text-slate-900' }: Props) {
-  const cmp = benchmark ? compareBenchmark(typeof value === 'number' ? value : parseFloat(String(value)), benchmark.value, benchmark.higherIsBetter ?? true) : null
+  const cmp = benchmark ? compareBenchmark(parseNumeric(value), benchmark.value, benchmark.higherIsBetter ?? true) : null
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-4">

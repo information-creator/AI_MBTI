@@ -2,6 +2,31 @@ import { NextResponse } from 'next/server'
 
 const PASS = '720972'
 
+async function getAccessToken(): Promise<string> {
+  const clientId = process.env.GOOGLE_ADS_CLIENT_ID
+  const clientSecret = process.env.GOOGLE_ADS_CLIENT_SECRET
+  const refreshToken = process.env.GOOGLE_ADS_REFRESH_TOKEN
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error('Google OAuth 환경변수 미설정 (CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN)')
+  }
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+    }),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Refresh token 갱신 실패: ${err}`)
+  }
+  const json = await res.json()
+  return json.access_token as string
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const pass = searchParams.get('pass')
@@ -9,12 +34,18 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
-  const accessToken = process.env.GOOGLE_ADS_ACCESS_TOKEN
   const developerToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN
   const customerId = process.env.GOOGLE_ADS_CUSTOMER_ID
 
-  if (!accessToken || !developerToken || !customerId) {
-    return NextResponse.json({ error: 'Google Ads 환경변수 미설정 (GOOGLE_ADS_ACCESS_TOKEN, GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CUSTOMER_ID)' }, { status: 500 })
+  if (!developerToken || !customerId) {
+    return NextResponse.json({ error: 'Google Ads 환경변수 미설정 (GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CUSTOMER_ID)' }, { status: 500 })
+  }
+
+  let accessToken: string
+  try {
+    accessToken = await getAccessToken()
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'OAuth 토큰 갱신 실패' }, { status: 500 })
   }
 
   const since = searchParams.get('since') || '2026-03-03'
@@ -33,9 +64,10 @@ export async function GET(req: Request) {
       FROM campaign
       WHERE segments.date BETWEEN '${since}' AND '${until}'
         AND campaign.status != 'REMOVED'
+        AND campaign.name LIKE '%MBTI%'
     `
 
-    const url = `https://googleads.googleapis.com/v17/customers/${customerId}/googleAds:searchStream`
+    const url = `https://googleads.googleapis.com/v20/customers/${customerId}/googleAds:searchStream`
     const res = await fetch(url, {
       method: 'POST',
       headers: {

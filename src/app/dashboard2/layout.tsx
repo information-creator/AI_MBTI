@@ -36,7 +36,7 @@ export default function Dashboard2Layout({ children }: { children: React.ReactNo
   const pathname = usePathname()
 
   useEffect(() => {
-    const saved = sessionStorage.getItem('dashboard_auth') === 'true'
+    const saved = sessionStorage.getItem('dashboard2_auth') === 'true'
     if (saved) setAuthed(true)
     setChecked(true)
   }, [])
@@ -44,7 +44,7 @@ export default function Dashboard2Layout({ children }: { children: React.ReactNo
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     if (input === PASS) {
-      sessionStorage.setItem('dashboard_auth', 'true')
+      sessionStorage.setItem('dashboard2_auth', 'true')
       setAuthed(true)
     }
   }
@@ -65,31 +65,34 @@ export default function Dashboard2Layout({ children }: { children: React.ReactNo
 
   return (
     <DashboardContext value={{ startDate, endDate, setStartDate, setEndDate }}>
-      <main className="min-h-screen bg-slate-50 px-4 py-4 max-w-lg mx-auto">
-        {/* 탭 */}
-        <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">
-          {tabs.map(tab => {
-            const active = pathname === tab.href
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${active ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100'}`}
-              >
-                {tab.label}
-              </Link>
-            )
-          })}
-        </div>
+      <main className="min-h-screen bg-slate-50">
+        <div className="max-w-lg mx-auto px-4 pt-4 pb-20">
+          {/* 탭 */}
+          <nav className="flex gap-1.5 mb-3 overflow-x-auto no-scrollbar">
+            {tabs.map(tab => {
+              const active = pathname === tab.href
+              return (
+                <Link
+                  key={tab.href}
+                  href={tab.href}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shrink-0 ${active ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100'}`}
+                >
+                  {tab.label}
+                </Link>
+              )
+            })}
+          </nav>
 
-        {/* 날짜 */}
-        <div className="flex items-center gap-2 mb-5">
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 text-sm focus:outline-none focus:border-indigo-500" />
-          <span className="text-slate-400 text-sm">~</span>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 text-sm focus:outline-none focus:border-indigo-500" />
-        </div>
+          {/* 날짜 */}
+          <div className="flex items-center gap-2 mb-5">
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="flex-1 min-w-0 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 text-sm focus:outline-none focus:border-indigo-500" />
+            <span className="text-slate-400 text-sm shrink-0">~</span>
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="flex-1 min-w-0 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 text-sm focus:outline-none focus:border-indigo-500" />
+          </div>
 
-        {children}
+          {/* 콘텐츠 */}
+          {children}
+        </div>
       </main>
     </DashboardContext>
   )

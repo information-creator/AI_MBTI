@@ -36,6 +36,7 @@ export function compareBenchmark(actual: number, benchmark: number, higherIsBett
   level: 'good' | 'warn' | 'bad'
   label: string
 } {
+  if (isNaN(actual) || isNaN(benchmark)) return { diff: 0, diffPct: 0, level: 'warn' as const, label: '데이터 부족' }
   const diff = actual - benchmark
   const diffPct = benchmark === 0 ? 0 : Math.round((diff / benchmark) * 100)
   const isPositive = higherIsBetter ? diff > 0 : diff < 0

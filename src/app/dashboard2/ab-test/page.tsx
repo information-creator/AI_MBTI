@@ -69,6 +69,23 @@ export default function ABTestPage() {
     rate: d.resultView > 0 ? ((d.openchatClick + d.ebookClick + d.shareClick) / d.resultView) * 100 : 0,
   }))
 
+  // 한줄평
+  const totalVisitors = data.reduce((s, d) => s + d.pageView, 0)
+  let abOneLiner = ''
+  let abColor = ''
+  if (totalVisitors < 30) {
+    abOneLiner = `총 ${totalVisitors}명 유입 — 아직 판단하기 이릅니다. 최소 100명 이상 모이면 의미 있는 비교가 가능합니다.`
+    abColor = 'bg-slate-50 border-slate-200 text-slate-600'
+  } else if (winner.rate > 0) {
+    const secondBest = e2eRates.filter(r => r.variant !== winner.variant).reduce((a, b) => a.rate > b.rate ? a : b)
+    const gap = winner.rate - secondBest.rate
+    abOneLiner = `${VARIANT_LABELS[winner.variant]?.name}이 E2E ${winner.rate.toFixed(1)}%로 선두. 2위 대비 +${gap.toFixed(1)}%p 차이 — ${gap >= 2 ? '확실한 승자입니다.' : '아직 근소한 차이, 더 지켜봐야 합니다.'}`
+    abColor = gap >= 2 ? 'bg-green-50 border-green-200 text-green-800' : 'bg-yellow-50 border-yellow-200 text-yellow-800'
+  } else {
+    abOneLiner = '아직 전환 데이터가 부족합니다.'
+    abColor = 'bg-slate-50 border-slate-200 text-slate-600'
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -76,6 +93,10 @@ export default function ABTestPage() {
         <button onClick={load} disabled={loading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
           {loading ? '...' : '↻ 새로고침'}
         </button>
+      </div>
+
+      <div className={`${abColor} border rounded-2xl px-4 py-3`}>
+        <p className="text-sm font-bold">{abOneLiner}</p>
       </div>
 
       {/* 승자 배너 */}

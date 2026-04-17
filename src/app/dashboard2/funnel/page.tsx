@@ -81,7 +81,7 @@ export default function FunnelPage() {
   ]
 
   // 기간 비교 데이터
-  type CompRow = { label: string; cur: number; prev: number; curRate: string; prevRate: string; delta: string; benchmark: number | null }
+  type CompRow = { label: string; cur: number; prev: number; curRate: string; prevRate: string; delta: { text: string; dir: 'up' | 'down' | 'flat' }; benchmark: number | null }
   const compRows: CompRow[] = prev ? [
     { label: '방문', cur: cur.totalUsers, prev: prev.totalUsers, curRate: '-', prevRate: '-', delta: pctDelta(cur.totalUsers, prev.totalUsers), benchmark: null },
     { label: '→CTA', cur: cur.ctaClick, prev: prev.ctaClick, curRate: r(cur.ctaClick, cur.totalUsers), prevRate: r(prev.ctaClick, prev.totalUsers), delta: pctDelta(cur.ctaClick, prev.ctaClick), benchmark: BENCHMARKS.funnel.landing_to_cta },
@@ -99,6 +99,28 @@ export default function FunnelPage() {
     diagItems.push({ label: '결과→2차 전환', level: secLevel, value: `${secRate.toFixed(1)}%`, comment: secLevel === 'good' ? '전환 양호' : secLevel === 'warn' ? '전환 보통 — CTA 강화 고려' : '전환 낮음 — 노출/문구 개선 필요' })
   }
 
+  // 한줄평
+  const completionRate = cur.testStart > 0 ? ((cur.testComplete / cur.testStart) * 100) : 0
+  const secRate = cur.resultView > 0 ? ((curSecondary / cur.resultView) * 100) : 0
+  const prevTotal = prev?.totalUsers ?? 0
+  const growth = prevTotal > 0 ? Math.round(((cur.totalUsers - prevTotal) / prevTotal) * 100) : 0
+
+  let funnelOneLiner = ''
+  let funnelColor = ''
+  if (cur.totalUsers === 0) {
+    funnelOneLiner = '선택 기간에 방문자가 없습니다. 기간을 넓혀보세요.'
+    funnelColor = 'bg-slate-50 border-slate-200 text-slate-600'
+  } else {
+    const parts: string[] = []
+    if (prev && prevTotal > 0) parts.push(`방문 ${growth >= 0 ? '+' : ''}${growth}%`)
+    parts.push(`완료율 ${completionRate.toFixed(0)}%`)
+    parts.push(`2차전환 ${secRate.toFixed(1)}%`)
+    const worst = diagItems.find(d => d.level === 'bad') ?? diagItems.find(d => d.level === 'warn')
+    const hint = worst ? ` — 병목: ${worst.label} (${worst.value})` : ' — 전체적으로 양호'
+    funnelOneLiner = parts.join(' · ') + hint
+    funnelColor = worst?.level === 'bad' ? 'bg-red-50 border-red-200 text-red-800' : worst?.level === 'warn' ? 'bg-yellow-50 border-yellow-200 text-yellow-800' : 'bg-green-50 border-green-200 text-green-800'
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -106,6 +128,10 @@ export default function FunnelPage() {
         <button onClick={load} disabled={loading} className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-100">
           {loading ? '...' : '↻ 새로고침'}
         </button>
+      </div>
+
+      <div className={`${funnelColor} border rounded-2xl px-4 py-3`}>
+        <p className="text-sm font-bold">{funnelOneLiner}</p>
       </div>
 
       {/* 프리셋 버튼 */}
@@ -145,14 +171,14 @@ export default function FunnelPage() {
               </thead>
               <tbody>
                 {compRows.map(row => {
-                  const isUp = row.delta.startsWith('+')
+                  const deltaColor = row.delta.dir === 'up' ? 'text-green-600' : row.delta.dir === 'down' ? 'text-red-500' : 'text-slate-400'
                   const cmp = row.benchmark !== null && row.curRate !== '-' ? compareBenchmark(parseFloat(row.curRate), row.benchmark, true) : null
                   return (
                     <tr key={row.label} className="border-b border-slate-100">
                       <td className="py-1.5 text-slate-600">{row.label}</td>
                       <td className="text-right py-1.5 text-slate-900 font-bold">{row.cur.toLocaleString()}<span className="text-slate-400 font-normal ml-0.5">{row.curRate !== '-' ? ` (${row.curRate})` : ''}</span></td>
                       <td className="text-right py-1.5 text-slate-400">{row.prev.toLocaleString()}</td>
-                      <td className={`text-right py-1.5 font-bold ${isUp ? 'text-green-600' : 'text-red-500'}`}>{row.delta}</td>
+                      <td className={`text-right py-1.5 font-bold whitespace-nowrap ${deltaColor}`}>{row.delta.text}</td>
                       <td className="text-right py-1.5">
                         {cmp ? (
                           <span className={`font-bold ${cmp.level === 'good' ? 'text-green-600' : cmp.level === 'bad' ? 'text-red-500' : 'text-yellow-600'}`}>{row.benchmark}%</span>
@@ -178,8 +204,15 @@ function r(a: number, b: number) {
   return `${((a / b) * 100).toFixed(1)}%`
 }
 
-function pctDelta(cur: number, prev: number) {
-  if (prev === 0) return cur > 0 ? '+∞' : '0%'
-  const d = Math.round(((cur - prev) / prev) * 100)
-  return `${d >= 0 ? '+' : ''}${d}%`
+function pctDelta(cur: number, prev: number): { text: string; dir: 'up' | 'down' | 'flat' } {
+  if (prev === 0) {
+    if (cur === 0) return { text: '–', dir: 'flat' }
+    return { text: `↑ +${cur.toLocaleString()} 신규`, dir: 'up' }
+  }
+  const diff = cur - prev
+  if (diff === 0) return { text: '–', dir: 'flat' }
+  const pct = Math.round((diff / prev) * 100)
+  const arrow = diff > 0 ? '↑' : '↓'
+  const sign = diff > 0 ? '+' : ''
+  return { text: `${arrow} ${Math.abs(pct)}% (${sign}${diff.toLocaleString()})`, dir: diff > 0 ? 'up' : 'down' }
 }
