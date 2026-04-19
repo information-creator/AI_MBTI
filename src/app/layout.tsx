@@ -3,7 +3,12 @@ import Script from 'next/script'
 import { Suspense } from 'react'
 import GAPageView from '@/components/GAPageView'
 import KakaoInit from '@/components/KakaoInit'
+import LayoutContainer from '@/components/LayoutContainer'
 import './globals.css'
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -33,7 +38,7 @@ const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className="h-full">
+    <html lang="ko" className={cn("h-full", "font-sans", geist.variable)}>
       <body className="min-h-full bg-slate-100 text-slate-900">
         {GA_ID && (
           <>
@@ -77,10 +82,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="clarity-init" strategy="afterInteractive">
           {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","w6vmprm75l");`}
         </Script>
-        {/* 데스크탑에서도 모바일 폭으로 중앙 정렬 */}
-        <div className="min-h-screen mx-auto w-full max-w-[480px] bg-white shadow-xl shadow-slate-200">
-          {children}
-        </div>
+        {/* 데스크탑에서도 모바일 폭으로 중앙 정렬 (dashboard3는 예외) */}
+        <LayoutContainer>{children}</LayoutContainer>
       </body>
     </html>
   )
