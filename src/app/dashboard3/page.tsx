@@ -1,17 +1,136 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import {
+  BarChart3,
+  TrendingDown,
+  TestTube,
+  BookOpen,
+  RefreshCw,
+  CheckCircle2,
+  AlertTriangle,
+  AlertCircle,
+  Globe,
+} from 'lucide-react'
+
+function MetaIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 287.56 191" className={className} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="meta-a" x1="62.34" y1="101.45" x2="260.34" y2="91.45" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#0064e1" />
+          <stop offset=".4" stopColor="#0064e1" />
+          <stop offset=".83" stopColor="#0073ee" />
+          <stop offset="1" stopColor="#0082fb" />
+        </linearGradient>
+        <linearGradient id="meta-b" x1="41.42" y1="53" x2="41.42" y2="126" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#0082fb" />
+          <stop offset="1" stopColor="#0064e0" />
+        </linearGradient>
+      </defs>
+      <path d="M31.06,126c0,11,2.41,19.41,5.56,24.51A19,19,0,0,0,53.19,160c8.1,0,15.51-2,29.79-21.76,11.44-15.83,24.92-38,34-52L132.24,62.7c10.67-16.47,23-34.79,37.15-47.22C181,5.4,193.54,0,206.09,0c21.07,0,41.14,12.21,56.5,35.11,16.81,25.08,25,56.67,25,89.27,0,19.38-3.82,33.62-10.32,44.87C271,180.13,258.72,191,238.13,191V160c17.63,0,22-16.2,22-34.74,0-26.42-6.16-55.74-19.73-76.69-9.63-14.86-22.11-23.94-35.84-23.94-14.85,0-26.8,11.2-40.23,31.17-7.14,10.61-14.47,23.54-22.7,38.13L127.6,110.54c-12.54,22.16-15.72,27.22-22,35.58C94.62,160.78,85.25,166,72.74,166c-21.55,0-34.26-10.25-42.13-21.53C24.34,135.5,21,123.31,21,109.55Z" fill="#0081fb" />
+      <path d="M24.49,37.3C38.73,15.35,59.28,0,82.85,0c13.65,0,27.22,4,41.39,15.61,15.5,12.65,32,33.48,52.63,67.81l7.39,12.32c17.84,29.72,28,45,33.93,52.22,7.64,9.26,13,12,19.94,12,17.63,0,22-16.2,22-34.74l27.4-.86c0,19.38-3.82,33.62-10.32,44.87C271,180.13,258.72,191,238.13,191c-12.8,0-24.14-2.78-36.68-14.61-9.64-9.08-20.91-25.21-29.58-39.71L146.08,93.6c-12.94-21.62-24.81-37.74-31.68-45C107,40.71,97.51,31.23,82.35,31.23c-12.27,0-22.69,8.61-31.41,21.78Z" fill="url(#meta-a)" />
+      <path d="M82.35,31.23c-12.27,0-22.69,8.61-31.41,21.78C38.61,71.62,31.06,99.34,31.06,126c0,11,2.41,19.41,5.56,24.51L10.14,167.67C3.93,157.53,0,143.34,0,123.52,0,92.76,8.44,60.69,24.49,37.3,38.73,15.35,59.28,0,82.85,0Z" fill="url(#meta-b)" />
+    </svg>
+  )
+}
+
+function GoogleIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+    </svg>
+  )
+}
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Pie,
+  PieChart,
+  Cell,
+  LabelList,
+} from 'recharts'
+import dynamic from 'next/dynamic'
+const WorldMap = dynamic(() => import('@/components/dashboard/WorldMap'), { ssr: false })
+
 import { fetchGA4, fetchMetaAds, fetchGoogleAds, fetchABTest } from '@/lib/dashboard/api'
-import { evaluateAds, evaluateFunnel, diagLevel, getOverallVerdict } from '@/lib/dashboard/diagnostics'
+import { evaluateAds, evaluateFunnel } from '@/lib/dashboard/diagnostics'
 import { BENCHMARKS, compareBenchmark } from '@/lib/dashboard/benchmarks'
 import type { GA4Data, MetaAdsData, GoogleAdsData, ABTestData, DiagItem, DiagLevel } from '@/lib/dashboard/types'
 
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart'
+
 const PASS = '720972'
 
+type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic'
+type EbookItem = { id: number | string; title: string; students: number }
+type EbooksData = { ebooks: EbookItem[]; fetchedAt: string }
+
+type TrafficSource = { source: string; medium: string; users: number; sessions: number; engaged: number }
+type TrafficCountry = { country: string; users: number; sessions: number; engaged: number }
+type TrafficDevice = { device: string; users: number; sessions: number; engaged: number }
+type TrafficPage = { page: string; users: number; sessions: number; engaged: number }
+type TrafficData = {
+  sources: TrafficSource[]
+  countries: TrafficCountry[]
+  devices: TrafficDevice[]
+  pages: TrafficPage[]
+  summary: { totalUsers: number; totalSessions: number; totalEngaged: number; koreaUsers: number }
+  startDate: string
+  endDate: string
+}
+
+const COUNTRY_KR: Record<string, string> = {
+  'South Korea': '한국', 'India': '인도', 'Pakistan': '파키스탄', 'Bangladesh': '방글라데시',
+  'Nepal': '네팔', 'Egypt': '이집트', 'Ethiopia': '에티오피아', 'Algeria': '알제리',
+  'Indonesia': '인도네시아', 'Iraq': '이라크', 'United States': '미국', 'Japan': '일본',
+  'China': '중국', 'Vietnam': '베트남', 'Philippines': '필리핀', 'Thailand': '태국',
+  'Nigeria': '나이지리아', 'Morocco': '모로코', 'Turkey': '터키', '(not set)': '(미확인)',
+}
+const SUSPECT_COUNTRIES = new Set(['India', 'Pakistan', 'Bangladesh', 'Nepal', 'Egypt', 'Ethiopia', 'Algeria', 'Indonesia', 'Iraq', 'Nigeria', 'Morocco', 'Vietnam', 'Philippines'])
+
 const VARIANT_LABELS: Record<string, { name: string; color: string }> = {
-  v1: { name: 'V1 공포소구', color: '#ef4444' },
-  v3: { name: 'V3 사회적 증거', color: '#3b82f6' },
-  v4: { name: 'V4 극심플', color: '#0f172a' },
+  v1: { name: 'V1 공포소구', color: 'var(--chart-1)' },
+  v3: { name: 'V3 사회적 증거', color: 'var(--chart-2)' },
+  v4: { name: 'V4 극심플', color: 'var(--chart-3)' },
 }
 
 function daysAgo(dateStr: string, days: number) {
@@ -20,29 +139,10 @@ function daysAgo(dateStr: string, days: number) {
   return d.toISOString().slice(0, 10)
 }
 
-type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks'
-
-type EbookItem = { id: number | string; title: string; students: number }
-type EbooksData = { ebooks: EbookItem[]; fetchedAt: string }
-
-const BENCHMARK_SOURCE = '교육·온라인강의 업종 평균 (Unbounce 2024 · WordStream 2025 · LeadQuizzes · 국내 시장 추정치 기준)'
-
 export default function Dashboard3Page() {
   const [authed, setAuthed] = useState(false)
   const [checked, setChecked] = useState(false)
   const [input, setInput] = useState('')
-  const [view, setView] = useState<View>('overview')
-
-  const [startDate, setStartDate] = useState('2026-03-03')
-  const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
-
-  const [ga4, setGa4] = useState<GA4Data | null>(null)
-  const [meta, setMeta] = useState<MetaAdsData | null>(null)
-  const [google, setGoogle] = useState<GoogleAdsData | null>(null)
-  const [ab, setAb] = useState<ABTestData[] | null>(null)
-  const [ebooks, setEbooks] = useState<EbooksData | null>(null)
-  const [ebooksError, setEbooksError] = useState('')
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const saved = sessionStorage.getItem('dashboard3_auth') === 'true'
@@ -58,39 +158,89 @@ export default function Dashboard3Page() {
     }
   }
 
+  if (!checked) return <main className="min-h-screen bg-background" />
+
+  if (!authed) {
+    return (
+      <main className="min-h-screen bg-background flex items-center justify-center px-4">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>AIMBTI 대시보드 v3</CardTitle>
+            <CardDescription>비밀번호를 입력하세요</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-3">
+              <Input
+                type="password"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder="비밀번호"
+                autoFocus
+                className="text-center tracking-widest text-lg"
+              />
+              <Button type="submit" className="w-full">확인</Button>
+            </form>
+          </CardContent>
+        </Card>
+      </main>
+    )
+  }
+
+  return <DashboardShell />
+}
+
+function DashboardShell() {
+  const [view, setView] = useState<View>('overview')
+  const [startDate, setStartDate] = useState('2026-03-03')
+  const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
+  const [sidebarWidth, setSidebarWidth] = useState(320) // px
+
+  const startResize = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const handleMove = (ev: MouseEvent) => {
+      const w = Math.max(200, Math.min(600, ev.clientX))
+      setSidebarWidth(w)
+    }
+    const handleUp = () => {
+      document.removeEventListener('mousemove', handleMove)
+      document.removeEventListener('mouseup', handleUp)
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+    document.addEventListener('mousemove', handleMove)
+    document.addEventListener('mouseup', handleUp)
+  }
+
+  const [ga4, setGa4] = useState<GA4Data | null>(null)
+  const [meta, setMeta] = useState<MetaAdsData | null>(null)
+  const [google, setGoogle] = useState<GoogleAdsData | null>(null)
+  const [ab, setAb] = useState<ABTestData[] | null>(null)
+  const [ebooks, setEbooks] = useState<EbooksData | null>(null)
+  const [traffic, setTraffic] = useState<TrafficData | null>(null)
+  const [loading, setLoading] = useState(false)
+
   const load = useCallback(async () => {
     setLoading(true)
-    const [g, m, goog, abr] = await Promise.allSettled([
+    const [g, m, goog, abr, eb, tr] = await Promise.allSettled([
       fetchGA4(startDate, endDate),
       fetchMetaAds(startDate, endDate),
       fetchGoogleAds(startDate, endDate),
       fetchABTest(startDate, endDate),
+      fetch(`/api/metacode-ebooks?pass=${PASS}`).then(r => (r.ok ? r.json() : null)),
+      fetch(`/api/ga4-traffic?pass=${PASS}&start=${startDate}&end=${endDate}`).then(r => (r.ok ? r.json() : null)),
     ])
     if (g.status === 'fulfilled') setGa4(g.value)
     if (m.status === 'fulfilled') setMeta(m.value)
     if (goog.status === 'fulfilled') setGoogle(goog.value)
     if (abr.status === 'fulfilled') setAb(abr.value.variants)
+    if (eb.status === 'fulfilled' && eb.value) setEbooks(eb.value)
+    if (tr.status === 'fulfilled' && tr.value) setTraffic(tr.value)
     setLoading(false)
   }, [startDate, endDate])
 
-  const loadEbooks = useCallback(async () => {
-    setEbooksError('')
-    try {
-      const res = await fetch(`/api/metacode-ebooks?pass=${PASS}`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      setEbooks(await res.json())
-    } catch (e) {
-      setEbooksError(e instanceof Error ? e.message : '전자책 데이터를 불러올 수 없습니다')
-    }
-  }, [])
-
-  useEffect(() => {
-    if (authed) loadEbooks()
-  }, [authed, loadEbooks])
-
-  useEffect(() => {
-    if (authed) load()
-  }, [authed, load])
+  useEffect(() => { load() }, [load])
 
   const setPreset = (days: number) => {
     const now = new Date().toISOString().slice(0, 10)
@@ -98,48 +248,29 @@ export default function Dashboard3Page() {
     setStartDate(daysAgo(now, days - 1))
   }
 
-  if (!checked) return <main className="min-h-screen bg-slate-50" />
+  const ev = ga4?.events ?? {}
+  const getEv = (n: string) => ev[n]?.users ?? 0
+  const totalUsers = ga4?.totalUsers ?? 0
+  const ctaClick = getEv('cta_click')
+  const testStart = getEv('test_start')
+  const testComplete = getEv('test_complete')
+  const resultView = getEv('result_view')
+  const openchat = getEv('openchat_click')
+  const ebookClick = getEv('ebook_click')
+  const share = getEv('share_click')
+  const secondaryTotal = openchat + ebookClick + share
+  const ebooksTotal = ebooks?.ebooks.reduce((s, e) => s + e.students, 0) ?? 0
 
-  if (!authed) {
-    return (
-      <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <form onSubmit={handleLogin} className="w-full max-w-sm text-center">
-          <h1 className="text-slate-900 text-2xl font-black mb-8">AIMBTI 대시보드 v3</h1>
-          <input
-            type="password"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="비밀번호"
-            autoFocus
-            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-4 text-center text-slate-900 text-xl tracking-widest mb-4 focus:outline-none focus:border-indigo-500"
-          />
-          <button type="submit" className="w-full bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl py-4 font-bold text-lg">확인</button>
-        </form>
-      </main>
-    )
-  }
-
-  // ========== 데이터 집계 ==========
   const totalSpend = (meta?.totals.spend ?? 0) + (google?.totals.spend ?? 0)
   const totalClicks = (meta?.totals.clicks ?? 0) + (google?.totals.clicks ?? 0)
-  const totalImpressions = (meta?.totals.impressions ?? 0) + (google?.totals.impressions ?? 0)
-  const blendedCTR = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0
   const blendedCPC = totalClicks > 0 ? Math.round(totalSpend / totalClicks) : 0
-
-  const ev = ga4?.events ?? {}
-  const get = (name: string) => ev[name]?.users ?? 0
-  const totalUsers = ga4?.totalUsers ?? 0
-  const ctaClick = get('cta_click')
-  const testStart = get('test_start')
-  const testComplete = get('test_complete')
-  const resultView = get('result_view')
-  const openchat = get('openchat_click')
-  const ebook = get('ebook_click')
-  const share = get('share_click')
-  const secondaryTotal = openchat + ebook + share
+  const effectiveCPA = secondaryTotal > 0 ? Math.round(totalSpend / secondaryTotal) : 0
+  const cpaCmp = effectiveCPA > 0 ? compareBenchmark(effectiveCPA, BENCHMARKS.overall.cpa_target, false) : null
+  const e2e = totalUsers > 0 ? (secondaryTotal / totalUsers) * 100 : 0
+  const completionRate = testStart > 0 ? (testComplete / testStart) * 100 : 0
 
   const funnel = [
-    { label: '페이지 방문', value: totalUsers },
+    { label: '방문', value: totalUsers },
     { label: 'CTA 클릭', value: ctaClick },
     { label: '테스트 시작', value: testStart },
     { label: '테스트 완료', value: testComplete },
@@ -147,14 +278,7 @@ export default function Dashboard3Page() {
     { label: '2차 전환', value: secondaryTotal },
   ]
 
-  const effectiveCPA = secondaryTotal > 0 ? Math.round(totalSpend / secondaryTotal) : 0
-  const cpaCmp = effectiveCPA > 0 ? compareBenchmark(effectiveCPA, BENCHMARKS.overall.cpa_target, false) : null
-
-  const e2e = totalUsers > 0 ? (secondaryTotal / totalUsers) * 100 : 0
-  const completionRate = testStart > 0 ? (testComplete / testStart) * 100 : 0
-
-  // ========== 종합 진단 ==========
-  const allDiag: DiagItem[] = [
+  const diag: DiagItem[] = [
     ...evaluateFunnel(funnel),
     ...(meta ? evaluateAds('Meta', meta.totals) : []),
     ...(google ? evaluateAds('Google', google.totals) : []),
@@ -162,628 +286,163 @@ export default function Dashboard3Page() {
   if (resultView > 0) {
     const secRate = (secondaryTotal / resultView) * 100
     const secLevel: DiagLevel = secRate >= 15 ? 'good' : secRate >= 5 ? 'warn' : 'bad'
-    allDiag.push({
+    diag.push({
       label: '결과→2차 전환',
       level: secLevel,
       value: `${secRate.toFixed(1)}%`,
       comment: secLevel === 'good' ? '전환 양호' : secLevel === 'warn' ? '전환 보통 — CTA 강화 고려' : '전환 낮음 — 노출/문구 개선 필요',
     })
   }
-  const verdict = allDiag.length > 0 ? getOverallVerdict(allDiag) : null
 
-  // ========== 종합 평가 문구 ==========
-  const adEfficiency = totalSpend > 0 && secondaryTotal > 0
   const cpaOk = effectiveCPA > 0 && effectiveCPA <= BENCHMARKS.overall.cpa_target * 1.5
-  let headline = ''
-  let subline = ''
-  if (e2e >= 5) headline = `전체 전환율 ${e2e.toFixed(1)}% — 퍼널이 잘 작동하고 있습니다. 트래픽을 늘리면 성과가 비례합니다.`
-  else if (e2e >= 1) headline = `전체 전환율 ${e2e.toFixed(1)}% — 보통 수준입니다. 이탈이 큰 구간을 집중 개선하면 2배 이상 올릴 수 있습니다.`
-  else if (totalUsers > 0) headline = `전체 전환율 ${e2e.toFixed(1)}% — 퍼널 어딘가에서 대량 이탈이 발생하고 있습니다. 아래 진단을 확인하세요.`
-  else headline = '아직 데이터가 부족합니다. 광고 집행 후 다시 확인하세요.'
-
-  if (!adEfficiency) subline = '광고비 대비 2차 전환이 아직 없습니다. 랜딩→결과 퍼널부터 점검해주세요.'
-  else if (cpaOk) subline = `유효 CPA ₩${effectiveCPA.toLocaleString()} — 목표(₩${BENCHMARKS.overall.cpa_target.toLocaleString()}) 대비 적정. 현재 전략을 유지하며 스케일업하세요.`
-  else subline = `유효 CPA ₩${effectiveCPA.toLocaleString()} — 목표(₩${BENCHMARKS.overall.cpa_target.toLocaleString()}) 초과. 광고 소재 교체 또는 랜딩 전환율 개선이 우선입니다.`
-
   const overallLevel: DiagLevel = e2e >= 3 && cpaOk ? 'good' : e2e >= 1 ? 'warn' : 'bad'
-  const overallStyle = {
-    good: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-800', icon: '✅' },
-    warn: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-800', icon: '⚠️' },
-    bad: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-800', icon: '🚨' },
-  }[overallLevel]
+  const badCount = diag.filter(i => i.level === 'bad').length
+  const warnCount = diag.filter(i => i.level === 'warn').length
+  const goodCount = diag.filter(i => i.level === 'good').length
 
-  // ========== A/B 승자 ==========
-  const abWinner = (() => {
-    if (!ab || ab.length === 0) return null
-    const rates = ab.map(d => ({
-      variant: d.variant,
-      rate: d.pageView > 0 ? (d.resultView / d.pageView) * 100 : 0,
-    }))
-    return rates.reduce((a, b) => (a.rate > b.rate ? a : b))
-  })()
-
-  const navItems: { id: View; label: string; icon: string }[] = [
-    { id: 'overview', label: '종합', icon: '📊' },
-    { id: 'funnel', label: '퍼널', icon: '🔻' },
-    { id: 'meta', label: 'Meta Ads', icon: '🟦' },
-    { id: 'google', label: 'Google Ads', icon: '🟨' },
-    { id: 'abtest', label: 'A/B 테스트', icon: '🧪' },
-    { id: 'ebooks', label: '전자책 수강생', icon: '📚' },
+  const navItems: { id: View; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+    { id: 'overview', label: '종합', icon: BarChart3 },
+    { id: 'funnel', label: '퍼널', icon: TrendingDown },
+    { id: 'traffic', label: '트래픽 분석', icon: Globe },
+    { id: 'meta', label: 'Meta Ads', icon: MetaIcon },
+    { id: 'google', label: 'Google Ads', icon: GoogleIcon },
+    { id: 'abtest', label: 'A/B 테스트', icon: TestTube },
+    { id: 'ebooks', label: '전자책 수강', icon: BookOpen },
   ]
 
   const viewTitle: Record<View, string> = {
     overview: '종합 대시보드',
     funnel: '퍼널 분석',
+    traffic: '트래픽 분석',
     meta: 'Meta Ads',
     google: 'Google Ads',
     abtest: 'A/B 테스트',
     ebooks: '전자책 수강생',
   }
 
-  const ebooksTotal = ebooks?.ebooks.reduce((s, e) => s + e.students, 0) ?? 0
-
   return (
-    <main className="min-h-screen bg-slate-50 flex">
-      {/* 사이드바 */}
-      <aside className="w-52 shrink-0 bg-white border-r border-slate-200 sticky top-0 h-screen flex flex-col">
-        <div className="px-4 py-4 border-b border-slate-100 flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-black text-sm">A</div>
-          <div>
-            <h1 className="text-slate-900 text-sm font-black leading-none">AIMBTI</h1>
-            <p className="text-slate-400 text-[10px] font-semibold mt-0.5">대시보드 v3</p>
+    <SidebarProvider style={{ '--sidebar-width': `${sidebarWidth}px` } as React.CSSProperties}>
+      <Sidebar collapsible="icon">
+        {/* 드래그 리사이저 */}
+        <div
+          onMouseDown={startResize}
+          className="absolute top-0 right-0 z-20 h-full w-1 cursor-col-resize bg-transparent hover:bg-primary/40 transition-colors group-data-[collapsible=icon]:hidden"
+          title="드래그해서 사이드바 크기 조절"
+        />
+        <SidebarHeader className="px-4 py-4 border-b">
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/favicon.png" alt="AIMBTI" className="w-10 h-10 rounded-lg shrink-0 object-cover" />
+            <div className="group-data-[collapsible=icon]:hidden">
+              <p className="text-base font-black leading-none">AIMBTI</p>
+              <p className="text-sm text-muted-foreground mt-1">대시보드 v3</p>
+            </div>
           </div>
-        </div>
-        <nav className="px-2 py-3 space-y-0.5 flex-1">
-          {navItems.map(item => {
-            const active = view === item.id
-            return (
-              <button
-                key={item.id}
-                onClick={() => setView(item.id)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors text-left ${
-                  active
-                    ? 'bg-indigo-50 text-indigo-700'
-                    : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                <span className="text-sm">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            )
-          })}
-        </nav>
-      </aside>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-sm font-bold">메뉴</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {navItems.map(item => {
+                  const active = view === item.id
+                  return (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton
+                        isActive={active}
+                        onClick={() => setView(item.id)}
+                        tooltip={item.label}
+                        className={`text-base h-11 ${active ? 'bg-primary text-primary-foreground font-black hover:bg-primary hover:text-primary-foreground shadow-sm' : 'font-semibold'}`}
+                      >
+                        <item.icon className={`${active ? 'h-5 w-5' : 'h-5 w-5'}`} />
+                        <span>{item.label}</span>
+                        {active && <span className="ml-auto text-xs">●</span>}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
 
-      {/* 메인 콘텐츠 */}
-      <div className="flex-1 min-w-0 px-5 py-4">
-        {/* 상단 툴바 */}
-        <header className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <div>
-            <h2 className="text-slate-900 text-lg font-black tracking-tight">{viewTitle[view]}</h2>
-            <p className="text-slate-500 text-xs mt-0.5">{startDate} ~ {endDate}</p>
+          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-sm font-bold">📘 지표 기준</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <BenchmarkSidebar />
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+
+      <SidebarInset>
+        {/* 상단 헤더 */}
+        <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 sticky top-0 bg-background z-10">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <h1 className="text-lg font-black">{viewTitle[view]}</h1>
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1 border rounded-md p-0.5">
+              {[{ label: '오늘', days: 1 }, { label: '7일', days: 7 }, { label: '30일', days: 30 }].map(p => (
+                <Button key={p.label} variant="ghost" size="sm" onClick={() => setPreset(p.days)} className="h-7 px-2 text-xs">
+                  {p.label}
+                </Button>
+              ))}
+            </div>
+            <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="h-8 w-36 text-xs" />
+            <span className="text-xs text-muted-foreground">~</span>
+            <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="h-8 w-36 text-xs" />
+            <Button size="sm" onClick={load} disabled={loading}>
+              <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+              새로고침
+            </Button>
           </div>
-          <div className="flex flex-wrap items-center gap-1.5 bg-white rounded-lg border border-slate-200 px-2 py-1">
-            {[
-              { label: '오늘', days: 1 },
-              { label: '7일', days: 7 },
-              { label: '30일', days: 30 },
-            ].map(p => (
-              <button key={p.label} onClick={() => setPreset(p.days)} className="text-xs font-bold px-2 py-1 rounded text-slate-600 hover:bg-slate-100">
-                {p.label}
-              </button>
-            ))}
-            <div className="w-px h-4 bg-slate-200 mx-0.5" />
-            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-transparent px-1 py-0.5 text-slate-900 text-xs focus:outline-none" />
-            <span className="text-slate-400 text-xs">~</span>
-            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-transparent px-1 py-0.5 text-slate-900 text-xs focus:outline-none" />
-            <button onClick={() => { load(); loadEbooks() }} disabled={loading} className="text-xs font-bold px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50">
-              {loading ? '...' : '↻'}
-            </button>
-          </div>
+          <span className="text-sm font-mono text-muted-foreground">{startDate} ~ {endDate}</span>
         </header>
 
-        {/* ===== 종합 뷰 — 한눈에 ===== */}
-        {view === 'overview' && (
-          <div className="space-y-3">
-            {/* 한줄 요약 */}
-            <section className={`${overallStyle.bg} border ${overallStyle.border} rounded-lg px-4 py-3`}>
-              <p className={`text-sm font-bold ${overallStyle.text} leading-snug`}>
-                {overallStyle.icon} {headline}
-              </p>
-              <p className={`text-xs ${overallStyle.text} opacity-80 mt-0.5`}>{subline}</p>
-            </section>
-
-            {/* 8개 핵심 지표 (방문/CTA/완료/결과 + 광고비/클릭/CTR/CPA) */}
-            <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
-              <CompactMetric label="방문" value={totalUsers.toLocaleString()} />
-              <CompactMetric label="테스트 완료" value={testComplete.toLocaleString()} />
-              <CompactMetric label="결과 확인" value={resultView.toLocaleString()} />
-              <CompactMetric label="2차 전환" value={secondaryTotal.toLocaleString()} accent />
-              <CompactMetric label="전자책 수강" value={ebooksTotal.toLocaleString()} accent />
-              <CompactMetric label="광고비" value={`₩${totalSpend.toLocaleString()}`} />
-              <CompactMetric label="CPC" value={`₩${blendedCPC.toLocaleString()}`} />
-              <CompactMetric
-                label="유효 CPA"
-                value={effectiveCPA > 0 ? `₩${effectiveCPA.toLocaleString()}` : '-'}
-                sub={cpaCmp?.label}
-                subColor={cpaCmp?.level === 'good' ? 'text-green-600' : cpaCmp?.level === 'bad' ? 'text-red-500' : 'text-yellow-600'}
-              />
-            </section>
-
-            {/* 3컬럼: 퍼널 | 광고 Meta/Google | 진단 */}
-            <section className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-              {/* 퍼널 */}
-              <div className="bg-white rounded-lg border border-slate-200 p-4">
-                <h3 className="text-slate-900 text-sm font-black mb-3">퍼널</h3>
-                <div className="space-y-2">
-                  {funnel.map((step, i) => {
-                    const width = funnel[0].value > 0 ? Math.max(Math.round((step.value / funnel[0].value) * 100), step.value > 0 ? 3 : 0) : 0
-                    const prev = i > 0 ? funnel[i - 1].value : 0
-                    const dropoff = i > 0 && prev > 0 ? Math.round(((prev - step.value) / prev) * 100) : 0
-                    return (
-                      <div key={i}>
-                        <div className="flex justify-between items-baseline mb-0.5">
-                          <span className="text-slate-600 text-xs font-semibold">{step.label}</span>
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="text-slate-900 text-sm font-black">{step.value.toLocaleString()}</span>
-                            {i > 0 && dropoff > 0 && <span className="text-red-500 text-[10px] font-bold">-{dropoff}%</span>}
-                          </div>
-                        </div>
-                        <div className="bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                          <div className="h-full rounded-full bg-indigo-500" style={{ width: `${width}%` }} />
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Meta + Google */}
-              <div className="space-y-3">
-                <CompactAdsCard title="Meta" data={meta?.totals} benchmark={BENCHMARKS.ads.meta} />
-                <CompactAdsCard title="Google" data={google?.totals} benchmark={BENCHMARKS.ads.google} />
-              </div>
-
-              {/* 진단 요약 */}
-              <div className="bg-white rounded-lg border border-slate-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-slate-900 text-sm font-black">진단</h3>
-                  {verdict && (
-                    <div className="flex gap-1.5 text-[10px] font-bold">
-                      <span className="bg-red-100 text-red-700 px-1.5 py-0.5 rounded">위험 {allDiag.filter(i => i.level === 'bad').length}</span>
-                      <span className="bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded">주의 {allDiag.filter(i => i.level === 'warn').length}</span>
-                      <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded">양호 {allDiag.filter(i => i.level === 'good').length}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-1.5 max-h-[280px] overflow-y-auto pr-1">
-                  {allDiag
-                    .slice()
-                    .sort((a, b) => {
-                      const order = { bad: 0, warn: 1, good: 2 }
-                      return order[a.level] - order[b.level]
-                    })
-                    .map((item, i) => {
-                      const s = diagLevel(item.level)
-                      return (
-                        <div key={i} className="flex items-start gap-2 text-xs py-1">
-                          <span className={`inline-block w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${s.dot}`} />
-                          <div className="min-w-0 flex-1">
-                            <div className="flex justify-between items-baseline gap-2">
-                              <span className="text-slate-700 font-semibold truncate">{item.label}</span>
-                              <span className={`font-bold shrink-0 ${s.text}`}>{item.value}</span>
-                            </div>
-                            <p className="text-slate-500 text-[11px] leading-snug mt-0.5">{item.comment}</p>
-                          </div>
-                        </div>
-                      )
-                    })}
-                </div>
-              </div>
-            </section>
-
-            {/* 2차 전환 분해 + 전자책 미니 */}
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              <div className="bg-white rounded-lg border border-slate-200 p-4">
-                <h3 className="text-slate-900 text-sm font-black mb-2">2차 전환 ({resultView}명 기준)</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { label: '단톡방', value: openchat },
-                    { label: '전자책 클릭', value: ebook },
-                    { label: '공유', value: share },
-                  ].map(row => {
-                    const pct = resultView > 0 ? (row.value / resultView) * 100 : 0
-                    return (
-                      <div key={row.label} className="bg-slate-50 rounded-md px-2 py-1.5 text-center">
-                        <div className="text-slate-900 text-lg font-black leading-none">{row.value}</div>
-                        <div className="text-slate-500 text-[10px] mt-1">{row.label}</div>
-                        <div className="text-indigo-500 text-[10px] font-bold">{pct.toFixed(1)}%</div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg border border-slate-200 p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-slate-900 text-sm font-black">전자책 수강 (실제 메타코드)</h3>
-                  <button onClick={loadEbooks} className="text-[10px] text-slate-400 hover:text-slate-600">↻</button>
-                </div>
-                {ebooksError && <p className="text-red-500 text-xs">{ebooksError}</p>}
-                {ebooks && (
-                  <div className="flex items-center gap-3">
-                    <div className="text-center pr-3 border-r border-slate-200">
-                      <div className="text-indigo-600 text-3xl font-black leading-none">{ebooksTotal}</div>
-                      <div className="text-slate-400 text-[10px] mt-1">총 수강생</div>
-                    </div>
-                    <div className="flex-1 grid grid-cols-2 gap-1">
-                      {ebooks.ebooks.map(e => (
-                        <div key={e.id} className="text-[11px] flex justify-between">
-                          <span className="text-slate-600 truncate">{String(e.title).replace(/\[무료\/26년 최신버전\]\s*/g, '').slice(0, 14)}</span>
-                          <span className="text-slate-900 font-bold shrink-0">{e.students}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
-        )}
-
-        {/* ===== 퍼널 뷰 ===== */}
-        {view === 'funnel' && (
-          <div className="space-y-6">
-            <BenchmarkNote />
-            <section className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
-                <h2 className="text-slate-900 text-xl font-black mb-1">전체 퍼널</h2>
-                <p className="text-slate-500 text-sm mb-6">방문 → 2차 전환 흐름</p>
-                <BigFunnelChart steps={funnel} />
-              </div>
-
-              <div className="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
-                <h2 className="text-slate-900 text-xl font-black mb-1">2차 전환 내역</h2>
-                <p className="text-slate-500 text-sm mb-6">결과 확인 {resultView.toLocaleString()}명 기준</p>
-                <div className="space-y-4">
-                  {[
-                    { label: '단톡방', value: openchat, color: 'bg-indigo-500' },
-                    { label: '전자책', value: ebook, color: 'bg-purple-500' },
-                    { label: '공유', value: share, color: 'bg-pink-500' },
-                  ].map(row => {
-                    const pct = resultView > 0 ? (row.value / resultView) * 100 : 0
-                    return (
-                      <div key={row.label}>
-                        <div className="flex justify-between items-baseline mb-2">
-                          <span className="text-slate-700 font-bold text-base">{row.label}</span>
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-slate-900 font-black text-2xl">{row.value}</span>
-                            <span className="text-indigo-500 font-bold text-sm">{pct.toFixed(1)}%</span>
-                          </div>
-                        </div>
-                        <div className="bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                          <div className={`${row.color} h-full rounded-full`} style={{ width: `${Math.min(pct * 3, 100)}%` }} />
-                        </div>
-                      </div>
-                    )
-                  })}
-                  <div className="border-t border-slate-200 pt-4 mt-4">
-                    <div className="flex justify-between items-baseline">
-                      <span className="text-slate-900 font-black text-base">총 2차 전환</span>
-                      <div>
-                        <span className="text-slate-900 font-black text-3xl">{secondaryTotal}</span>
-                        <span className="text-slate-500 text-sm ml-1">건</span>
-                      </div>
-                    </div>
-                    <p className="text-slate-400 text-xs mt-1">완료율 {completionRate.toFixed(1)}% · 전체 전환율 {e2e.toFixed(2)}%</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        )}
-
-        {/* ===== Meta Ads 뷰 ===== */}
-        {view === 'meta' && (
-          <div className="space-y-6">
-            <BenchmarkNote />
-            <AdsPanel title="Meta Ads" data={meta?.totals} benchmark={BENCHMARKS.ads.meta} />
-            <div className="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
-              <h3 className="text-slate-900 text-xl font-black mb-4">Meta 캠페인별 성과</h3>
-              <BigCampaignTable campaigns={meta?.campaigns ?? []} />
-            </div>
-          </div>
-        )}
-
-        {/* ===== Google Ads 뷰 ===== */}
-        {view === 'google' && (
-          <div className="space-y-6">
-            <BenchmarkNote />
-            <AdsPanel title="Google Ads" data={google?.totals} benchmark={BENCHMARKS.ads.google} />
-            <div className="bg-white rounded-2xl border border-slate-200 p-5">
-              <h3 className="text-slate-900 text-base font-black mb-3">Google 캠페인별 성과</h3>
-              <BigCampaignTable campaigns={google?.campaigns ?? []} />
-            </div>
-          </div>
-        )}
-
-        {/* ===== 전자책 뷰 ===== */}
-        {view === 'ebooks' && (
-          <div className="space-y-4">
-            <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 text-sky-800 text-xs">
-              📚 메타코드 공식 API에서 실제 수강 등록 인원을 실시간 크롤링합니다. 결과 페이지의 전자책 CTA 클릭(GA 이벤트)과는 별개 지표입니다.
-            </div>
-            {ebooksError && <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">{ebooksError}</div>}
-            {ebooks && (
-              <>
-                <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4">
-                  <div className="text-center">
-                    <div className="text-indigo-600 text-5xl font-black leading-none">{ebooksTotal.toLocaleString()}</div>
-                    <div className="text-slate-500 text-xs mt-2 font-semibold">총 전자책 수강생</div>
-                  </div>
-                  <div className="h-12 w-px bg-slate-200" />
-                  <p className="text-slate-500 text-xs">조회: {new Date(ebooks.fetchedAt).toLocaleString('ko-KR')}</p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                  {ebooks.ebooks.map(e => {
-                    const title = String(e.title).replace(/\[무료\/26년 최신버전\]\s*/g, '')
-                    return (
-                      <div key={e.id} className="bg-white rounded-xl border border-slate-200 p-4">
-                        <div className="text-slate-900 text-3xl font-black">{e.students.toLocaleString()}</div>
-                        <div className="text-slate-500 text-xs mt-1 leading-tight line-clamp-2">{title}</div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </>
-            )}
-            {!ebooks && !ebooksError && <p className="text-slate-400 text-center py-10 text-sm">전자책 데이터 불러오는 중...</p>}
-          </div>
-        )}
-
-        {/* ===== A/B 테스트 뷰 ===== */}
-        {view === 'abtest' && (
-          <div className="space-y-6">
-            {ab && ab.length > 0 ? (
-              <section className="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
-                <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
-                  <div>
-                    <h2 className="text-slate-900 text-xl font-black">A/B 테스트 비교</h2>
-                    <p className="text-slate-500 text-sm">변형별 퍼널 및 전환율 (최고값 강조)</p>
-                  </div>
-                  {abWinner && abWinner.rate > 0 && (
-                    <div className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl px-5 py-3 text-white shadow-md shadow-indigo-200">
-                      <p className="text-xs opacity-80 font-semibold">E2E 기준 승자</p>
-                      <p className="text-base font-black">{VARIANT_LABELS[abWinner.variant]?.name ?? abWinner.variant} — {abWinner.rate.toFixed(1)}%</p>
-                    </div>
-                  )}
-                </div>
-                <ABComparisonTable variants={ab} />
-              </section>
-            ) : (
-              <p className="text-slate-400 text-center py-10 text-base">A/B 테스트 데이터가 아직 없습니다</p>
-            )}
-          </div>
-        )}
-      </div>
-    </main>
-  )
-}
-
-function DiagnosisSection({ verdict, items }: { verdict: { level: DiagLevel; summary: string }; items: DiagItem[] }) {
-  const bad = items.filter(i => i.level === 'bad')
-  const warn = items.filter(i => i.level === 'warn')
-  const good = items.filter(i => i.level === 'good')
-
-  const topStyle = {
-    good: { bg: 'from-green-500 to-emerald-600', icon: '✅', label: '양호' },
-    warn: { bg: 'from-yellow-500 to-amber-600', icon: '⚠️', label: '주의' },
-    bad: { bg: 'from-red-500 to-rose-600', icon: '🚨', label: '위험' },
-  }[verdict.level]
-
-  return (
-    <section className="space-y-5">
-      {/* 상단 대형 요약 카드 */}
-      <div className={`bg-gradient-to-br ${topStyle.bg} rounded-3xl p-8 text-white shadow-lg`}>
-        <div className="flex items-start gap-5">
-          <div className="text-5xl">{topStyle.icon}</div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="bg-white/20 rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider">종합 진단</span>
-              <span className="bg-white/20 rounded-full px-3 py-1 text-xs font-black">{topStyle.label}</span>
-            </div>
-            <h2 className="text-2xl font-black leading-tight mb-3">{verdict.summary}</h2>
-            <div className="flex gap-4">
-              <SummaryStat count={bad.length} label="위험" />
-              <SummaryStat count={warn.length} label="주의" />
-              <SummaryStat count={good.length} label="양호" />
-            </div>
-          </div>
+        <div className="flex-1 p-4 md:p-6 max-w-5xl w-full">
+          {view === 'overview' && (
+            <OverviewTab
+              overallLevel={overallLevel}
+              badCount={badCount}
+              warnCount={warnCount}
+              goodCount={goodCount}
+              totalUsers={totalUsers}
+              testComplete={testComplete}
+              resultView={resultView}
+              secondaryTotal={secondaryTotal}
+              ebooksTotal={ebooksTotal}
+              totalSpend={totalSpend}
+              blendedCPC={blendedCPC}
+              effectiveCPA={effectiveCPA}
+              cpaCmp={cpaCmp}
+              e2e={e2e}
+              completionRate={completionRate}
+              funnel={funnel}
+              diag={diag}
+              meta={meta}
+              google={google}
+              resultViewCount={resultView}
+              openchat={openchat}
+              ebookClick={ebookClick}
+              share={share}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          )}
+          {view === 'funnel' && <FunnelTab funnel={funnel} />}
+          {view === 'traffic' && <TrafficTab data={traffic} />}
+          {view === 'meta' && <AdsTab title="Meta" totals={meta?.totals} campaigns={meta?.campaigns ?? []} benchmark={BENCHMARKS.ads.meta} />}
+          {view === 'google' && <AdsTab title="Google" totals={google?.totals} campaigns={google?.campaigns ?? []} benchmark={BENCHMARKS.ads.google} />}
+          {view === 'abtest' && <ABTestTab variants={ab ?? []} />}
+          {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} />}
         </div>
-      </div>
-
-      {/* 섹션별 상세 */}
-      {bad.length > 0 && <DiagGroup level="bad" title="🚨 우선 개선이 필요합니다" items={bad} />}
-      {warn.length > 0 && <DiagGroup level="warn" title="⚠️ 살펴보세요" items={warn} />}
-      {good.length > 0 && <DiagGroup level="good" title="✅ 잘하고 있는 부분" items={good} />}
-    </section>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
 
-function SummaryStat({ count, label }: { count: number; label: string }) {
-  return (
-    <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
-      <span className="text-2xl font-black">{count}</span>
-      <span className="text-sm font-semibold ml-1.5 opacity-90">{label}</span>
-    </div>
-  )
-}
-
-function DiagGroup({ level, title, items }: { level: DiagLevel; title: string; items: DiagItem[] }) {
-  const style = {
-    good: { bar: 'bg-green-500', card: 'border-green-200 bg-green-50/30', badge: 'bg-green-100 text-green-700', label: 'text-green-700' },
-    warn: { bar: 'bg-yellow-500', card: 'border-yellow-200 bg-yellow-50/30', badge: 'bg-yellow-100 text-yellow-800', label: 'text-yellow-800' },
-    bad: { bar: 'bg-red-500', card: 'border-red-200 bg-red-50/30', badge: 'bg-red-100 text-red-700', label: 'text-red-700' },
-  }[level]
-  const badgeText = level === 'good' ? '양호' : level === 'warn' ? '주의' : '위험'
-
-  return (
-    <div>
-      <div className="flex items-center gap-3 mb-3">
-        <div className={`w-1.5 h-7 ${style.bar} rounded-full`} />
-        <h3 className="text-slate-900 text-xl font-black">{title}</h3>
-        <span className="text-slate-400 text-base font-bold">{items.length}건</span>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {items.map((item, i) => (
-          <div key={i} className={`bg-white border ${style.card} rounded-2xl p-5 shadow-sm`}>
-            <div className="flex items-center justify-between gap-3 mb-2">
-              <span className={`${style.badge} text-xs font-black px-2.5 py-1 rounded-full`}>{badgeText}</span>
-              <span className={`text-2xl font-black ${style.label}`}>{item.value}</span>
-            </div>
-            <p className="text-slate-900 font-black text-lg mb-1">{item.label}</p>
-            <p className="text-slate-600 text-sm leading-relaxed">{item.comment}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function CompactMetric({ label, value, sub, subColor, accent }: { label: string; value: string | number; sub?: string; subColor?: string; accent?: boolean }) {
-  return (
-    <div className={`${accent ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-200'} rounded-lg border px-3 py-2`}>
-      <div className="text-slate-500 text-[10px] font-bold">{label}</div>
-      <div className={`text-lg font-black leading-tight mt-0.5 ${accent ? 'text-indigo-700' : 'text-slate-900'}`}>{value}</div>
-      {sub && <div className={`text-[10px] font-bold mt-0.5 ${subColor ?? 'text-slate-500'}`}>{sub}</div>}
-    </div>
-  )
-}
-
-function CompactAdsCard({ title, data, benchmark }: { title: string; data?: AdTotals; benchmark: { ctr: number; cpc: number; cpm: number; cvr: number } }) {
-  if (!data || data.spend === 0) {
-    return (
-      <div className="bg-white rounded-lg border border-slate-200 p-3">
-        <h4 className="text-slate-900 text-xs font-black mb-1">{title}</h4>
-        <p className="text-slate-400 text-xs">집행 데이터 없음</p>
-      </div>
-    )
-  }
-  const cvr = data.clicks > 0 ? (data.conversions / data.clicks) * 100 : 0
-  const ctrCmp = compareBenchmark(data.ctr, benchmark.ctr, true)
-  const cpcCmp = compareBenchmark(data.cpc, benchmark.cpc, false)
-  return (
-    <div className="bg-white rounded-lg border border-slate-200 p-3">
-      <div className="flex items-center justify-between mb-2">
-        <h4 className="text-slate-900 text-xs font-black">{title}</h4>
-        <span className="text-slate-500 text-[10px] font-bold">₩{data.spend.toLocaleString()}</span>
-      </div>
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <div>
-          <div className="text-slate-900 text-sm font-black">{data.ctr}%</div>
-          <div className="text-slate-400 text-[10px]">CTR</div>
-          <div className={`text-[10px] font-bold ${ctrCmp.level === 'good' ? 'text-green-600' : ctrCmp.level === 'bad' ? 'text-red-500' : 'text-yellow-600'}`}>{ctrCmp.diffPct >= 0 ? '+' : ''}{ctrCmp.diffPct}%</div>
-        </div>
-        <div>
-          <div className="text-slate-900 text-sm font-black">₩{data.cpc.toLocaleString()}</div>
-          <div className="text-slate-400 text-[10px]">CPC</div>
-          <div className={`text-[10px] font-bold ${cpcCmp.level === 'good' ? 'text-green-600' : cpcCmp.level === 'bad' ? 'text-red-500' : 'text-yellow-600'}`}>{cpcCmp.diffPct >= 0 ? '+' : ''}{cpcCmp.diffPct}%</div>
-        </div>
-        <div>
-          <div className="text-slate-900 text-sm font-black">{cvr.toFixed(1)}%</div>
-          <div className="text-slate-400 text-[10px]">전환율</div>
-          <div className="text-[10px] text-slate-400">클릭 {data.clicks}</div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function BenchmarkNote() {
-  return (
-    <div className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-2xl p-5 text-sky-900 shadow-sm">
-      <p className="text-base font-black mb-1">📘 업종 벤치마크 기준</p>
-      <p className="text-sm leading-relaxed opacity-90">
-        {BENCHMARK_SOURCE}. 각 지표 옆 <span className="font-bold">업종 대비 ±%</span>는 현재 값과 업종 평균의 차이이며,
-        편차 ≥10%(좋음/나쁨 방향)일 때 색으로 강조됩니다.
-      </p>
-    </div>
-  )
-}
-
-/* ---------- 서브 컴포넌트 ---------- */
-
-function BigMetric({
-  label,
-  value,
-  subLabel,
-  subColor,
-  accent,
-}: {
-  label: string
-  value: string | number
-  subLabel?: string
-  subColor?: string
-  accent?: boolean
-}) {
-  return (
-    <div className={`${accent ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 shadow-indigo-100' : 'bg-white border-slate-200'} rounded-2xl border p-5 shadow-sm`}>
-      <div className="text-slate-500 text-sm font-bold">{label}</div>
-      <div className={`text-3xl font-black mt-2 ${accent ? 'text-indigo-700' : 'text-slate-900'}`}>{value}</div>
-      {subLabel && <div className={`text-sm font-bold mt-2 ${subColor ?? 'text-slate-500'}`}>{subLabel}</div>}
-    </div>
-  )
-}
-
-function BigFunnelChart({ steps }: { steps: { label: string; value: number }[] }) {
-  const BENCH_MAP: Record<string, keyof typeof BENCHMARKS.funnel> = {
-    '페이지 방문 → CTA 클릭': 'landing_to_cta',
-    'CTA 클릭 → 테스트 시작': 'cta_to_test_start',
-    '테스트 시작 → 테스트 완료': 'test_start_to_complete',
-    '테스트 완료 → 결과 확인': 'complete_to_result',
-    '결과 확인 → 2차 전환': 'result_to_secondary',
-  }
-  return (
-    <div className="space-y-6">
-      {steps.map((step, i) => {
-        const width = steps[0].value > 0 ? Math.max(Math.round((step.value / steps[0].value) * 100), step.value > 0 ? 3 : 0) : 0
-        const prev = i > 0 ? steps[i - 1].value : 0
-        const dropoff = i > 0 && prev > 0 ? Math.round(((prev - step.value) / prev) * 100) : 0
-        const convRate = i > 0 && prev > 0 ? (step.value / prev) * 100 : 0
-        const benchKey = i > 0 ? `${steps[i - 1].label} → ${step.label}` : null
-        const benchmarkKey = benchKey ? BENCH_MAP[benchKey] : null
-        const benchVal = benchmarkKey ? BENCHMARKS.funnel[benchmarkKey] : null
-        const cmp = benchVal !== null && i > 0 ? compareBenchmark(convRate, benchVal, true) : null
-
-        return (
-          <div key={i}>
-            <div className="flex justify-between items-baseline mb-2.5">
-              <span className="text-slate-700 font-bold text-lg">{step.label}</span>
-              <div className="flex items-baseline gap-3">
-                <span className="text-slate-900 text-2xl font-black">{step.value.toLocaleString()}</span>
-                <span className="text-slate-400 text-base">명</span>
-                {i > 0 && dropoff > 0 && <span className="text-red-500 font-bold text-base">-{dropoff}%</span>}
-              </div>
-            </div>
-            <div className="bg-slate-100 rounded-full h-6 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" style={{ width: `${width}%` }} />
-            </div>
-            {cmp && (
-              <div className="flex items-center gap-3 mt-2">
-                <span className="text-slate-500 text-sm font-semibold">전환 {convRate.toFixed(1)}%</span>
-                <span className={`text-sm font-bold ${cmp.level === 'good' ? 'text-green-600' : cmp.level === 'bad' ? 'text-red-500' : 'text-yellow-600'}`}>
-                  업종 {benchVal}% · {cmp.label}
-                </span>
-              </div>
-            )}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-type AdTotals = {
+/* ========== 종합 뷰 ========== */
+type AdTotalsLite = {
   spend: number
   impressions: number
   clicks: number
@@ -793,56 +452,840 @@ type AdTotals = {
   conversions: number
 }
 
-function AdsPanel({
-  title,
-  data,
-  benchmark,
-}: {
-  title: string
-  data?: AdTotals
-  benchmark: { ctr: number; cpc: number; cpm: number; cvr: number }
+function OverviewTab(p: {
+  overallLevel: DiagLevel
+  badCount: number; warnCount: number; goodCount: number
+  totalUsers: number; testComplete: number; resultView: number
+  secondaryTotal: number; ebooksTotal: number
+  totalSpend: number; blendedCPC: number; effectiveCPA: number
+  cpaCmp: ReturnType<typeof compareBenchmark> | null
+  e2e: number; completionRate: number
+  funnel: { label: string; value: number }[]
+  diag: DiagItem[]
+  meta: MetaAdsData | null
+  google: GoogleAdsData | null
+  resultViewCount: number; openchat: number; ebookClick: number; share: number
+  startDate: string; endDate: string
 }) {
-  if (!data || data.spend === 0) {
+  const verdictIcon = p.overallLevel === 'good' ? CheckCircle2 : p.overallLevel === 'warn' ? AlertTriangle : AlertCircle
+  const VerdictIcon = verdictIcon
+  const verdictVariant = p.overallLevel === 'good' ? 'default' : p.overallLevel === 'warn' ? 'secondary' : 'destructive'
+  const worst = p.diag.find(i => i.level === 'bad') ?? p.diag.find(i => i.level === 'warn')
+
+  return (
+    <div className="space-y-4">
+      {/* 요약 배너 */}
+      <Card>
+        <CardContent className="flex items-center gap-3 py-2">
+          <VerdictIcon className={`h-8 w-8 shrink-0 ${p.overallLevel === 'good' ? 'text-green-600' : p.overallLevel === 'warn' ? 'text-yellow-600' : 'text-red-600'}`} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant={verdictVariant as 'default' | 'secondary' | 'destructive'}>
+                {p.overallLevel === 'good' ? '양호' : p.overallLevel === 'warn' ? '주의' : '위험'}
+              </Badge>
+              <span className="text-base text-muted-foreground">전체 전환율 {p.e2e.toFixed(2)}% · 완료율 {p.completionRate.toFixed(0)}%</span>
+            </div>
+            <p className="text-base font-semibold leading-snug">
+              {worst ? `가장 큰 병목: ${worst.label} ${worst.value} — ${worst.comment}` : '병목 없음 — 스케일업 준비 완료'}
+            </p>
+          </div>
+          <div className="hidden md:flex gap-1.5 text-xs">
+            <Badge variant="destructive" className="font-mono">위험 {p.badCount}</Badge>
+            <Badge variant="secondary" className="font-mono">주의 {p.warnCount}</Badge>
+            <Badge variant="outline" className="font-mono">양호 {p.goodCount}</Badge>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* KPI 4개 */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <KpiCard label="총 방문" value={p.totalUsers.toLocaleString()} sub={`결과 확인 ${p.resultView.toLocaleString()}명`} />
+        <KpiCard label="2차 전환" value={p.secondaryTotal.toLocaleString()} sub={`E2E ${p.e2e.toFixed(2)}%`} highlight />
+        <KpiCard label="유효 CPA (전환당 비용)" value={p.effectiveCPA > 0 ? `₩${p.effectiveCPA.toLocaleString()}` : '-'} sub={p.cpaCmp ? `목표 대비 ${p.cpaCmp.label}` : '목표 ₩5,000'} statusColor={p.cpaCmp?.level} />
+        <KpiCard label="전자책 수강" value={p.ebooksTotal.toLocaleString()} sub="메타코드 실등록" />
+      </div>
+
+      {/* 3컬럼: 퍼널 차트 | 광고 요약 | 진단 */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-lg">퍼널</CardTitle>
+            <CardDescription className="text-sm">단계별 전환 흐름</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FunnelMiniChart data={p.funnel} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">광고 성과</CardTitle>
+            <CardDescription className="text-sm">Meta · Google · 통합</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <AdRow title="Meta" totals={p.meta?.totals} benchmark={BENCHMARKS.ads.meta} />
+            <Separator />
+            <AdRow title="Google" totals={p.google?.totals} benchmark={BENCHMARKS.ads.google} />
+            <Separator />
+            <div className="flex justify-between text-base">
+              <span className="text-muted-foreground">통합 CPC (클릭당)</span>
+              <span className="font-mono font-bold">₩{p.blendedCPC.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between text-base">
+              <span className="text-muted-foreground">총 광고비</span>
+              <span className="font-mono font-bold">₩{p.totalSpend.toLocaleString()}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">진단</CardTitle>
+            <CardDescription className="text-sm">지표별 상태</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {p.diag
+              .slice()
+              .sort((a, b) => ({ bad: 0, warn: 1, good: 2 }[a.level] - { bad: 0, warn: 1, good: 2 }[b.level]))
+              .slice(0, 8)
+              .map((item, i) => (
+                <div key={i} className="flex items-start gap-2 text-base">
+                  <span className={`w-2 h-2 rounded-full mt-2 shrink-0 ${item.level === 'good' ? 'bg-green-500' : item.level === 'warn' ? 'bg-yellow-500' : 'bg-red-500'}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-baseline gap-2">
+                      <span className="truncate font-semibold">{item.label}</span>
+                      <span className="font-mono font-bold text-sm shrink-0">{item.value}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{item.comment}</p>
+                  </div>
+                </div>
+              ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 2차 전환 분해 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">2차 전환 분해</CardTitle>
+          <CardDescription className="text-sm">결과 확인 {p.resultViewCount.toLocaleString()}명 중 각 채널 클릭 비율</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SecondaryChart openchat={p.openchat} ebook={p.ebookClick} share={p.share} resultView={p.resultViewCount} />
+        </CardContent>
+      </Card>
+
+    </div>
+  )
+}
+
+function DeviceChart({ devices, total }: { devices: TrafficDevice[]; total: number }) {
+  const COLORS: Record<string, string> = {
+    mobile: 'var(--chart-1)',
+    desktop: 'var(--chart-2)',
+    tablet: 'var(--chart-3)',
+  }
+  const DEVICE_KR: Record<string, string> = { mobile: '모바일', desktop: '데스크탑', tablet: '태블릿' }
+  const chartData = devices.map(d => ({
+    device: DEVICE_KR[d.device] ?? d.device,
+    users: d.users,
+    fill: COLORS[d.device] ?? 'var(--chart-4)',
+  }))
+  const chartConfig: ChartConfig = Object.fromEntries(
+    chartData.map(d => [d.device, { label: d.device, color: d.fill }]),
+  )
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">📱 디바이스 비율</CardTitle>
+        <CardDescription className="text-sm">총 {total.toLocaleString()}명</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[180px] w-full">
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent nameKey="device" />} />
+            <Pie data={chartData} dataKey="users" nameKey="device" innerRadius={40} outerRadius={70} strokeWidth={2}>
+              {chartData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+        <div className="space-y-1 mt-2">
+          {chartData.map(d => {
+            const pct = total > 0 ? Math.round((d.users / total) * 100) : 0
+            return (
+              <div key={d.device} className="flex items-center gap-2 text-sm">
+                <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: d.fill }} />
+                <span className="flex-1">{d.device}</span>
+                <span className="font-mono font-bold">{d.users.toLocaleString()}</span>
+                <span className="font-mono text-muted-foreground text-xs w-10 text-right">{pct}%</span>
+              </div>
+            )
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function GeoChart({ korea, overseas }: { korea: number; overseas: number }) {
+  const total = korea + overseas
+  const chartData = [
+    { label: '한국', users: korea, fill: 'var(--chart-2)' },
+    { label: '해외', users: overseas, fill: overseas > korea * 0.3 ? 'var(--destructive)' : 'var(--chart-4)' },
+  ]
+  const chartConfig: ChartConfig = {
+    한국: { label: '한국', color: 'var(--chart-2)' },
+    해외: { label: '해외', color: 'var(--chart-4)' },
+  }
+  const overseasPct = total > 0 ? Math.round((overseas / total) * 100) : 0
+  const overseasLevel: DiagLevel = overseasPct > 30 ? 'bad' : overseasPct > 15 ? 'warn' : 'good'
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">🌏 한국 vs 해외</CardTitle>
+        <CardDescription className="text-sm">해외 비율 {overseasPct}% ({overseasLevel === 'bad' ? '봇 의심' : overseasLevel === 'warn' ? '주의' : '양호'})</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[180px] w-full">
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent nameKey="label" />} />
+            <Pie data={chartData} dataKey="users" nameKey="label" innerRadius={40} outerRadius={70} strokeWidth={2}>
+              {chartData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+        <div className="space-y-1 mt-2">
+          {chartData.map(d => {
+            const pct = total > 0 ? Math.round((d.users / total) * 100) : 0
+            return (
+              <div key={d.label} className="flex items-center gap-2 text-sm">
+                <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: d.fill }} />
+                <span className="flex-1">{d.label}</span>
+                <span className="font-mono font-bold">{d.users.toLocaleString()}</span>
+                <span className="font-mono text-muted-foreground text-xs w-10 text-right">{pct}%</span>
+              </div>
+            )
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function SourcesChart({ sources }: { sources: TrafficSource[] }) {
+  const top = sources
+    .slice(0, 5)
+    .map((r, i) => ({
+      label: (r.source === '(not set)' || r.source === '(data not available)' ? '(미확인)' : r.source).slice(0, 12),
+      users: r.users,
+      engaged: r.engaged > 0,
+      fill: r.sessions > 10 && r.engaged === 0 ? 'var(--destructive)' : `var(--chart-${(i % 5) + 1})`,
+    }))
+  const chartConfig: ChartConfig = { users: { label: '사용자' } }
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">🚪 유입 소스 Top 5</CardTitle>
+        <CardDescription className="text-sm">빨간 막대는 참여율 0 (봇 의심)</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {top.length === 0 ? (
+          <p className="text-sm text-muted-foreground">데이터 없음</p>
+        ) : (
+          <ChartContainer config={chartConfig} className="h-[260px] w-full">
+            <BarChart data={top} layout="vertical" margin={{ left: 8, right: 24 }}>
+              <CartesianGrid horizontal={false} />
+              <XAxis type="number" hide />
+              <YAxis dataKey="label" type="category" tickLine={false} axisLine={false} width={80} className="text-xs" />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="users" radius={4}>
+                {top.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+                <LabelList dataKey="users" position="right" className="text-xs font-bold" />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+function TrafficTab({ data }: { data: TrafficData | null }) {
+  if (!data) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
-        <h3 className="text-slate-900 text-xl font-black mb-2">{title}</h3>
-        <p className="text-slate-400 text-base">아직 집행 데이터가 없습니다</p>
+      <Card>
+        <CardHeader>
+          <CardTitle>트래픽 분석</CardTitle>
+          <CardDescription>데이터 불러오는 중...</CardDescription>
+        </CardHeader>
+      </Card>
+    )
+  }
+  const s = data.summary
+  const botUsers = s.totalUsers - s.koreaUsers
+  const botPct = s.totalUsers > 0 ? Math.round((botUsers / s.totalUsers) * 100) : 0
+  const engagePct = s.totalSessions > 0 ? Math.round((s.totalEngaged / s.totalSessions) * 100) : 0
+  const engageRate = (engaged: number, sessions: number) => {
+    if (sessions === 0) return '0%'
+    return Math.round((engaged / sessions) * 100) + '%'
+  }
+
+  // 상태 평가
+  const overallLevel: DiagLevel = botPct > 30 ? 'bad' : botPct > 15 ? 'warn' : 'good'
+  const OverallIcon = overallLevel === 'good' ? CheckCircle2 : overallLevel === 'warn' ? AlertTriangle : AlertCircle
+  const overallColor = overallLevel === 'good' ? 'text-green-600' : overallLevel === 'warn' ? 'text-yellow-600' : 'text-red-600'
+  const headline = botPct > 30
+    ? `해외 트래픽 ${botPct}% — 봇 트래픽 의심 수준입니다`
+    : botPct > 15
+    ? `해외 트래픽 ${botPct}% — 주의 필요`
+    : `해외 트래픽 ${botPct}% — 타겟팅 양호`
+  const action = botPct > 30
+    ? `${botUsers.toLocaleString()}명이 해외 유입입니다. Google Ads 지역 타겟을 한국으로 제한하고 디스플레이 네트워크(GDN)를 끄세요.`
+    : botPct > 15
+    ? '해외 유입 비율이 높습니다. 광고 타겟 지역 확인 권장.'
+    : `참여율 ${engagePct}% · 한국 사용자 ${s.koreaUsers.toLocaleString()}명으로 타겟팅이 잘 되고 있습니다.`
+
+  return (
+    <div className="space-y-4">
+      {/* 상단 평가 배너 */}
+      <Card>
+        <CardContent className="flex items-start gap-3 py-3">
+          <OverallIcon className={`h-8 w-8 shrink-0 mt-0.5 ${overallColor}`} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant={overallLevel === 'good' ? 'default' : overallLevel === 'warn' ? 'secondary' : 'destructive'}>
+                {overallLevel === 'good' ? '양호' : overallLevel === 'warn' ? '주의' : '위험'}
+              </Badge>
+              <span className="text-base text-muted-foreground">
+                방문 {s.totalUsers.toLocaleString()} · 세션 {s.totalSessions.toLocaleString()} · 참여율 {engagePct}%
+              </span>
+            </div>
+            <p className="text-base font-semibold leading-snug">{headline}</p>
+            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{action}</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 4개 KPI */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <KpiCard label="총 방문자" value={s.totalUsers.toLocaleString()} sub={`세션 ${s.totalSessions.toLocaleString()}`} />
+        <KpiCard label="한국 사용자" value={s.koreaUsers.toLocaleString()} sub={`전체의 ${s.totalUsers > 0 ? Math.round((s.koreaUsers / s.totalUsers) * 100) : 0}%`} highlight />
+        <KpiCard label="참여율" value={`${engagePct}%`} sub={`${s.totalEngaged.toLocaleString()} / ${s.totalSessions.toLocaleString()}`} statusColor={engagePct >= 40 ? 'good' : engagePct >= 20 ? 'warn' : 'bad'} />
+        <KpiCard label="해외 트래픽" value={`${botPct}%`} sub={`${botUsers.toLocaleString()}명`} statusColor={botPct > 30 ? 'bad' : botPct > 15 ? 'warn' : 'good'} />
+      </div>
+
+      {/* 시각화 3컬럼: 디바이스 / 한국 vs 해외 / 유입 소스 Top5 */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <DeviceChart devices={data.devices} total={s.totalUsers} />
+        <GeoChart korea={s.koreaUsers} overseas={botUsers} />
+        <SourcesChart sources={data.sources} />
+      </div>
+
+      {/* 유입 소스 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">유입 소스별</CardTitle>
+          <CardDescription className="text-sm">어디서 들어왔는지 — 참여율이 0이면 봇 의심</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table className="text-base">
+            <TableHeader>
+              <TableRow>
+                <TableHead>소스 / 매체</TableHead>
+                <TableHead className="text-right">사용자</TableHead>
+                <TableHead className="text-right">비중</TableHead>
+                <TableHead className="text-right">참여율</TableHead>
+                <TableHead className="text-right">상태</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.sources.map((r, i) => {
+                const label = r.source === '(not set)' || r.source === '(data not available)' ? '(미확인)' : `${r.source}/${r.medium}`
+                const pct = s.totalUsers > 0 ? Math.round((r.users / s.totalUsers) * 100) : 0
+                const isLow = r.sessions > 10 && r.engaged === 0
+                return (
+                  <TableRow key={i}>
+                    <TableCell className="font-medium">{label}</TableCell>
+                    <TableCell className="text-right font-mono">{r.users.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">{pct}%</TableCell>
+                    <TableCell className="text-right font-mono">{engageRate(r.engaged, r.sessions)}</TableCell>
+                    <TableCell className="text-right">
+                      {isLow ? <Badge variant="destructive">봇 의심</Badge> : r.engaged > 0 ? <Badge variant="default">OK</Badge> : <Badge variant="secondary">-</Badge>}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* 세계 지도 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">🗺️ 국가별 분포 (세계 지도)</CardTitle>
+          <CardDescription className="text-sm">색이 진할수록 유입이 많음 · 한국은 파랑 · 스크롤·드래그로 확대/이동 · 마우스 올리면 수치 표시</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <WorldMap data={data.countries} />
+        </CardContent>
+      </Card>
+
+      {/* 국가별 테이블 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">국가별 상세</CardTitle>
+          <CardDescription className="text-sm">한국 외 국가 유입이 많으면 광고 지역 타겟 확인 필요</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table className="text-base">
+            <TableHeader>
+              <TableRow>
+                <TableHead>국가</TableHead>
+                <TableHead className="text-right">사용자</TableHead>
+                <TableHead className="text-right">비중</TableHead>
+                <TableHead className="text-right">참여율</TableHead>
+                <TableHead className="text-right">상태</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.countries.map((r, i) => {
+                const name = COUNTRY_KR[r.country] ?? r.country
+                const pct = s.totalUsers > 0 ? Math.round((r.users / s.totalUsers) * 100) : 0
+                const isSuspect = SUSPECT_COUNTRIES.has(r.country)
+                const isKorea = r.country === 'South Korea'
+                return (
+                  <TableRow key={i}>
+                    <TableCell className="font-medium">{name}</TableCell>
+                    <TableCell className="text-right font-mono">{r.users.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">{pct}%</TableCell>
+                    <TableCell className="text-right font-mono">{engageRate(r.engaged, r.sessions)}</TableCell>
+                    <TableCell className="text-right">
+                      {isKorea ? <Badge variant="default">타겟</Badge> : isSuspect ? <Badge variant="destructive">봇 의심</Badge> : <Badge variant="secondary">기타</Badge>}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* 랜딩 페이지별 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">랜딩 페이지별</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table className="text-base">
+            <TableHeader>
+              <TableRow>
+                <TableHead>페이지</TableHead>
+                <TableHead className="text-right">사용자</TableHead>
+                <TableHead className="text-right">참여율</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.pages.filter(r => r.page).map((r, i) => (
+                <TableRow key={i}>
+                  <TableCell className="font-medium max-w-md truncate">{r.page || '/'}</TableCell>
+                  <TableCell className="text-right font-mono">{r.users.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-mono">{engageRate(r.engaged, r.sessions)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function AdsGlossary({ platform }: { platform: string }) {
+  const common: { term: string; desc: string }[] = [
+    { term: '광고비 (Spend)', desc: '기간 내 지출한 광고 비용 총액' },
+    { term: '노출 (Impressions)', desc: '광고가 사용자 화면에 표시된 총 횟수' },
+    { term: '클릭 (Clicks)', desc: '광고를 클릭한 총 횟수' },
+    { term: 'CTR (Click-Through Rate, 클릭률)', desc: '노출 대비 클릭 비율 = 클릭 ÷ 노출 × 100. 광고 소재 반응도를 나타냄. 높을수록 좋음' },
+    { term: 'CPC (Cost Per Click, 클릭당 비용)', desc: '클릭 1회당 평균 지출 = 광고비 ÷ 클릭. 낮을수록 효율적' },
+    { term: 'CPM (Cost Per Mille, 1,000회 노출당 비용)', desc: '노출 1,000회 달성 비용 = 광고비 ÷ 노출 × 1,000. 타겟 경쟁도 지표. 낮을수록 좋음' },
+    { term: '전환 (Conversion)', desc: '광고를 통해 설정한 목표 행동이 일어난 횟수 (가입·구매·Lead 등)' },
+    { term: '전환율 (CVR, Conversion Rate)', desc: '클릭 대비 전환 비율 = 전환 ÷ 클릭 × 100. 랜딩페이지 설득력을 나타냄. 높을수록 좋음' },
+  ]
+  const metaSpecific: { term: string; desc: string }[] = [
+    { term: 'Meta Pixel (픽셀)', desc: '웹사이트에 심어 방문·전환을 추적하는 Meta의 스크립트' },
+    { term: 'Lead 이벤트', desc: 'Meta Pixel에 설정한 "리드(유입) 완료" 이벤트 — 이 사이트에선 전환 기준' },
+    { term: 'Link Click (링크 클릭)', desc: '광고 내 링크를 실제로 눌러 외부로 이동한 횟수 (클릭과 구분)' },
+    { term: 'Landing Page View', desc: '광고 클릭 후 랜딩 페이지가 완전히 로드된 횟수. 이 수치와 Link Click 차이가 큰 경우 로딩 이탈이 많다는 뜻' },
+  ]
+  const googleSpecific: { term: string; desc: string }[] = [
+    { term: '전환 액션 (Conversion Action)', desc: 'Google Ads에 직접 등록한 전환 추적 규칙 (폼 제출·결제 등)' },
+    { term: '품질 점수 (Quality Score)', desc: 'Google이 1–10으로 매기는 광고·키워드 품질. 높을수록 CPC 할인' },
+    { term: '검색 광고 vs 디스플레이', desc: '검색은 키워드 입력 시 노출, 디스플레이는 웹사이트·앱 지면에 노출' },
+  ]
+  const extras = platform === 'Meta' ? metaSpecific : googleSpecific
+
+  return (
+    <Card className="bg-muted/30">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">🔤 {platform} Ads 용어 설명</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <dl className="grid gap-2 md:grid-cols-2 text-sm">
+          {common.map(({ term, desc }) => (
+            <div key={term} className="flex gap-2">
+              <dt className="font-bold text-foreground shrink-0 min-w-0">{term}</dt>
+              <dd className="text-muted-foreground">— {desc}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="text-xs font-bold text-foreground mt-4 mb-2 pt-3 border-t">{platform} 고유 용어</p>
+        <dl className="grid gap-2 md:grid-cols-2 text-sm">
+          {extras.map(({ term, desc }) => (
+            <div key={term} className="flex gap-2">
+              <dt className="font-bold text-foreground shrink-0 min-w-0">{term}</dt>
+              <dd className="text-muted-foreground">— {desc}</dd>
+            </div>
+          ))}
+        </dl>
+      </CardContent>
+    </Card>
+  )
+}
+
+function BenchmarkSidebar() {
+  return (
+    <div className="px-3 space-y-3 text-sm leading-relaxed">
+      <p>
+        <span className="font-bold text-foreground">퍼널 (방문→완료→전환)</span><br />
+        <span className="text-muted-foreground">글로벌 마케팅 분석 플랫폼 리포트 (Unbounce·LeadQuizzes) 교육 업종 평균</span>
+      </p>
+      <p>
+        <span className="font-bold text-foreground">광고 CTR·전환율</span><br />
+        <span className="text-muted-foreground">WordStream 2025 광고 벤치마크 · Meta·Google 교육 업종</span>
+      </p>
+      <p>
+        <span className="font-bold text-foreground">광고 CPC·CPM·CPA 목표</span><br />
+        <span className="text-muted-foreground">국내 교육 광고 시장 추정치 + 내부 목표치 (₩5,000)</span>
+      </p>
+    </div>
+  )
+}
+
+function KpiCard({ label, value, sub, highlight, statusColor }: { label: string; value: string; sub?: string; highlight?: boolean; statusColor?: DiagLevel | null }) {
+  return (
+    <Card className={highlight ? 'ring-primary/50' : ''}>
+      <CardHeader className="pb-2">
+        <CardDescription className="text-base font-semibold">{label}</CardDescription>
+        <CardTitle className="text-4xl font-black tabular-nums">{value}</CardTitle>
+      </CardHeader>
+      {sub && (
+        <CardContent>
+          <p className={`text-sm font-semibold ${statusColor === 'good' ? 'text-green-600' : statusColor === 'warn' ? 'text-yellow-600' : statusColor === 'bad' ? 'text-red-600' : 'text-muted-foreground'}`}>
+            {sub}
+          </p>
+        </CardContent>
+      )}
+    </Card>
+  )
+}
+
+function FunnelMiniChart({ data }: { data: { label: string; value: number }[] }) {
+  const chartConfig = { value: { label: '사용자', color: 'var(--chart-1)' } } satisfies ChartConfig
+  return (
+    <ChartContainer config={chartConfig} className="h-[260px] w-full">
+      <BarChart data={data} layout="vertical" margin={{ left: 8, right: 8 }}>
+        <CartesianGrid horizontal={false} />
+        <XAxis type="number" hide />
+        <YAxis dataKey="label" type="category" tickLine={false} axisLine={false} width={70} className="text-xs" />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar dataKey="value" fill="var(--color-value)" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+
+function SecondaryChart({ openchat, ebook, share, resultView }: { openchat: number; ebook: number; share: number; resultView: number }) {
+  const data = [
+    { channel: '단톡방', value: openchat, rate: resultView > 0 ? (openchat / resultView) * 100 : 0 },
+    { channel: '전자책', value: ebook, rate: resultView > 0 ? (ebook / resultView) * 100 : 0 },
+    { channel: '공유', value: share, rate: resultView > 0 ? (share / resultView) * 100 : 0 },
+  ]
+  const chartConfig = { value: { label: '클릭', color: 'var(--chart-2)' } } satisfies ChartConfig
+  return (
+    <ChartContainer config={chartConfig} className="h-[200px] w-full">
+      <BarChart data={data}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="channel" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} className="text-xs" />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar dataKey="value" fill="var(--color-value)" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+
+function AdRow({ title, totals, benchmark }: { title: string; totals?: AdTotalsLite; benchmark: { ctr: number; cpc: number; cpm: number; cvr: number } }) {
+  if (!totals || totals.spend === 0) {
+    return (
+      <div className="flex justify-between text-base">
+        <span className="font-semibold">{title}</span>
+        <span className="text-muted-foreground">집행 없음</span>
       </div>
     )
   }
-  const cvr = data.clicks > 0 ? (data.conversions / data.clicks) * 100 : 0
-  const rows: { label: string; value: string; cmp?: ReturnType<typeof compareBenchmark>; bench?: string }[] = [
-    { label: '광고비', value: `₩${data.spend.toLocaleString()}` },
-    { label: '노출', value: data.impressions.toLocaleString() },
-    { label: '클릭', value: data.clicks.toLocaleString() },
-    { label: 'CTR', value: `${data.ctr}%`, cmp: compareBenchmark(data.ctr, benchmark.ctr, true), bench: `업종 ${benchmark.ctr}%` },
-    { label: 'CPC', value: `₩${data.cpc.toLocaleString()}`, cmp: compareBenchmark(data.cpc, benchmark.cpc, false), bench: `업종 ₩${benchmark.cpc.toLocaleString()}` },
-    { label: 'CPM', value: `₩${data.cpm.toLocaleString()}`, cmp: compareBenchmark(data.cpm, benchmark.cpm, false), bench: `업종 ₩${benchmark.cpm.toLocaleString()}` },
-    { label: '전환', value: data.conversions.toLocaleString() },
-    { label: '전환율', value: `${cvr.toFixed(1)}%`, cmp: compareBenchmark(cvr, benchmark.cvr, true), bench: `업종 ${benchmark.cvr}%` },
-  ]
-
+  const ctrCmp = compareBenchmark(totals.ctr, benchmark.ctr, true)
+  const cpcCmp = compareBenchmark(totals.cpc, benchmark.cpc, false)
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
-      <h3 className="text-slate-900 text-xl font-black mb-5">{title} · 핵심 지표</h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {rows.map(row => (
-          <div key={row.label} className="bg-slate-50 rounded-xl p-4">
-            <div className="text-slate-500 text-sm font-bold">{row.label}</div>
-            <div className="text-slate-900 text-2xl font-black mt-1">{row.value}</div>
-            {row.bench && <div className="text-slate-400 text-xs mt-1 font-semibold">{row.bench}</div>}
-            {row.cmp && (
-              <div className={`text-sm font-bold mt-1 ${row.cmp.level === 'good' ? 'text-green-600' : row.cmp.level === 'bad' ? 'text-red-500' : 'text-yellow-600'}`}>
-                {row.cmp.label}
-              </div>
-            )}
-          </div>
-        ))}
+    <div>
+      <div className="flex justify-between items-baseline mb-2">
+        <span className="font-bold text-base">{title}</span>
+        <span className="text-sm text-muted-foreground font-mono">₩{totals.spend.toLocaleString()}</span>
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">CTR (클릭률)</span>
+          <span className={`font-mono font-bold ${ctrCmp.level === 'good' ? 'text-green-600' : ctrCmp.level === 'bad' ? 'text-red-600' : ''}`}>{totals.ctr}%</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">CPC (클릭당)</span>
+          <span className={`font-mono font-bold ${cpcCmp.level === 'good' ? 'text-green-600' : cpcCmp.level === 'bad' ? 'text-red-600' : ''}`}>₩{totals.cpc.toLocaleString()}</span>
+        </div>
       </div>
     </div>
   )
 }
 
+/* ========== 퍼널 뷰 ========== */
+function FunnelTab({ funnel }: { funnel: { label: string; value: number }[] }) {
+  const BENCH_MAP: Record<string, keyof typeof BENCHMARKS.funnel> = {
+    '방문 → CTA 클릭': 'landing_to_cta',
+    'CTA 클릭 → 테스트 시작': 'cta_to_test_start',
+    '테스트 시작 → 테스트 완료': 'test_start_to_complete',
+    '테스트 완료 → 결과 확인': 'complete_to_result',
+    '결과 확인 → 2차 전환': 'result_to_secondary',
+  }
+
+  const chartData = funnel.map(s => ({ step: s.label, users: s.value }))
+  const chartConfig = { users: { label: '사용자', color: 'var(--chart-1)' } } satisfies ChartConfig
+
+  // 단계별 설명
+  const STEP_DESC: Record<string, string> = {
+    '방문': '랜딩 페이지에 들어온 순방문자',
+    'CTA 클릭': '"AI 생존유형 진단하기" 버튼 클릭 (Call-To-Action)',
+    '테스트 시작': '첫 문항 화면 진입',
+    '테스트 완료': '20문항 모두 응답',
+    '결과 확인': '결과 페이지 진입',
+    '2차 전환': '단톡방·전자책·공유 중 1개 이상 클릭',
+  }
+  const TRANSITION_NOTE: Record<string, string> = {
+    '방문 → CTA 클릭': '퀴즈 랜딩(단일 CTA 구조) 기준 40%가 합격선. 30% 미만이면 헤드라인·오퍼·트래픽 품질 점검 필요.',
+    'CTA 클릭 → 테스트 시작': 'CTA를 누르면 곧바로 테스트로 이동. 90% 미만이면 로딩 지연·라우팅 오류 의심.',
+    '테스트 시작 → 테스트 완료': '20문항을 끝까지 풀었는지 — 70% 미만이면 문항 수·난이도·질문 카피 검토 필요.',
+    '테스트 완료 → 결과 확인': '저장+리다이렉트가 자동이라 95%+ 정상. 미만이면 저장 실패·라우팅 오류 가능성.',
+    '결과 확인 → 2차 전환': '단톡/전자책/공유 중 하나라도 클릭한 비율. 8% 이상이면 양호.',
+  }
+
+  // 각 단계 평가
+  type StepEval = {
+    from: string
+    to: string
+    fromValue: number
+    toValue: number
+    convRate: number
+    bench: number | null
+    cmp: ReturnType<typeof compareBenchmark> | null
+    dropoff: number
+    dropoffUsers: number
+    note: string
+    toDesc: string
+  }
+  const stepEvals: StepEval[] = funnel.slice(1).map((step, i) => {
+    const prev = funnel[i]
+    const convRate = prev.value > 0 ? (step.value / prev.value) * 100 : 0
+    const benchKey = BENCH_MAP[`${prev.label} → ${step.label}`]
+    const benchVal = benchKey ? BENCHMARKS.funnel[benchKey] : null
+    const cmp = benchVal !== null ? compareBenchmark(convRate, benchVal, true) : null
+    const transitionKey = `${prev.label} → ${step.label}`
+    return {
+      from: prev.label,
+      to: step.label,
+      fromValue: prev.value,
+      toValue: step.value,
+      convRate,
+      bench: benchVal,
+      cmp,
+      dropoff: prev.value > 0 ? ((prev.value - step.value) / prev.value) * 100 : 0,
+      dropoffUsers: prev.value - step.value,
+      note: TRANSITION_NOTE[transitionKey] ?? '',
+      toDesc: STEP_DESC[step.label] ?? '',
+    }
+  })
+
+  // E2E + 병목
+  const e2eRate = funnel[0].value > 0 ? (funnel[funnel.length - 1].value / funnel[0].value) * 100 : 0
+  const bottleneck = stepEvals.find(s => s.cmp?.level === 'bad') ?? stepEvals.find(s => s.cmp?.level === 'warn')
+  const badCount = stepEvals.filter(s => s.cmp?.level === 'bad').length
+  const warnCount = stepEvals.filter(s => s.cmp?.level === 'warn').length
+  const goodCount = stepEvals.filter(s => s.cmp?.level === 'good').length
+
+  // 전체 상태
+  const overallLevel: DiagLevel = badCount > 0 ? 'bad' : warnCount >= 2 ? 'warn' : 'good'
+  const OverallIcon = overallLevel === 'good' ? CheckCircle2 : overallLevel === 'warn' ? AlertTriangle : AlertCircle
+  const overallColor = overallLevel === 'good' ? 'text-green-600' : overallLevel === 'warn' ? 'text-yellow-600' : 'text-red-600'
+
+  let headline = ''
+  let action = ''
+  if (funnel[0].value === 0) {
+    headline = '방문 데이터가 없습니다. 기간을 넓혀주세요.'
+    action = ''
+  } else if (bottleneck) {
+    headline = `병목: ${bottleneck.from} → ${bottleneck.to} (${bottleneck.convRate.toFixed(1)}%)`
+    action = `업종 평균 ${bottleneck.bench}% 대비 ${bottleneck.cmp?.label}. ${bottleneck.dropoffUsers.toLocaleString()}명이 이 구간에서 이탈했습니다. 이 구간만 업종 평균까지 올려도 전환이 크게 증가합니다.`
+  } else {
+    headline = '모든 구간이 업종 평균 이상입니다'
+    action = `E2E 전환율 ${e2eRate.toFixed(2)}% — 현재 퍼널은 건강합니다. 트래픽을 늘리면 성과가 비례해서 증가합니다.`
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* 상단 평가 배너 */}
+      <Card>
+        <CardContent className="flex items-start gap-3 py-3">
+          <OverallIcon className={`h-8 w-8 shrink-0 mt-0.5 ${overallColor}`} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant={overallLevel === 'good' ? 'default' : overallLevel === 'warn' ? 'secondary' : 'destructive'}>
+                {overallLevel === 'good' ? '양호' : overallLevel === 'warn' ? '주의' : '위험'}
+              </Badge>
+              <span className="text-base text-muted-foreground">
+                E2E {e2eRate.toFixed(2)}% · {funnel[0].value.toLocaleString()}명 → {funnel[funnel.length - 1].value.toLocaleString()}명
+              </span>
+            </div>
+            <p className="text-base font-semibold leading-snug">{headline}</p>
+            {action && <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{action}</p>}
+          </div>
+          <div className="hidden md:flex gap-1.5 text-xs shrink-0">
+            <Badge variant="destructive" className="font-mono">위험 {badCount}</Badge>
+            <Badge variant="secondary" className="font-mono">주의 {warnCount}</Badge>
+            <Badge variant="outline" className="font-mono">양호 {goodCount}</Badge>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 각 단계 카드 */}
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+        {stepEvals.map((s, i) => {
+          const level = s.cmp?.level
+          const colorClass = level === 'good' ? 'text-green-600' : level === 'warn' ? 'text-yellow-600' : level === 'bad' ? 'text-red-600' : ''
+          const ringClass = level === 'bad' ? 'ring-red-400/50' : level === 'warn' ? 'ring-yellow-400/50' : level === 'good' ? 'ring-green-400/50' : ''
+          return (
+            <Card key={i} className={ringClass}>
+              <CardHeader className="pb-2">
+                <CardDescription className="text-xs font-semibold leading-tight">{s.from} →<br />{s.to}</CardDescription>
+                <CardTitle className={`text-3xl font-black tabular-nums ${colorClass}`}>{s.convRate.toFixed(1)}%</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1">
+                <p className="text-xs text-muted-foreground">업종 {s.bench ?? '-'}% · 이탈 {s.dropoffUsers.toLocaleString()}명</p>
+                {s.cmp && (
+                  <Badge variant={level === 'good' ? 'default' : level === 'bad' ? 'destructive' : 'secondary'} className="text-xs">
+                    {s.cmp.label}
+                  </Badge>
+                )}
+                {s.note && <p className="text-[11px] text-muted-foreground leading-snug pt-1 border-t mt-2">{s.note}</p>}
+              </CardContent>
+            </Card>
+          )
+        })}
+      </div>
+
+      {/* 차트 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">단계별 사용자 수</CardTitle>
+          <CardDescription className="text-sm">각 단계에서 얼마나 이탈하는지 시각적으로 확인</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-[320px] w-full">
+            <BarChart data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="step" tickLine={false} axisLine={false} className="text-xs" />
+              <YAxis tickLine={false} axisLine={false} className="text-xs" />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="users" fill="var(--color-users)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      {/* 상세 테이블 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">단계별 전환율 상세</CardTitle>
+          <CardDescription className="text-sm">
+            업종 벤치마크: Unbounce 2024 · WordStream 2025 · LeadQuizzes 교육 업종 평균
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table className="text-base">
+            <TableHeader>
+              <TableRow>
+                <TableHead>구간</TableHead>
+                <TableHead className="text-right">이전</TableHead>
+                <TableHead className="text-right">현재</TableHead>
+                <TableHead className="text-right">전환율</TableHead>
+                <TableHead className="text-right">업종</TableHead>
+                <TableHead className="text-right">평가</TableHead>
+                <TableHead className="text-right">이탈</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {stepEvals.map((s, i) => (
+                <TableRow key={i}>
+                  <TableCell className="font-medium">{s.from} → {s.to}</TableCell>
+                  <TableCell className="text-right font-mono">{s.fromValue.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-mono">{s.toValue.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-mono font-bold">{s.convRate.toFixed(1)}%</TableCell>
+                  <TableCell className="text-right font-mono text-muted-foreground">{s.bench ?? '-'}%</TableCell>
+                  <TableCell className="text-right">
+                    {s.cmp ? (
+                      <Badge variant={s.cmp.level === 'good' ? 'default' : s.cmp.level === 'bad' ? 'destructive' : 'secondary'}>
+                        {s.cmp.label}
+                      </Badge>
+                    ) : '-'}
+                  </TableCell>
+                  <TableCell className="text-right font-mono text-red-500">-{s.dropoffUsers.toLocaleString()}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* 단계 용어 설명 — 하단 */}
+      <Card className="bg-muted/30">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">🔤 퍼널 단계 용어</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <dl className="grid gap-2 md:grid-cols-2 lg:grid-cols-3 text-sm">
+            {Object.entries(STEP_DESC).map(([k, v]) => (
+              <div key={k} className="flex gap-2">
+                <dt className="font-bold text-foreground shrink-0">{k}</dt>
+                <dd className="text-muted-foreground">— {v}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="text-xs text-muted-foreground mt-3 pt-3 border-t leading-relaxed">
+            <span className="font-bold text-foreground">CTA</span>는 <span className="font-bold">Call-To-Action</span>의 약자로 사용자의 다음 행동을 유도하는 버튼·링크입니다. 이 사이트에서는 랜딩 페이지의 <span className="font-bold">&quot;AI 생존유형 진단하기&quot;</span> 버튼이 CTA입니다.
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+/* ========== 광고 뷰 ========== */
 type Campaign = {
   name: string
   impressions: number
@@ -851,110 +1294,357 @@ type Campaign = {
   ctr: number
   cpc: number
   conversions: number
-  [key: string]: unknown
+  [k: string]: unknown
 }
 
-function BigCampaignTable({ campaigns }: { campaigns: Campaign[] }) {
-  if (campaigns.length === 0) return <p className="text-slate-400 text-base py-4">캠페인 데이터 없음</p>
+function AdsTab({ title, totals, campaigns, benchmark }: { title: string; totals?: AdTotalsLite; campaigns: Campaign[]; benchmark: { ctr: number; cpc: number; cpm: number; cvr: number } }) {
+  if (!totals || totals.spend === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>아직 집행 데이터가 없습니다</CardDescription>
+        </CardHeader>
+      </Card>
+    )
+  }
+  const cvr = totals.clicks > 0 ? (totals.conversions / totals.clicks) * 100 : 0
+  const ctrCmp = compareBenchmark(totals.ctr, benchmark.ctr, true)
+  const cpcCmp = compareBenchmark(totals.cpc, benchmark.cpc, false)
+  const cpmCmp = compareBenchmark(totals.cpm, benchmark.cpm, false)
+  const cvrCmp = compareBenchmark(cvr, benchmark.cvr, true)
+
+  const rows: { label: string; value: string; desc: string; bench?: string; cmp?: ReturnType<typeof compareBenchmark> }[] = [
+    { label: '광고비', value: `₩${totals.spend.toLocaleString()}`, desc: '기간 내 지출한 광고 비용' },
+    { label: '노출', value: totals.impressions.toLocaleString(), desc: '광고가 화면에 표시된 총 횟수' },
+    { label: '클릭', value: totals.clicks.toLocaleString(), desc: '광고를 클릭한 총 횟수' },
+    { label: 'CTR (클릭률)', value: `${totals.ctr}%`, desc: '노출 대비 클릭률 (클릭 ÷ 노출). 소재 반응도 지표', bench: `업종 ${benchmark.ctr}%`, cmp: ctrCmp },
+    { label: 'CPC (클릭당 비용)', value: `₩${totals.cpc.toLocaleString()}`, desc: '클릭 1회당 평균 비용 (광고비 ÷ 클릭). 낮을수록 좋음', bench: `업종 ₩${benchmark.cpc.toLocaleString()}`, cmp: cpcCmp },
+    { label: 'CPM (1,000회 노출당 비용)', value: `₩${totals.cpm.toLocaleString()}`, desc: '노출 1,000회당 비용. 타겟 경쟁도 지표. 낮을수록 좋음', bench: `업종 ₩${benchmark.cpm.toLocaleString()}`, cmp: cpmCmp },
+    { label: '전환', value: totals.conversions.toLocaleString(), desc: title === 'Meta' ? 'Meta Pixel에 설정한 Lead 이벤트 발생 수' : 'Google Ads에 설정한 전환 액션 발생 수' },
+    { label: '전환율 (CVR)', value: `${cvr.toFixed(1)}%`, desc: '클릭 대비 전환율 (전환 ÷ 클릭). 랜딩 설득력 지표', bench: `업종 ${benchmark.cvr}%`, cmp: cvrCmp },
+  ]
+
+  // 상단 평가
+  const evals = [
+    { name: 'CTR', cmp: ctrCmp },
+    { name: 'CPC', cmp: cpcCmp },
+    { name: 'CPM', cmp: cpmCmp },
+    { name: '전환율', cmp: cvrCmp },
+  ]
+  const badMetrics = evals.filter(e => e.cmp.level === 'bad')
+  const warnMetrics = evals.filter(e => e.cmp.level === 'warn')
+  const goodMetrics = evals.filter(e => e.cmp.level === 'good')
+  const overallLevel: DiagLevel = badMetrics.length > 0 ? 'bad' : warnMetrics.length >= 2 ? 'warn' : 'good'
+  const OverallIcon = overallLevel === 'good' ? CheckCircle2 : overallLevel === 'warn' ? AlertTriangle : AlertCircle
+  const overallColor = overallLevel === 'good' ? 'text-green-600' : overallLevel === 'warn' ? 'text-yellow-600' : 'text-red-600'
+
+  let headline = ''
+  let action = ''
+  if (badMetrics.length > 0) {
+    const worst = badMetrics[0]
+    headline = `${worst.name} 지표가 업종 평균 대비 ${worst.cmp.label}`
+    if (worst.name === 'CTR') action = '소재 반응이 낮습니다. 광고 문구·이미지 교체가 우선입니다.'
+    else if (worst.name === 'CPC') action = '클릭 단가가 높습니다. 타겟 정밀도 또는 품질점수 개선이 필요합니다.'
+    else if (worst.name === 'CPM') action = '노출 단가가 높습니다. 타겟이 좁거나 경쟁이 과열된 상태입니다.'
+    else if (worst.name === '전환율') action = '랜딩→전환이 약합니다. 랜딩페이지 카피·오퍼 점검이 우선입니다.'
+  } else if (warnMetrics.length > 0) {
+    headline = `양호하지만 ${warnMetrics.map(m => m.name).join(', ')} 개선 여지 있음`
+    action = '현재 성과 유지하면서 주의 지표를 단계적으로 개선하세요.'
+  } else {
+    headline = '모든 핵심 지표가 업종 평균 이상입니다'
+    action = `CTR ${totals.ctr}% · CPC ₩${totals.cpc.toLocaleString()} · 전환율 ${cvr.toFixed(1)}% — 현재 전략 유지하며 예산 확대 가능.`
+  }
+
+  // Meta 한정 세분화 데이터
+  const metaExtra = title === 'Meta' && totals ? {
+    pageViews: (totals as AdTotalsLite & { pageViews?: number }).pageViews ?? 0,
+    linkClicks: (totals as AdTotalsLite & { linkClicks?: number }).linkClicks ?? 0,
+  } : null
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-base">
-        <thead>
-          <tr className="border-b-2 border-slate-200 text-slate-500">
-            <th className="text-left py-3.5 pr-3 font-bold">캠페인</th>
-            <th className="text-right py-3.5 px-3 font-bold">노출</th>
-            <th className="text-right py-3.5 px-3 font-bold">클릭</th>
-            <th className="text-right py-3.5 px-3 font-bold">CTR</th>
-            <th className="text-right py-3.5 px-3 font-bold">CPC</th>
-            <th className="text-right py-3.5 px-3 font-bold">비용</th>
-            <th className="text-right py-3.5 pl-3 font-bold">전환</th>
-          </tr>
-        </thead>
-        <tbody>
-          {campaigns.map(c => (
-            <tr key={c.name} className="border-b border-slate-100 hover:bg-slate-50">
-              <td className="py-3.5 pr-3 text-slate-800 font-bold truncate max-w-[220px]">{c.name}</td>
-              <td className="text-right py-3.5 px-3 text-slate-600">{c.impressions.toLocaleString()}</td>
-              <td className="text-right py-3.5 px-3 text-slate-600">{c.clicks.toLocaleString()}</td>
-              <td className="text-right py-3.5 px-3 text-slate-600">{c.ctr}%</td>
-              <td className="text-right py-3.5 px-3 text-slate-600">₩{c.cpc.toLocaleString()}</td>
-              <td className="text-right py-3.5 px-3 text-slate-700 font-bold">₩{c.spend.toLocaleString()}</td>
-              <td className="text-right py-3.5 pl-3 text-indigo-600 font-black">{c.conversions}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      {/* 상단 평가 배너 */}
+      <Card>
+        <CardContent className="flex items-start gap-3 py-3">
+          <OverallIcon className={`h-8 w-8 shrink-0 mt-0.5 ${overallColor}`} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant={overallLevel === 'good' ? 'default' : overallLevel === 'warn' ? 'secondary' : 'destructive'}>
+                {overallLevel === 'good' ? '양호' : overallLevel === 'warn' ? '주의' : '위험'}
+              </Badge>
+              <span className="text-base text-muted-foreground">
+                광고비 ₩{totals.spend.toLocaleString()} · 클릭 {totals.clicks.toLocaleString()} · 전환 {totals.conversions.toLocaleString()}
+              </span>
+            </div>
+            <p className="text-base font-semibold leading-snug">{headline}</p>
+            {action && <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{action}</p>}
+          </div>
+          <div className="hidden md:flex gap-1.5 text-xs shrink-0">
+            <Badge variant="destructive" className="font-mono">위험 {badMetrics.length}</Badge>
+            <Badge variant="secondary" className="font-mono">주의 {warnMetrics.length}</Badge>
+            <Badge variant="outline" className="font-mono">양호 {goodMetrics.length}</Badge>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-3 md:grid-cols-4">
+        {rows.map(r => (
+          <Card key={r.label}>
+            <CardHeader className="pb-2">
+              <CardDescription className="text-base font-semibold">{r.label}</CardDescription>
+              <CardTitle className="text-3xl font-black tabular-nums">{r.value}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <p className="text-xs text-muted-foreground leading-snug">{r.desc}</p>
+              {r.bench && <p className="text-sm text-muted-foreground">{r.bench}</p>}
+              {r.cmp && (
+                <Badge variant={r.cmp.level === 'good' ? 'default' : r.cmp.level === 'bad' ? 'destructive' : 'secondary'} className="text-sm">
+                  {r.cmp.label}
+                </Badge>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* 전환 세분화 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">전환 세분화</CardTitle>
+          <CardDescription className="text-sm">
+            {title === 'Meta'
+              ? '광고 클릭 후 일어난 단계별 이벤트 (Meta Pixel 기준)'
+              : '광고로 유입된 사용자의 행동 지표 (Google Ads 기준)'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 md:grid-cols-3">
+            <Card className="bg-muted/30">
+              <CardHeader className="pb-1">
+                <CardDescription className="text-sm font-semibold">광고 클릭</CardDescription>
+                <CardTitle className="text-2xl font-black tabular-nums">{totals.clicks.toLocaleString()}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground">광고를 클릭한 총 횟수 (링크 클릭 포함 전체)</p>
+              </CardContent>
+            </Card>
+            {metaExtra && (
+              <>
+                <Card className="bg-muted/30">
+                  <CardHeader className="pb-1">
+                    <CardDescription className="text-sm font-semibold">랜딩 페이지 방문</CardDescription>
+                    <CardTitle className="text-2xl font-black tabular-nums">{metaExtra.pageViews.toLocaleString()}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground">광고 클릭 후 랜딩 페이지 로딩까지 성공한 수 ({totals.clicks > 0 ? ((metaExtra.pageViews / totals.clicks) * 100).toFixed(1) : '-'}%)</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-muted/30">
+                  <CardHeader className="pb-1">
+                    <CardDescription className="text-sm font-semibold">링크 클릭</CardDescription>
+                    <CardTitle className="text-2xl font-black tabular-nums">{metaExtra.linkClicks.toLocaleString()}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground">외부 링크 이동 횟수</p>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+            <Card className="ring-primary/30">
+              <CardHeader className="pb-1">
+                <CardDescription className="text-sm font-semibold">리드 전환 (최종)</CardDescription>
+                <CardTitle className="text-2xl font-black tabular-nums text-primary">{totals.conversions.toLocaleString()}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground">
+                  {title === 'Meta' ? 'Pixel Lead 이벤트 발생 수' : '전환 액션 발생 수'} (전환율 {cvr.toFixed(1)}%)
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{title} 캠페인별 성과</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {campaigns.length === 0 ? <p className="text-sm text-muted-foreground">캠페인 데이터 없음</p> : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>캠페인</TableHead>
+                  <TableHead className="text-right">노출</TableHead>
+                  <TableHead className="text-right">클릭</TableHead>
+                  <TableHead className="text-right">CTR</TableHead>
+                  <TableHead className="text-right">CPC</TableHead>
+                  <TableHead className="text-right">비용</TableHead>
+                  <TableHead className="text-right">전환</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {campaigns.map(c => (
+                  <TableRow key={c.name}>
+                    <TableCell className="font-medium max-w-xs truncate">{c.name}</TableCell>
+                    <TableCell className="text-right font-mono">{c.impressions.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">{c.clicks.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">{c.ctr}%</TableCell>
+                    <TableCell className="text-right font-mono">₩{c.cpc.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">₩{c.spend.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono font-bold">{c.conversions}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* 용어 설명 — 하단 */}
+      <AdsGlossary platform={title} />
     </div>
   )
 }
 
-const AB_STEPS = [
-  { key: 'pageView', label: '방문' },
-  { key: 'ctaClick', label: 'CTA 클릭' },
-  { key: 'testStart', label: '테스트 시작' },
-  { key: 'testComplete', label: '테스트 완료' },
-  { key: 'resultView', label: '결과 확인' },
-] as const
+/* ========== A/B 테스트 뷰 ========== */
+function ABTestTab({ variants }: { variants: ABTestData[] }) {
+  if (variants.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>A/B 테스트</CardTitle>
+          <CardDescription>데이터가 아직 없습니다</CardDescription>
+        </CardHeader>
+      </Card>
+    )
+  }
+  const e2eRates = variants.map(v => ({ variant: v.variant, rate: v.pageView > 0 ? (v.resultView / v.pageView) * 100 : 0 }))
+  const winner = e2eRates.reduce((a, b) => (a.rate > b.rate ? a : b))
 
-function rate(a: number, b: number) {
-  if (b === 0) return '-'
-  return `${((a / b) * 100).toFixed(1)}%`
+  const chartData = variants.map(v => ({
+    label: VARIANT_LABELS[v.variant]?.name ?? v.variant,
+    방문: v.pageView,
+    결과확인: v.resultView,
+  }))
+
+  const chartConfig = {
+    방문: { label: '방문', color: 'var(--chart-1)' },
+    결과확인: { label: '결과 확인', color: 'var(--chart-2)' },
+  } satisfies ChartConfig
+
+  return (
+    <div className="space-y-4">
+      {winner.rate > 0 && (
+        <Card className="border-primary/50">
+          <CardContent className="flex items-center gap-3 py-4">
+            <CheckCircle2 className="h-6 w-6 text-primary" />
+            <div>
+              <p className="text-xs text-muted-foreground font-semibold">E2E 기준 승자</p>
+              <p className="font-bold">{VARIANT_LABELS[winner.variant]?.name ?? winner.variant} — {winner.rate.toFixed(1)}%</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>변형별 성과</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-[280px] w-full">
+            <BarChart data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} className="text-xs" />
+              <YAxis tickLine={false} axisLine={false} className="text-xs" />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="방문" fill="var(--color-방문)" radius={4} />
+              <Bar dataKey="결과확인" fill="var(--color-결과확인)" radius={4} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>전환율 비교</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table className="text-base">
+            <TableHeader>
+              <TableRow>
+                <TableHead>구간</TableHead>
+                {variants.map(v => (
+                  <TableHead key={v.variant} className="text-right">
+                    {VARIANT_LABELS[v.variant]?.name ?? v.variant}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[
+                { label: '방문', calc: (d: ABTestData) => d.pageView.toLocaleString() },
+                { label: '결과 확인', calc: (d: ABTestData) => d.resultView.toLocaleString() },
+                { label: '방문→CTA', calc: (d: ABTestData) => (d.pageView > 0 ? ((d.ctaClick / d.pageView) * 100).toFixed(1) + '%' : '-') },
+                { label: '완료→결과', calc: (d: ABTestData) => (d.testComplete > 0 ? ((d.resultView / d.testComplete) * 100).toFixed(1) + '%' : '-') },
+                { label: 'E2E', calc: (d: ABTestData) => (d.pageView > 0 ? ((d.resultView / d.pageView) * 100).toFixed(1) + '%' : '-') },
+              ].map(row => (
+                <TableRow key={row.label}>
+                  <TableCell className="font-medium">{row.label}</TableCell>
+                  {variants.map(v => (
+                    <TableCell key={v.variant} className="text-right font-mono">{row.calc(v)}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
 
-function ABComparisonTable({ variants }: { variants: ABTestData[] }) {
+/* ========== 전자책 뷰 ========== */
+function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number }) {
+  if (!ebooks) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>전자책 수강생</CardTitle>
+          <CardDescription>데이터를 불러오는 중...</CardDescription>
+        </CardHeader>
+      </Card>
+    )
+  }
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-base">
-        <thead>
-          <tr className="border-b-2 border-slate-200 text-slate-500">
-            <th className="text-left py-3.5 font-bold">지표</th>
-            {variants.map(v => (
-              <th key={v.variant} className="text-right py-3.5 px-4 font-bold">
-                <span className="inline-block w-3 h-3 rounded-full mr-2 align-middle" style={{ background: VARIANT_LABELS[v.variant]?.color }} />
-                {VARIANT_LABELS[v.variant]?.name ?? v.variant}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {AB_STEPS.map(step => {
-            const values = variants.map(v => v[step.key] as number)
-            const max = Math.max(...values)
-            return (
-              <tr key={step.key} className="border-b border-slate-100">
-                <td className="py-3.5 text-slate-700 font-bold">{step.label}</td>
-                {variants.map((v, i) => (
-                  <td key={v.variant} className={`text-right py-3.5 px-4 font-bold ${values[i] === max && max > 0 ? 'text-indigo-600 text-lg' : 'text-slate-700'}`}>
-                    {(v[step.key] as number).toLocaleString()}
-                  </td>
-                ))}
-              </tr>
-            )
-          })}
-          {[
-            { label: '방문→CTA', calc: (d: ABTestData) => rate(d.ctaClick, d.pageView) },
-            { label: 'CTA→시작', calc: (d: ABTestData) => rate(d.testStart, d.ctaClick) },
-            { label: '시작→완료', calc: (d: ABTestData) => rate(d.testComplete, d.testStart) },
-            { label: '완료→결과', calc: (d: ABTestData) => rate(d.resultView, d.testComplete) },
-            { label: '결과→2차', calc: (d: ABTestData) => rate(d.openchatClick + d.ebookClick + d.shareClick, d.resultView) },
-            { label: 'E2E', calc: (d: ABTestData) => rate(d.resultView, d.pageView) },
-          ].map(row => {
-            const vals = variants.map(v => row.calc(v))
-            const numVals = vals.map(x => (x === '-' ? 0 : parseFloat(x)))
-            const maxIdx = numVals.indexOf(Math.max(...numVals))
-            return (
-              <tr key={row.label} className="border-b border-slate-100 bg-slate-50/60">
-                <td className="py-3.5 text-slate-700 font-bold">{row.label}</td>
-                {vals.map((x, i) => (
-                  <td key={variants[i].variant} className={`text-right py-3.5 px-4 font-bold ${i === maxIdx && x !== '-' ? 'text-green-600 text-lg' : 'text-slate-700'}`}>
-                    {x} {i === maxIdx && x !== '-' ? '🏆' : ''}
-                  </td>
-                ))}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardDescription className="text-base font-semibold">총 전자책 수강생</CardDescription>
+          <CardTitle className="text-6xl font-black tabular-nums">{total.toLocaleString()}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            메타코드 공식 API에서 크롤링 · 조회 {new Date(ebooks.fetchedAt).toLocaleString('ko-KR')}
+          </p>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {ebooks.ebooks.map(e => {
+          const title = String(e.title).replace(/\[무료\/26년 최신버전\]\s*/g, '')
+          return (
+            <Card key={e.id}>
+              <CardHeader className="pb-2">
+                <CardDescription className="line-clamp-2 leading-snug text-sm">{title}</CardDescription>
+                <CardTitle className="text-4xl font-black tabular-nums">{e.students.toLocaleString()}</CardTitle>
+              </CardHeader>
+            </Card>
+          )
+        })}
+      </div>
     </div>
   )
 }

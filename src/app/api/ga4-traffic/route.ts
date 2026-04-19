@@ -95,10 +95,16 @@ export async function GET(req: Request) {
       engaged: Number(row.metricValues?.[2]?.value ?? 0),
     }))
 
-    // 전체 합계
-    const totalUsers = sources.reduce((s, r) => s + r.users, 0)
-    const totalSessions = sources.reduce((s, r) => s + r.sessions, 0)
-    const totalEngaged = sources.reduce((s, r) => s + r.engaged, 0)
+    // 전체 합계 — 차원 없이 별도 쿼리 (유니크 기준). 소스별 합산은 중복 카운트 발생.
+    const [totalRes] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate, endDate }],
+      metrics: [{ name: 'totalUsers' }, { name: 'sessions' }, { name: 'engagedSessions' }],
+    })
+    const totalRow = totalRes.rows?.[0]?.metricValues
+    const totalUsers = Number(totalRow?.[0]?.value ?? 0)
+    const totalSessions = Number(totalRow?.[1]?.value ?? 0)
+    const totalEngaged = Number(totalRow?.[2]?.value ?? 0)
     const koreaUsers = countries.find((c) => c.country === 'South Korea')?.users ?? 0
 
     return NextResponse.json({

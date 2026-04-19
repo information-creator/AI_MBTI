@@ -3,8 +3,8 @@
 
 export const BENCHMARKS = {
   funnel: {
-    landing_to_cta: 3.5,        // 3.5% — 랜딩 CTA 클릭률 (Unbounce 2024 교육업종)
-    cta_to_test_start: 65,      // 65% — CTA 클릭→테스트 시작
+    landing_to_cta: 40,         // 40% — 퀴즈 랜딩 단일 CTA 클릭률 (LeadQuizzes 리포트 + 업계 경험치. 유료 트래픽 기준)
+    cta_to_test_start: 90,      // 90% — CTA 클릭→테스트 시작 (이탈은 주로 로딩 지연)
     test_start_to_complete: 70,  // 70% — 퀴즈 완료율 (LeadQuizzes 평균)
     complete_to_result: 95,      // 95% — 거의 자동 리다이렉트
     result_to_secondary: 8,      // 8% — 결과→2차 행동 (리드젠 CTA 평균)
