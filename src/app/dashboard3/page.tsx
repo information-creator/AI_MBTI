@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   AlertCircle,
   Globe,
+  Ruler,
 } from 'lucide-react'
 
 function MetaIcon({ className }: { className?: string }) {
@@ -100,7 +101,7 @@ import {
 
 const PASS = '720972'
 
-type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic'
+type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic' | 'benchmarks'
 type EbookItem = { id: number | string; title: string; students: number }
 type EbooksData = { ebooks: EbookItem[]; fetchedAt: string }
 
@@ -308,6 +309,7 @@ function DashboardShell() {
     { id: 'google', label: 'Google Ads', icon: GoogleIcon },
     { id: 'abtest', label: 'A/B 테스트', icon: TestTube },
     { id: 'ebooks', label: '전자책 수강', icon: BookOpen },
+    { id: 'benchmarks', label: '지표 기준', icon: Ruler },
   ]
 
   const viewTitle: Record<View, string> = {
@@ -318,6 +320,7 @@ function DashboardShell() {
     google: 'Google Ads',
     abtest: 'A/B 테스트',
     ebooks: '전자책 수강생',
+    benchmarks: '지표 기준',
   }
 
   return (
@@ -365,12 +368,6 @@ function DashboardShell() {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel className="text-sm font-bold">📘 지표 기준</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <BenchmarkSidebar />
-            </SidebarGroupContent>
-          </SidebarGroup>
         </SidebarContent>
       </Sidebar>
 
@@ -435,6 +432,7 @@ function DashboardShell() {
           {view === 'google' && <AdsTab title="Google" totals={google?.totals} campaigns={google?.campaigns ?? []} benchmark={BENCHMARKS.ads.google} />}
           {view === 'abtest' && <ABTestTab variants={ab ?? []} />}
           {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} />}
+          {view === 'benchmarks' && <BenchmarksTab />}
         </div>
       </SidebarInset>
     </SidebarProvider>
@@ -953,21 +951,230 @@ function AdsGlossary({ platform }: { platform: string }) {
   )
 }
 
-function BenchmarkSidebar() {
+function BenchmarksTab() {
+  const sections: {
+    title: string
+    intro: string
+    rows: { name: string; value: string; source: string; why: string }[]
+  }[] = [
+    {
+      title: '퍼널 단계',
+      intro: '방문 → 결과 확인 → 2차 전환까지 각 구간의 업종 평균',
+      rows: [
+        { name: '방문 → CTA 클릭', value: '40%', source: 'LeadQuizzes · 업계 경험치', why: '퀴즈 랜딩(단일 CTA 구조) 기준. 30% 미만이면 헤드라인·타겟 품질 점검 필요' },
+        { name: 'CTA → 테스트 시작', value: '90%', source: '자동 전환 구조', why: 'CTA를 누르면 /test로 곧바로 이동. 90% 미만이면 로딩 지연·라우팅 오류 의심' },
+        { name: '테스트 시작 → 완료', value: '70%', source: 'LeadQuizzes 2024', why: '20문항을 끝까지 응답. 60% 미만이면 문항 수·난이도·질문 카피 검토' },
+        { name: '테스트 완료 → 결과 확인', value: '95%', source: '리다이렉트 자동 전환', why: '저장+리다이렉트가 자동이라 95%+ 정상. 미만이면 저장 실패·라우팅 의심' },
+        { name: '결과 확인 → 2차 전환', value: '8%', source: '리드젠 CTA 평균', why: '단톡/전자책/공유 중 1개 이상 클릭. 15%+면 양호, 5% 미만이면 CTA 개선 필요' },
+      ],
+    },
+    {
+      title: 'Meta Ads',
+      intro: 'WordStream 2025 교육 업종 + 국내 Meta 시장 추정치',
+      rows: [
+        { name: 'CTR (클릭률)', value: '0.9%', source: 'WordStream 2025', why: '노출 대비 클릭률. 2%+ 양호, 0.5% 미만이면 소재 교체 우선' },
+        { name: 'CPC (클릭당 비용)', value: '₩1,100', source: '국내 추정치', why: '500원 미만 우수, 1,500원 초과는 타겟·경쟁 재검토' },
+        { name: 'CPM (1,000회 노출당)', value: '₩9,800', source: '국내 추정치', why: '타겟 경쟁도. 20,000원+이면 타겟 과도하게 좁거나 고경쟁' },
+        { name: 'CVR (전환율)', value: '2.5%', source: 'Meta 리드젠 평균', why: '클릭→전환. 5%+ 우수, 2% 미만이면 랜딩 카피·오퍼 점검' },
+      ],
+    },
+    {
+      title: 'Google Ads',
+      intro: 'WordStream 2025 교육 업종 + 국내 Google 시장 추정치',
+      rows: [
+        { name: 'CTR (검색 광고)', value: '3.17%', source: 'WordStream 2025', why: '검색 의도 매칭도. 1.5% 미만이면 키워드·문구 매칭 개선' },
+        { name: 'CPC (클릭당 비용)', value: '₩800', source: '국내 추정치', why: '1,500원 초과면 품질점수·입찰 재검토' },
+        { name: 'CPM (디스플레이)', value: '₩15,000', source: '국내 GDN', why: 'GDN은 노출 단가가 검색보다 높음' },
+        { name: 'CVR (전환율)', value: '3.6%', source: 'WordStream 교육', why: '검색 광고가 Meta보다 전환율 높음 (의도 기반)' },
+      ],
+    },
+    {
+      title: '통합 목표',
+      intro: '내부 KPI — 전체 채널 통합 기준',
+      rows: [
+        { name: '유효 CPA', value: '₩5,000', source: '내부 목표치', why: '2차 전환 1건당 허용 광고비. 초과 시 ROAS 악화' },
+        { name: 'E2E 전환율', value: '3%+', source: '내부 양호 기준', why: '방문 → 2차 전환까지 전체 비율. 1~3%는 보통, 3%+ 양호' },
+      ],
+    },
+  ]
+
   return (
-    <div className="px-3 space-y-3 text-sm leading-relaxed">
-      <p>
-        <span className="font-bold text-foreground">퍼널 (방문→완료→전환)</span><br />
-        <span className="text-muted-foreground">글로벌 마케팅 분석 플랫폼 리포트 (Unbounce·LeadQuizzes) 교육 업종 평균</span>
-      </p>
-      <p>
-        <span className="font-bold text-foreground">광고 CTR·전환율</span><br />
-        <span className="text-muted-foreground">WordStream 2025 광고 벤치마크 · Meta·Google 교육 업종</span>
-      </p>
-      <p>
-        <span className="font-bold text-foreground">광고 CPC·CPM·CPA 목표</span><br />
-        <span className="text-muted-foreground">국내 교육 광고 시장 추정치 + 내부 목표치 (₩5,000)</span>
-      </p>
+    <div className="space-y-4">
+      {/* 개요 */}
+      <Card className="bg-muted/30">
+        <CardHeader>
+          <CardTitle className="text-lg">📘 지표 기준 · 어디서 가져왔나?</CardTitle>
+          <CardDescription className="text-base leading-relaxed">
+            모든 기준값은 <span className="font-bold text-foreground">교육·온라인강의 업종</span> 평균입니다.
+            3개 외부 자료 + 내부 목표치를 조합했습니다.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <dl className="grid gap-3 md:grid-cols-2 text-sm">
+            <div className="flex gap-2">
+              <dt className="font-bold shrink-0">Unbounce 2024</dt>
+              <dd className="text-muted-foreground">— 랜딩 페이지 전환 벤치마크 리포트 (교육 업종 평균)</dd>
+            </div>
+            <div className="flex gap-2">
+              <dt className="font-bold shrink-0">WordStream 2025</dt>
+              <dd className="text-muted-foreground">— Meta·Google 광고 벤치마크 (교육 업종 CTR·CPC·CVR)</dd>
+            </div>
+            <div className="flex gap-2">
+              <dt className="font-bold shrink-0">LeadQuizzes</dt>
+              <dd className="text-muted-foreground">— 퀴즈형 리드젠 플랫폼. 완료율·퍼널 수치 기준</dd>
+            </div>
+            <div className="flex gap-2">
+              <dt className="font-bold shrink-0">국내 시장 추정치</dt>
+              <dd className="text-muted-foreground">— 국내 Meta·Google 교육 광고의 CPC·CPM (원화 기준)</dd>
+            </div>
+          </dl>
+        </CardContent>
+      </Card>
+
+      {/* 각 섹션별 상세 테이블 */}
+      {sections.map(s => (
+        <Card key={s.title}>
+          <CardHeader>
+            <CardTitle className="text-lg">{s.title}</CardTitle>
+            <CardDescription className="text-sm">{s.intro}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table className="text-base">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>지표</TableHead>
+                  <TableHead className="text-right">기준값</TableHead>
+                  <TableHead>출처</TableHead>
+                  <TableHead>판정 기준</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {s.rows.map(r => (
+                  <TableRow key={r.name}>
+                    <TableCell className="font-bold">{r.name}</TableCell>
+                    <TableCell className="text-right font-mono font-black text-lg">{r.value}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{r.source}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{r.why}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ))}
+
+      {/* 판정 규칙 */}
+      <Card className="bg-muted/30">
+        <CardHeader>
+          <CardTitle className="text-lg">🎚️ 색 판정 규칙</CardTitle>
+          <CardDescription className="text-base">
+            현재 값과 기준값의 편차를 <span className="font-bold text-foreground">퍼센트</span>로 계산해 색상 배정
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <span className="font-black text-green-700">🟢 양호</span>
+              </div>
+              <p className="text-sm text-green-800">기준보다 <span className="font-bold">+10% 이상 우위</span>일 때. 현재 전략 유지</p>
+            </div>
+            <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+              <div className="flex items-center gap-2 mb-1">
+                <AlertTriangle className="h-5 w-5 text-yellow-600" />
+                <span className="font-black text-yellow-700">🟡 주의</span>
+              </div>
+              <p className="text-sm text-yellow-800">편차 <span className="font-bold">±10% 이내</span>. 개선 여지 있음</p>
+            </div>
+            <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+              <div className="flex items-center gap-2 mb-1">
+                <AlertCircle className="h-5 w-5 text-red-600" />
+                <span className="font-black text-red-700">🔴 위험</span>
+              </div>
+              <p className="text-sm text-red-800"><span className="font-bold">-20% 이상 열위</span>. 즉시 개선 필요</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// 사이드바 용 컴팩트 버전 (현재 미사용 — 필요시 SidebarContent에 추가)
+function _BenchmarkSidebarUnused() {
+  const sections: {
+    title: string
+    intro: string
+    rows: { name: string; value: string; source: string }[]
+  }[] = [
+    {
+      title: '퍼널 단계',
+      intro: '교육·퀴즈 리드젠 평균',
+      rows: [
+        { name: '방문 → CTA 클릭', value: '40%', source: 'LeadQuizzes 퀴즈 랜딩 + 업계 경험치 (단일 CTA 기준)' },
+        { name: 'CTA → 테스트 시작', value: '90%', source: '자동 전환 구조 · 로딩 이탈만 차감' },
+        { name: '테스트 시작 → 완료', value: '70%', source: 'LeadQuizzes 퀴즈 완료율 평균' },
+        { name: '테스트 완료 → 결과', value: '95%', source: '리다이렉트 자동 전환 기준' },
+        { name: '결과 → 2차 전환', value: '8%', source: '리드젠 CTA 평균 (단톡/전자책/공유)' },
+      ],
+    },
+    {
+      title: 'Meta Ads',
+      intro: 'WordStream 2025 · 국내 교육 시장',
+      rows: [
+        { name: 'CTR (클릭률)', value: '0.9%', source: 'WordStream 2025 Meta 교육 평균' },
+        { name: 'CPC (클릭당)', value: '₩1,100', source: '국내 Meta 교육 광고 추정치' },
+        { name: 'CPM (1,000회 노출)', value: '₩9,800', source: '국내 Meta 교육 CPM 추정' },
+        { name: 'CVR (전환율)', value: '2.5%', source: 'Meta 리드젠 평균' },
+      ],
+    },
+    {
+      title: 'Google Ads',
+      intro: 'WordStream 2025 · 국내 교육 시장',
+      rows: [
+        { name: 'CTR (검색 광고)', value: '3.17%', source: 'WordStream 2025 Google Search 교육' },
+        { name: 'CPC (클릭당)', value: '₩800', source: '국내 Google 교육 광고 추정치' },
+        { name: 'CPM (디스플레이)', value: '₩15,000', source: '국내 GDN 추정치' },
+        { name: 'CVR (전환율)', value: '3.6%', source: 'WordStream 교육 전환율' },
+      ],
+    },
+    {
+      title: '통합 목표',
+      intro: '내부 KPI',
+      rows: [
+        { name: '유효 CPA', value: '₩5,000', source: '2차 전환 1건당 허용 광고비 — 내부 목표' },
+        { name: 'E2E 전환율', value: '3%+', source: '양호 기준 · 1%~3%는 보통' },
+      ],
+    },
+  ]
+
+  return (
+    <div className="px-2 space-y-3.5 text-sm">
+      {sections.map(s => (
+        <div key={s.title}>
+          <p className="text-xs font-black text-foreground px-2 mb-0.5">{s.title}</p>
+          <p className="text-[11px] text-muted-foreground px-2 mb-1.5">{s.intro}</p>
+          <div className="space-y-1.5">
+            {s.rows.map(r => (
+              <div key={r.name} className="px-2 py-1 rounded-md hover:bg-sidebar-accent/60">
+                <div className="flex justify-between items-baseline gap-2">
+                  <span className="text-xs font-semibold truncate">{r.name}</span>
+                  <span className="text-xs font-mono font-black shrink-0">{r.value}</span>
+                </div>
+                <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{r.source}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+      <div className="px-2 pt-2 border-t text-[10px] text-muted-foreground leading-relaxed">
+        <p className="font-bold text-foreground mb-1">판정 기준</p>
+        <p>편차 ±10% 이상에서 색 강조</p>
+        <p>🟢 양호 (+10% 이상 우위)</p>
+        <p>🟡 주의 (±10% 이내)</p>
+        <p>🔴 위험 (-20% 이상 열위)</p>
+      </div>
     </div>
   )
 }
