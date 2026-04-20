@@ -85,6 +85,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
+import { DateRangePicker } from '@/components/DateRangePicker'
 import {
   Table,
   TableBody,
@@ -381,22 +382,16 @@ function DashboardShell() {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <h1 className="text-lg font-black">{viewTitle[view]}</h1>
           <div className="flex items-center gap-2">
-            <div className="hidden md:flex items-center gap-1 border rounded-md p-0.5">
-              {[{ label: '오늘', days: 1 }, { label: '7일', days: 7 }, { label: '30일', days: 30 }].map(p => (
-                <Button key={p.label} variant="ghost" size="sm" onClick={() => setPreset(p.days)} className="h-7 px-2 text-xs">
-                  {p.label}
-                </Button>
-              ))}
-            </div>
-            <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="h-8 w-36 text-xs" />
-            <span className="text-xs text-muted-foreground">~</span>
-            <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="h-8 w-36 text-xs" />
+            <DateRangePicker
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(s, e) => { setStartDate(s); setEndDate(e) }}
+            />
             <Button size="sm" onClick={load} disabled={loading}>
               {loading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
               조회
             </Button>
           </div>
-          <span className="text-sm font-mono text-muted-foreground">{startDate} ~ {endDate}</span>
         </header>
 
         <div className="flex-1 p-4 md:p-6 max-w-5xl w-full">

@@ -2,6 +2,7 @@
 
 import { TypeCode, typeInfo } from '@/lib/quiz'
 import { gtagEvent } from '@/lib/ga'
+import { trackEvent } from '@/lib/track'
 
 type Props = {
   typeCode: TypeCode
@@ -38,6 +39,7 @@ export default function KakaoShareButton({ typeCode, aiScore, resultId }: Props)
       alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
     }
     gtagEvent('share_click', { method: 'kakao' })
+    trackEvent('share_click', typeCode, { method: 'kakao' })
   }
 
   return (

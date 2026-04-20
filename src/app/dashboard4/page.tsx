@@ -14,6 +14,7 @@ import {
   Globe,
   Ruler,
   Download,
+  StickyNote,
 } from 'lucide-react'
 
 function MetaIcon({ className }: { className?: string }) {
@@ -72,6 +73,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
+import { DateRangePicker } from '@/components/DateRangePicker'
+import MemoPanel from '@/components/MemoPanel'
 import {
   Table,
   TableBody,
@@ -90,7 +93,7 @@ import {
 const PASS = '720972'
 const EBOOK_EFFECTIVE_RATE = 0.7
 
-type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic' | 'benchmarks'
+type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic' | 'benchmarks' | 'memos'
 type EbookItem = { id: number | string; title: string; students: number }
 type EbooksData = { ebooks: EbookItem[]; fetchedAt: string }
 type EbookSnapshot = { date: string; ebook_id: string; title: string; students: number }
@@ -281,6 +284,7 @@ function DashboardShell() {
     { id: 'abtest', label: 'A/B 테스트', icon: TestTube },
     { id: 'ebooks', label: '전자책 수강', icon: BookOpen },
     { id: 'benchmarks', label: '지표 기준', icon: Ruler },
+    { id: 'memos', label: '메모', icon: StickyNote },
   ]
 
   const viewTitle: Record<View, string> = {
@@ -292,6 +296,7 @@ function DashboardShell() {
     abtest: 'A/B 테스트',
     ebooks: '전자책 수강생',
     benchmarks: '지표 기준',
+    memos: '메모',
   }
 
   return (
@@ -332,19 +337,13 @@ function DashboardShell() {
           </div>
         </div>
 
-        {/* 날짜 프리셋 + 직접 입력 */}
-        <div className="grid grid-cols-3 gap-1">
-          {[{ label: '오늘', days: 1 }, { label: '7일', days: 7 }, { label: '30일', days: 30 }].map(p => (
-            <Button key={p.label} variant="ghost" size="sm" onClick={() => setPreset(p.days)} className="h-7 text-xs border">
-              {p.label}
-            </Button>
-          ))}
-        </div>
-        <div className="flex items-center gap-1">
-          <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="h-7 flex-1 text-[11px] px-2" />
-          <span className="text-[11px] text-muted-foreground">~</span>
-          <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="h-7 flex-1 text-[11px] px-2" />
-        </div>
+        {/* 기간 선택 (shadcn DateRangePicker) */}
+        <DateRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          onChange={(s, e) => { setStartDate(s); setEndDate(e) }}
+          className="w-full justify-start"
+        />
 
         {/* 탭 바 — 가로 스크롤 */}
         <div className="flex gap-1 overflow-x-auto -mx-3 px-3 pb-0.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -423,6 +422,7 @@ function DashboardShell() {
         {view === 'abtest' && <ABTestTab variants={ab ?? []} />}
         {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} history={ebookHistory} />}
         {view === 'benchmarks' && <BenchmarksTab />}
+        {view === 'memos' && <MemoPanel />}
       </div>
     </main>
   )
@@ -1547,7 +1547,7 @@ function AdsTab({ title, totals, campaigns, benchmark }: { title: string; totals
         </CardContent>
       </Card>
 
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3">
         {rows.map(r => (
           <Card key={r.label}>
             <CardHeader className="pb-2">

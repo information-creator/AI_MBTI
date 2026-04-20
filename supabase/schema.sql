@@ -150,3 +150,22 @@ create policy "anon update daily_funnel_metrics" on public.daily_funnel_metrics 
 create policy "anon insert daily_ebook_metrics" on public.daily_ebook_metrics for insert with check (true);
 create policy "anon select daily_ebook_metrics" on public.daily_ebook_metrics for select using (true);
 create policy "anon update daily_ebook_metrics" on public.daily_ebook_metrics for update using (true) with check (true);
+
+-- =========================================
+-- 대시보드 메모 (운영 기록용)
+-- =========================================
+create table if not exists public.dashboard_memos (
+  id         uuid primary key default gen_random_uuid(),
+  memo_date  date not null default current_date,
+  content    text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_dashboard_memos_date
+  on public.dashboard_memos (memo_date desc, created_at desc);
+
+alter table public.dashboard_memos enable row level security;
+
+create policy "anon select dashboard_memos" on public.dashboard_memos for select using (true);
+create policy "anon insert dashboard_memos" on public.dashboard_memos for insert with check (true);
+create policy "anon delete dashboard_memos" on public.dashboard_memos for delete using (true);

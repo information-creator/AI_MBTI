@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { gtagEvent } from '@/lib/ga'
+import { trackEvent } from '@/lib/track'
 
 type Props = {
   location: string
@@ -14,7 +15,10 @@ export default function CTAButton({ location, className, children }: Props) {
     <Link
       href="/test"
       className={className}
-      onClick={() => gtagEvent('cta_click', { location })}
+      onClick={() => {
+        gtagEvent('cta_click', { location })
+        trackEvent('cta_click', null, { location })
+      }}
     >
       {children}
     </Link>
