@@ -3,8 +3,8 @@ import CTAButton from '@/components/CTAButton'
 import PageViewTracker from '@/components/PageViewTracker'
 
 export const metadata: Metadata = {
-  title: 'AI-MBTI',
-  description: 'MBTI 기반 AI 시대 생존 역량 진단. 20문항으로 알아보는 나의 AI 대체 가능성과 미래 직업 추천.',
+  title: 'AI-역량진단',
+  description: 'AI 시대 역량진단. 20문항으로 알아보는 나의 AI 대체 가능성과 미래 직업 추천.',
   alternates: {
     canonical: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mcodegc.com',
   },
@@ -23,7 +23,7 @@ export default function LandingPage() {
       {/* 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-white/10">
         <a href="https://mcodegc.com/" className="font-bold text-lg">
-          <span className="text-red-400">AI</span>-MBTI
+          <span className="text-red-400">AI</span>-역량진단
         </a>
         <CTAButton location="header" className="bg-red-500 hover:bg-red-400 text-white text-sm font-bold px-4 py-2 rounded-full transition-colors">
           긴급 진단 →
@@ -102,7 +102,7 @@ export default function LandingPage() {
 
       {/* 푸터 */}
       <footer className="px-5 py-6 border-t border-white/10 text-center text-white/30 text-xs">
-        © 2026 AI-MBTI · <a href="https://metacodes.co.kr/" className="hover:text-white/60">metacodes.co.kr</a>
+        © 2026 AI-역량진단 · <a href="https://metacodes.co.kr/" className="hover:text-white/60">metacodes.co.kr</a>
       </footer>
     </main>
   )

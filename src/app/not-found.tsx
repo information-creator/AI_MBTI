@@ -21,7 +21,7 @@ export default function NotFound() {
         </Link>
       </div>
       <footer className="absolute bottom-6 text-slate-300 text-xs">
-        © 2026 AI-MBTI ·{' '}
+        © 2026 AI-역량진단 ·{' '}
         <a href="https://metacodes.co.kr/" className="hover:text-slate-500 transition-colors">
           metacodes.co.kr
         </a>

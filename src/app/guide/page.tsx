@@ -186,7 +186,7 @@ export default function GuidePage() {
 
       <footer className="px-6 py-8 border-t border-slate-100 text-center text-slate-400 text-sm mt-10">
         <p>
-          © 2026 AIMBTI ·{' '}
+          © 2026 AI-역량진단 ·{' '}
           <a href="https://metacode.kr" className="hover:text-slate-600 transition-colors">
             metacode.kr
           </a>

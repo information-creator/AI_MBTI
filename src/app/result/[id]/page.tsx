@@ -15,10 +15,10 @@ export async function generateMetadata({ params }: Props) {
   const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mcodegc.com'
 
   if (id === 'local') {
-    return { title: 'AI-MBTI' }
+    return { title: 'AI-역량진단' }
   }
 
-  let title = 'AI-MBTI'
+  let title = 'AI-역량진단'
   let description = 'AI 대체 가능성 진단 결과를 확인하세요.'
 
   try {
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props) {
       if (data) {
         const info = typeInfo[data.type_code as TypeCode]
         if (info) {
-          title = 'AI-MBTI'
+          title = 'AI-역량진단'
           description = `${info.subtitle} — 나의 AI 대체 가능성은 ${data.ai_score}%! 당신의 유형은?`
         }
       }
