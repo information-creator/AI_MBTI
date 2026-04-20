@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 const variants = [
   { id: 'v1', label: 'V1 공포소구', color: '#ef4444' },
+  { id: 'v2', label: 'V2 기본안', color: '#6366f1' },
   { id: 'v3', label: 'V3 사회적 증거', color: '#3b82f6' },
   { id: 'v4', label: 'V4 극심플', color: '#0f172a' },
 ]
