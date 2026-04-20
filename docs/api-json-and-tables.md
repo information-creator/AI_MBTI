@@ -99,7 +99,7 @@
   ],
   "pages": [
     { "page": "/", "users": 1500, "sessions": 1800, "engaged": 1100 },
-    { "page": "/preview/v1", "users": 120, "sessions": 140, "engaged": 85 }
+    { "page": "/v1", "users": 120, "sessions": 140, "engaged": 85 }
   ],
   "summary": {
     "totalUsers": 1820,
@@ -306,9 +306,9 @@ client_id=xxx&client_secret=xxx&refresh_token=xxx&grant_type=refresh_token
 
 | 변형 | 컨셉 | 경로 |
 |------|------|------|
-| `v1` | 공포소구 ("AI가 당신 월급을 노리고 있습니다") | `/preview/v1` |
-| `v3` | 사회적 증거 ("2,341명이 진단 완료") | `/preview/v3` |
-| `v4` | 극심플 ("지금 2분") | `/preview/v4` |
+| `v1` | 공포소구 ("AI가 당신 월급을 노리고 있습니다") | `/v1` (공개) · `/preview/v1` (내부 QA) |
+| `v3` | 사회적 증거 ("2,341명이 진단 완료") | `/v3` (공개) · `/preview/v3` (내부 QA) |
+| `v4` | 극심플 ("지금 2분") | `/v4` (공개) · `/preview/v4` (내부 QA) |
 
 ### 필터링 방식
 

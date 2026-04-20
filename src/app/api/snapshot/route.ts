@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseServer } from '@/lib/supabase'
+import { todayKst } from '@/lib/date'
 
 const PASS = '720972'
 
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 })
   }
 
-  const today = new Date().toISOString().slice(0, 10)
+  const today = todayKst()
   const baseUrl = new URL(req.url).origin
   const errors: string[] = []
   const saved: string[] = []
@@ -116,6 +117,33 @@ export async function POST(req: Request) {
     // Google Ads 실패 무시
   }
 
+  // 4. 메타코드 전자책 수강생 스냅샷
+  try {
+    const ebRes = await fetch(`${baseUrl}/api/metacode-ebooks?pass=${PASS}`)
+    if (ebRes.ok) {
+      const eb = await ebRes.json()
+      const rows = (eb.ebooks ?? []).map((e: { id: string | number; title: string; students: number }) => ({
+        date: today,
+        ebook_id: String(e.id),
+        title: String(e.title ?? ''),
+        students: Number(e.students ?? 0),
+      }))
+
+      if (rows.length > 0) {
+        const { error } = await supabase
+          .from('daily_ebook_metrics')
+          .upsert(rows, { onConflict: 'date,ebook_id' })
+
+        if (error) errors.push(`ebooks: ${error.message}`)
+        else saved.push(`ebooks(${rows.length})`)
+      }
+    } else {
+      errors.push('metacode-ebooks API failed')
+    }
+  } catch (err) {
+    errors.push(`ebooks: ${err instanceof Error ? err.message : 'unknown'}`)
+  }
+
   return NextResponse.json({
     date: today,
     saved,
@@ -137,9 +165,9 @@ export async function GET(req: Request) {
   }
 
   const since = searchParams.get('since') || '2026-03-03'
-  const until = searchParams.get('until') || new Date().toISOString().slice(0, 10)
+  const until = searchParams.get('until') || todayKst()
 
-  const [adsResult, funnelResult] = await Promise.all([
+  const [adsResult, funnelResult, ebooksResult] = await Promise.all([
     supabase
       .from('daily_ads_metrics')
       .select('*')
@@ -152,11 +180,18 @@ export async function GET(req: Request) {
       .gte('date', since)
       .lte('date', until)
       .order('date', { ascending: true }),
+    supabase
+      .from('daily_ebook_metrics')
+      .select('*')
+      .gte('date', since)
+      .lte('date', until)
+      .order('date', { ascending: true }),
   ])
 
   return NextResponse.json({
     ads: adsResult.data ?? [],
     funnel: funnelResult.data ?? [],
+    ebooks: ebooksResult.data ?? [],
     since,
     until,
   })

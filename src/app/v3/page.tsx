@@ -1,35 +1,17 @@
 import type { Metadata } from 'next'
 import CTAButton from '@/components/CTAButton'
 import PageViewTracker from '@/components/PageViewTracker'
-import VariantAnalysis from '@/components/VariantAnalysis'
 import VariantTracker from '@/components/VariantTracker'
 import LiveCounterBadge from '@/components/LiveCounterBadge'
 
 export const metadata: Metadata = {
   title: 'AI-역량진단',
-  description: '랜딩 변형 V3 — 사회적 증거 + 후기 (다크 테마)',
+  description: '직장인들이 가장 많이 공유한 AI 테스트. 1분 무료 진단.',
 }
 
 export default function V3() {
   return (
     <main className="flex flex-col min-h-screen bg-black text-white">
-      <VariantAnalysis
-        id="v3"
-        label="V3 사회적 증거 (다크)"
-        color="#ef4444"
-        oneLiner="후기/추천사 하나만 추가해도 전환율 34% 상승"
-        strategy="밴드왜건 효과(Bandwagon Effect) + 사회적 증거"
-        desc="후기 카드 + '가장 많이 공유한 테스트' + 다크/빨강 공포 톤"
-        evidence={[
-          '후기/추천사 — 랜딩 전환율 34% 상승 (VWO)',
-          '별점 표시 — CTA 근처 별점 노출 시 전환 4.6~35% 상승 (Spiegel Research Center)',
-          '사용자 수 표시("50,000명 참여") — 가입율 12~15% 상승 (Basecamp 사례)',
-          '리뷰 영향력 — 소비자 92%가 구매 전 리뷰 확인 (Spiegel Research)',
-          '신뢰 배지/로고 — 보안 배지 전환율 42% 증가 (Baymard Institute)',
-        ]}
-        caveat="실제 데이터 기반이어야 효과적. 조작된 후기는 신뢰도 급락."
-        fit="★★★★ — 실제 참여 수치가 쌓이면 강력. 다크 톤은 공포소구와 시너지."
-      />
       <VariantTracker variant="v3" />
       <PageViewTracker />
 
@@ -71,7 +53,6 @@ export default function V3() {
       <section className="px-5 pb-8">
         <div className="space-y-3">
           {[
-            { name: '김O준', job: '마케터 3년차', text: '마케터인데 AI 활용형이 나올 줄 몰랐어요. 추천 직업이 진짜 맞아서 놀랐습니다.', type: 'HALF' },
             { name: '이O영', job: '개발자 5년차', text: '개발자라 안전할 줄 알았는데 대체 위험이 높다고 나와서 충격... 근데 솔직히 맞는 것 같아요.', type: 'ASLF' },
             { name: '박O수', job: '기획자 2년차', text: '1분도 안 걸렸는데 결과가 너무 자세해서 캡처해서 팀원들한테 다 보냈어요 ㅋㅋ', type: 'TSCF' },
           ].map(r => (

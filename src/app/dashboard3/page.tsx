@@ -7,6 +7,7 @@ import {
   TestTube,
   BookOpen,
   RefreshCw,
+  Search,
   CheckCircle2,
   AlertTriangle,
   AlertCircle,
@@ -241,7 +242,9 @@ function DashboardShell() {
     setLoading(false)
   }, [startDate, endDate])
 
-  useEffect(() => { load() }, [load])
+  // 초기 1회만 자동 로드. 이후 기간 변경은 '조회' 버튼 클릭 시 반영.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { load() }, [])
 
   const setPreset = (days: number) => {
     const now = new Date().toISOString().slice(0, 10)
@@ -389,8 +392,8 @@ function DashboardShell() {
             <span className="text-xs text-muted-foreground">~</span>
             <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="h-8 w-36 text-xs" />
             <Button size="sm" onClick={load} disabled={loading}>
-              <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-              새로고침
+              {loading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
+              조회
             </Button>
           </div>
           <span className="text-sm font-mono text-muted-foreground">{startDate} ~ {endDate}</span>

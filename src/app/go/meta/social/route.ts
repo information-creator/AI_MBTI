@@ -2,5 +2,5 @@ import type { NextRequest } from 'next/server'
 import { redirectWithUtm } from '@/lib/shortlink'
 
 export function GET(req: NextRequest) {
-  redirectWithUtm(req, '/', { source: 'kakao', medium: 'openchat', campaign: 'share' })
+  redirectWithUtm(req, '/v3', { source: 'meta', medium: 'paid', campaign: 'social' })
 }

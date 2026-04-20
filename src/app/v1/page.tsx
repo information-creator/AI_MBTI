@@ -1,34 +1,16 @@
 import type { Metadata } from 'next'
 import CTAButton from '@/components/CTAButton'
 import PageViewTracker from '@/components/PageViewTracker'
-import VariantAnalysis from '@/components/VariantAnalysis'
 import VariantTracker from '@/components/VariantTracker'
 
 export const metadata: Metadata = {
   title: 'AI-역량진단',
-  description: '랜딩 변형 V1 — 공포소구 + 카운트다운',
+  description: 'AI 시대, 2년 안에 당신의 직업이 사라질 수 있습니다. 1분 무료 진단.',
 }
 
 export default function V1() {
   return (
     <main className="flex flex-col min-h-screen bg-black text-white">
-      <VariantAnalysis
-        id="v1"
-        label="V1 공포소구"
-        color="#ef4444"
-        oneLiner="'잃을 수 있다'는 공포가 '얻을 수 있다'보다 2배 강하다"
-        strategy="손실 회피(Loss Aversion) 심리 활용"
-        desc="다크모드 + '2년 안에 사라집니다' + 위험도 미터"
-        evidence={[
-          'Kahneman/Tversky 전망 이론 — 손실 프레이밍이 이득 프레이밍 대비 행동 전환율 2배 (WhichTestWon A/B 검증)',
-          '카운트다운/긴급성 요소 — 전환율 평균 8.6% 상승, 최대 332% (CXL Institute)',
-          '긴급성 카피("Limited time") — CTR 14~22% 상승 (ConversionXL)',
-          '위험도 시각화 — 보험/보안 업종에서 정적 페이지 대비 참여율 18~25% 상승 (Optimizely)',
-          '다크 배경 — 테크/게임 타깃 체류시간 10~15% 증가 (UXCam)',
-        ]}
-        caveat="가짜 긴급성은 역효과 — 소비자 40%가 조작된 긴급성에 불신감 (Baymard Institute)"
-        fit="★★★☆ — AIMBTI의 'AI 대체 위험' 메시지와 자연스럽게 연결. 단, 과도한 공포는 이탈 유발 가능."
-      />
       <VariantTracker variant="v1" />
       <PageViewTracker />
 

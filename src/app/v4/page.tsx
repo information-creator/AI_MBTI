@@ -1,34 +1,16 @@
 import type { Metadata } from 'next'
 import CTAButton from '@/components/CTAButton'
 import PageViewTracker from '@/components/PageViewTracker'
-import VariantAnalysis from '@/components/VariantAnalysis'
 import VariantTracker from '@/components/VariantTracker'
 
 export const metadata: Metadata = {
   title: 'AI-역량진단',
-  description: '랜딩 변형 V4 — 극도로 심플한 미니멀',
+  description: 'AI 시대, 나는 살아남을까? 1분 무료 진단.',
 }
 
 export default function V4() {
   return (
     <main className="flex flex-col min-h-screen bg-white">
-      <VariantAnalysis
-        id="v4"
-        label="V4 극심플"
-        color="#0f172a"
-        oneLiner="CTA 하나만 남기면 전환율 266% 상승, GNB 제거하면 +100%"
-        strategy="선택의 역설 제거 + 인지 부하 최소화"
-        desc="화이트 + 텍스트만 + '나는 살아남을까?'"
-        evidence={[
-          'GNB 제거 — 전환율 28~100% 상승 (VWO / HubSpot)',
-          '단일 CTA vs 다중 — 단일 CTA 전환 266% 우위 (Unbounce)',
-          '요소 축소(10개→3~5개) — 전환 20~30% 상승 (Unbounce 벤치마크)',
-          'CTA 주변 여백 20% 확대 — 클릭률 20% 상승 (Google 내부 연구)',
-          'B2C 리드젠 100단어 미만 — 500단어 이상 대비 전환 50% 우위 (Unbounce 2024)',
-        ]}
-        caveat="정보가 너무 적으면 신뢰 부족. 고관여 상품에는 부적합할 수 있음."
-        fit="★★★★ — 1분짜리 무료 테스트에 최적. 모바일에서 로딩 빠르고 즉시 행동 유도."
-      />
       <VariantTracker variant="v4" />
       <PageViewTracker />
 

@@ -3,11 +3,23 @@
 모든 링크는 `mcodegc.com/go/코드` 형식
 GA4 트래픽 분석 페이지(/dashboard/traffic)에서 소스별로 추적 가능
 
-## Meta 광고
+> **자동 파라미터 통과**: `fbclid`, `gclid`, `utm_content`, `utm_term`은 리다이렉트 과정에서 자동으로 보존됩니다 (`src/lib/shortlink.ts`). Meta·Google 광고 어트리뷰션 유지 목적.
+
+## Meta 광고 — 3-캠페인 A/B (현재 운영 대상)
+
+| URL | 목적지 | GA4 소스 | utm_campaign | 전략 |
+|---|---|---|---|---|
+| `/go/meta/fear` | `/v1` | meta/paid | fear | 공포소구 (손실회피) |
+| `/go/meta/social` | `/v3` | meta/paid | social | 사회적증거 (밴드왜건) |
+| `/go/meta/simple` | `/v4` | meta/paid | simple | 인지부하 최소화 |
+
+Meta Ads Manager에는 이 3개 URL만 입력. `fbclid`는 Meta가 자동 부착 → 라우트가 목적지로 통과.
+
+## Meta 광고 — 기존 공통 링크
 
 | URL | GA4 소스 | 용도 |
 |---|---|---|
-| /go/me | meta/paid | Meta 광고 (공통) |
+| /go/me | meta/paid | Meta 광고 (공통 랜딩 `/`) |
 | /go/mi | meta_instagram/paid | 인스타그램 광고 |
 | /go/mf | meta_facebook/paid | 페이스북 광고 |
 | /go/ig | instagram/ad | (구버전, 기존 광고 호환용) |

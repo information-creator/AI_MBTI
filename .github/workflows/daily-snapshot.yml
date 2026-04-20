@@ -1,0 +1,30 @@
+name: Daily Snapshot
+
+on:
+  schedule:
+    # 매일 KST 00:05 (UTC 15:05) — 전날 데이터 확정 후 수집
+    - cron: '5 15 * * *'
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST /api/snapshot
+        env:
+          SNAPSHOT_URL: ${{ secrets.SNAPSHOT_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$SNAPSHOT_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "SNAPSHOT_URL 또는 CRON_SECRET 시크릿 누락"
+            exit 1
+          fi
+          response=$(curl -sS -w "\n%{http_code}" -X POST "$SNAPSHOT_URL" \
+            -H "Authorization: Bearer $CRON_SECRET")
+          body=$(echo "$response" | sed '$d')
+          code=$(echo "$response" | tail -n1)
+          echo "HTTP $code"
+          echo "$body"
+          if [ "$code" != "200" ]; then
+            exit 1
+          fi

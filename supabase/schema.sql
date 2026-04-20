@@ -98,6 +98,22 @@ create table if not exists public.daily_funnel_metrics (
 create index if not exists daily_funnel_metrics_date_idx on public.daily_funnel_metrics(date desc);
 
 -- =========================================
+-- 전자책 수강생 일별 스냅샷 (메타코드 API 크롤링)
+-- =========================================
+create table if not exists public.daily_ebook_metrics (
+  id         uuid primary key default gen_random_uuid(),
+  date       date not null,
+  ebook_id   text not null,
+  title      text not null,
+  students   integer not null default 0,
+  created_at timestamptz default now(),
+  unique (date, ebook_id)
+);
+
+create index if not exists daily_ebook_metrics_date_idx     on public.daily_ebook_metrics(date desc);
+create index if not exists daily_ebook_metrics_ebook_id_idx on public.daily_ebook_metrics(ebook_id);
+
+-- =========================================
 -- RLS (익명 insert/select 허용)
 -- =========================================
 alter table public.results_v2           enable row level security;
@@ -105,6 +121,7 @@ alter table public.coupons              enable row level security;
 alter table public.events               enable row level security;
 alter table public.daily_ads_metrics    enable row level security;
 alter table public.daily_funnel_metrics enable row level security;
+alter table public.daily_ebook_metrics  enable row level security;
 
 -- results_v2
 create policy "anon insert results_v2" on public.results_v2 for insert with check (true);
@@ -128,3 +145,8 @@ create policy "anon update daily_ads_metrics" on public.daily_ads_metrics for up
 create policy "anon insert daily_funnel_metrics" on public.daily_funnel_metrics for insert with check (true);
 create policy "anon select daily_funnel_metrics" on public.daily_funnel_metrics for select using (true);
 create policy "anon update daily_funnel_metrics" on public.daily_funnel_metrics for update using (true) with check (true);
+
+-- daily_ebook_metrics
+create policy "anon insert daily_ebook_metrics" on public.daily_ebook_metrics for insert with check (true);
+create policy "anon select daily_ebook_metrics" on public.daily_ebook_metrics for select using (true);
+create policy "anon update daily_ebook_metrics" on public.daily_ebook_metrics for update using (true) with check (true);

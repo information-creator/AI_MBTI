@@ -147,7 +147,7 @@ Supabase `events` 테이블에서 `metadata->>ab_variant`로 필터 집계.
 }
 ```
 
-**변형 ID** — `v1` (공포소구), `v3` (사회적 증거), `v4` (극심플). `/preview/v1,v3,v4` 랜딩에서 이벤트 기록 시 `metadata.ab_variant`에 값 주입.
+**변형 ID** — `v1` (공포소구), `v3` (사회적 증거), `v4` (극심플). `/v1,v3,v4` 공개 랜딩 또는 `/preview/v1,v3,v4` 내부 QA 랜딩에서 이벤트 기록 시 `metadata.ab_variant`에 값 주입.
 
 ---
 
@@ -188,6 +188,71 @@ Supabase `events` 테이블에서 `metadata->>ab_variant`로 필터 집계.
 - (Meta/Google 캠페인 스냅샷은 추가 가능)
 
 **사용처** — 장기 트렌드 조회 (현재 대시보드에는 미반영, 스키마만 준비)
+
+---
+
+## 8. 단축 URL 라우트 (`/go/*`) — 리다이렉트 + UTM 자동 부착
+
+광고·공유 링크용 서버사이드 리다이렉트. 공통 헬퍼(`src/lib/shortlink.ts`)로 UTM 박고 fbclid·gclid 통과.
+
+**인증 불필요** — 공개 링크
+**응답** — 307 Redirect (목적지에 `utm_source/medium/campaign` + 통과된 `fbclid/gclid/utm_content/utm_term`)
+
+### Meta 3-캠페인 (A/B 테스트)
+
+| 단축 URL | 목적지 | utm_source | utm_campaign |
+|---|---|---|---|
+| `/go/meta/fear` | `/v1` | meta | fear |
+| `/go/meta/social` | `/v3` | meta | social |
+| `/go/meta/simple` | `/v4` | meta | simple |
+
+### 기존 공유·광고 링크
+
+| URL | 목적지 | utm_source | medium | campaign | 용도 |
+|---|---|---|---|---|---|
+| `/go/me` | `/` | meta | paid | promotion | Meta 통합 광고 |
+| `/go/mi` | `/` | meta_instagram | paid | promotion | 인스타그램 광고 |
+| `/go/mf` | `/` | meta_facebook | paid | promotion | 페이스북 광고 |
+| `/go/ig` | `/` | instagram | ad | promotion | (구버전 호환) |
+| `/go/ad` | `/` | kakao_biz | ad | promotion | 카카오 비즈 |
+| `/go/ks` | `/` | kakao | share | result | 카카오 공유 |
+| `/go/kt` | `/` | kakao | openchat | share | 카카오 오픈채팅 |
+| `/go/kakao` | `/` | kakao | chat | share | 카카오톡 공유 |
+| `/go/ls` | `/` | link | share | result | 링크 복사 |
+| `/go/yt` | `/` | youtube | post | share | 유튜브 |
+| `/go/sms` | `/` | sms | text | promotion | 문자 |
+
+### 새 단축 URL 만들기
+
+`src/app/go/{경로}/route.ts`:
+```ts
+import type { NextRequest } from 'next/server'
+import { redirectWithUtm } from '@/lib/shortlink'
+
+export function GET(req: NextRequest) {
+  redirectWithUtm(req, '/목적지', {
+    source: 'xxx', medium: 'yyy', campaign: 'zzz',
+  })
+}
+```
+
+헬퍼가 `fbclid`·`gclid`·`utm_content`·`utm_term`를 자동 통과. 다른 파라미터도 통과 필요하면 `src/lib/shortlink.ts`의 `PASSTHROUGH_KEYS` 배열에 추가.
+
+---
+
+## 9. `POST /api/export` — 대시보드 CSV 내보내기
+
+기간 필터의 전 섹션 데이터를 단일 CSV로 묶어 다운로드. LLM(GPT/Claude)에 첨부해 분석 용도.
+
+**Query params** — `pass`, `since`, `until`
+**응답** — `text/csv; charset=utf-8` (UTF-8 BOM 포함), `Content-Disposition: attachment`
+
+**CSV 섹션 구성**
+1. SUMMARY — 기간 합계·평균
+2. DAILY METRICS — 일별 wide 테이블 (퍼널 + Meta + Google + 전자책)
+3. EBOOK DETAIL — 전자책별 현재 + 1일/7일 delta
+4. AB TEST BY VARIANT — v1/v3/v4 퍼널 비교
+5. RESULT TYPE DISTRIBUTION — 16유형 분포 + 평균 AI 점수
 
 ---
 

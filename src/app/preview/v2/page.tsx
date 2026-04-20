@@ -7,7 +7,7 @@ import VariantTracker from '@/components/VariantTracker'
 import { typeInfo } from '@/lib/quiz'
 
 export const metadata: Metadata = {
-  title: 'AI-MBTI | V2 기본안',
+  title: 'AI-역량진단',
   description: '랜딩 변형 V2 — 기존안 (인디고/퍼플 그라디언트 + 16유형 미리보기)',
 }
 
@@ -41,7 +41,7 @@ export default function V2() {
       {/* 헤더 */}
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <a href="https://mcodegc.com/" className="text-slate-900 font-bold text-lg tracking-tight">
-            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-MBTI</span>
+            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-역량진단</span>
         </a>
         <CTAButton
           location="header_v2"
@@ -153,7 +153,7 @@ export default function V2() {
       {/* 푸터 */}
       <footer className="px-5 py-6 border-t border-slate-100 text-center text-slate-400 text-xs">
         <p>
-          © 2026 AI-MBTI ·{' '}
+          © 2026 AI-역량진단 ·{' '}
           <a href="https://metacodes.co.kr/" className="hover:text-slate-600 transition-colors">
             metacodes.co.kr
           </a>

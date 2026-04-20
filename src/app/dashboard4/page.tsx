@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { todayKst, daysAgoKst, formatKst } from '@/lib/date'
 import {
   BarChart3,
   TrendingDown,
@@ -12,6 +13,7 @@ import {
   AlertCircle,
   Globe,
   Ruler,
+  Download,
 } from 'lucide-react'
 
 function MetaIcon({ className }: { className?: string }) {
@@ -91,6 +93,7 @@ const EBOOK_EFFECTIVE_RATE = 0.7
 type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic' | 'benchmarks'
 type EbookItem = { id: number | string; title: string; students: number }
 type EbooksData = { ebooks: EbookItem[]; fetchedAt: string }
+type EbookSnapshot = { date: string; ebook_id: string; title: string; students: number }
 
 type TrafficSource = { source: string; medium: string; users: number; sessions: number; engaged: number }
 type TrafficCountry = { country: string; users: number; sessions: number; engaged: number }
@@ -119,12 +122,6 @@ const VARIANT_LABELS: Record<string, { name: string; color: string }> = {
   v1: { name: 'V1 공포소구', color: 'var(--chart-1)' },
   v3: { name: 'V3 사회적 증거', color: 'var(--chart-2)' },
   v4: { name: 'V4 극심플', color: 'var(--chart-3)' },
-}
-
-function daysAgo(dateStr: string, days: number) {
-  const d = new Date(dateStr)
-  d.setDate(d.getDate() - days)
-  return d.toISOString().slice(0, 10)
 }
 
 export default function Dashboard4Page() {
@@ -180,25 +177,29 @@ export default function Dashboard4Page() {
 function DashboardShell() {
   const [view, setView] = useState<View>('overview')
   const [startDate, setStartDate] = useState('2026-03-03')
-  const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
+  const [endDate, setEndDate] = useState(todayKst())
 
   const [ga4, setGa4] = useState<GA4Data | null>(null)
   const [meta, setMeta] = useState<MetaAdsData | null>(null)
   const [google, setGoogle] = useState<GoogleAdsData | null>(null)
   const [ab, setAb] = useState<ABTestData[] | null>(null)
   const [ebooks, setEbooks] = useState<EbooksData | null>(null)
+  const [ebookHistory, setEbookHistory] = useState<EbookSnapshot[]>([])
   const [traffic, setTraffic] = useState<TrafficData | null>(null)
   const [loading, setLoading] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [g, m, goog, abr, eb, tr] = await Promise.allSettled([
+    const histSince = daysAgoKst(30)
+    const histUntil = todayKst()
+    const [g, m, goog, abr, eb, tr, snap] = await Promise.allSettled([
       fetchGA4(startDate, endDate),
       fetchMetaAds(startDate, endDate),
       fetchGoogleAds(startDate, endDate),
       fetchABTest(startDate, endDate),
       fetch(`/api/metacode-ebooks?pass=${PASS}`).then(r => (r.ok ? r.json() : null)),
       fetch(`/api/ga4-traffic?pass=${PASS}&start=${startDate}&end=${endDate}`).then(r => (r.ok ? r.json() : null)),
+      fetch(`/api/snapshot?pass=${PASS}&since=${histSince}&until=${histUntil}`).then(r => (r.ok ? r.json() : null)),
     ])
     if (g.status === 'fulfilled') setGa4(g.value)
     if (m.status === 'fulfilled') setMeta(m.value)
@@ -206,15 +207,16 @@ function DashboardShell() {
     if (abr.status === 'fulfilled') setAb(abr.value.variants)
     if (eb.status === 'fulfilled' && eb.value) setEbooks(eb.value)
     if (tr.status === 'fulfilled' && tr.value) setTraffic(tr.value)
+    if (snap.status === 'fulfilled' && snap.value?.ebooks) setEbookHistory(snap.value.ebooks as EbookSnapshot[])
     setLoading(false)
   }, [startDate, endDate])
 
   useEffect(() => { load() }, [load])
 
   const setPreset = (days: number) => {
-    const now = new Date().toISOString().slice(0, 10)
+    const now = todayKst()
     setEndDate(now)
-    setStartDate(daysAgo(now, days - 1))
+    setStartDate(daysAgoKst(days - 1, now))
   }
 
   const ev = ga4?.events ?? {}
@@ -321,19 +323,13 @@ function DashboardShell() {
       `}</style>
       {/* 상단 헤더 */}
       <header className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b px-3 py-2.5 space-y-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 min-w-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/favicon.png" alt="AIMBTI" className="w-7 h-7 rounded-md object-cover shrink-0" />
-            <div className="min-w-0">
-              <p className="text-sm font-black leading-none truncate">{viewTitle[view]}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">v4 · 모바일</p>
-            </div>
+        <div className="flex items-center gap-2 min-w-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/favicon.png" alt="AIMBTI" className="w-7 h-7 rounded-md object-cover shrink-0" />
+          <div className="min-w-0">
+            <p className="text-sm font-black leading-none truncate">{viewTitle[view]}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">v4 · 모바일</p>
           </div>
-          <Button size="sm" variant="outline" onClick={load} disabled={loading} className="h-7 px-2 text-xs shrink-0">
-            <RefreshCw className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} />
-            새로고침
-          </Button>
         </div>
 
         {/* 날짜 프리셋 + 직접 입력 */}
@@ -371,6 +367,26 @@ function DashboardShell() {
       </header>
 
       <div className="dashboard4-content p-3 pb-10">
+        {/* 액션 바 (CSV · 새로고침) */}
+        <div className="flex items-center justify-end gap-1 mb-3">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              window.location.href = `/api/export?pass=${PASS}&since=${startDate}&until=${endDate}`
+            }}
+            className="h-7 px-2 text-xs"
+            title="현재 기간 데이터를 CSV로 다운로드"
+          >
+            <Download className="h-3 w-3" />
+            CSV
+          </Button>
+          <Button size="sm" variant="outline" onClick={load} disabled={loading} className="h-7 px-2 text-xs">
+            <RefreshCw className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} />
+            새로고침
+          </Button>
+        </div>
+
         {view === 'overview' && (
           <OverviewTab
             overallLevel={overallLevel}
@@ -405,7 +421,7 @@ function DashboardShell() {
         {view === 'meta' && <AdsTab title="Meta" totals={meta?.totals} campaigns={meta?.campaigns ?? []} benchmark={BENCHMARKS.ads.meta} />}
         {view === 'google' && <AdsTab title="Google" totals={google?.totals} campaigns={google?.campaigns ?? []} benchmark={BENCHMARKS.ads.google} />}
         {view === 'abtest' && <ABTestTab variants={ab ?? []} />}
-        {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} />}
+        {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} history={ebookHistory} />}
         {view === 'benchmarks' && <BenchmarksTab />}
       </div>
     </main>
@@ -1103,6 +1119,18 @@ function _BenchmarkSidebarUnused() {
   )
 }
 
+function DeltaBadge({ label, value, compact }: { label: string; value: number; compact?: boolean }) {
+  const sign = value > 0 ? '+' : value < 0 ? '' : '±'
+  const color = value > 0 ? 'text-green-600 bg-green-50 border-green-200' : value < 0 ? 'text-red-600 bg-red-50 border-red-200' : 'text-muted-foreground bg-muted border-transparent'
+  const size = compact ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2 py-1'
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-md border tabular-nums font-semibold ${size} ${color}`}>
+      <span className="opacity-70">{label}</span>
+      <span>{sign}{value.toLocaleString()}</span>
+    </span>
+  )
+}
+
 function KpiCard({ label, value, sub, highlight, statusColor }: { label: React.ReactNode; value: string; sub?: string; highlight?: boolean; statusColor?: DiagLevel | null }) {
   return (
     <Card className={highlight ? 'ring-primary/50' : ''}>
@@ -1735,7 +1763,7 @@ function ABTestTab({ variants }: { variants: ABTestData[] }) {
 }
 
 /* ========== 전자책 뷰 ========== */
-function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number }) {
+function EbooksTab({ ebooks, total, history }: { ebooks: EbooksData | null; total: number; history: EbookSnapshot[] }) {
   if (!ebooks) {
     return (
       <Card>
@@ -1747,7 +1775,29 @@ function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number
     )
   }
 
+  const byEbook: Record<string, Map<string, number>> = {}
+  for (const s of history) {
+    if (!byEbook[s.ebook_id]) byEbook[s.ebook_id] = new Map()
+    byEbook[s.ebook_id].set(s.date, s.students)
+  }
+  const today = todayKst()
+  const yesterday = daysAgoKst(1, today)
+  const weekAgo = daysAgoKst(7, today)
+  const lookupBefore = (id: string, targetDate: string): number | null => {
+    const m = byEbook[id]
+    if (!m) return null
+    const dates = Array.from(m.keys()).filter(d => d <= targetDate).sort()
+    if (dates.length === 0) return null
+    return m.get(dates[dates.length - 1]) ?? null
+  }
+
   const rawTotal = ebooks.ebooks.reduce((s, e) => s + e.students, 0)
+  const totalYesterday = ebooks.ebooks.reduce((s, e) => s + (lookupBefore(String(e.id), yesterday) ?? e.students), 0)
+  const totalWeekAgo = ebooks.ebooks.reduce((s, e) => s + (lookupBefore(String(e.id), weekAgo) ?? e.students), 0)
+  const delta1dTotal = rawTotal - totalYesterday
+  const delta7dTotal = rawTotal - totalWeekAgo
+  const hasHistory = history.length > 0
+
   return (
     <div className="space-y-4">
       <Card>
@@ -1766,8 +1816,16 @@ function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number
               <p className="text-3xl font-black tabular-nums leading-tight">{total.toLocaleString()}<span className="text-sm font-bold ml-1">명</span></p>
             </div>
           </div>
+          {hasHistory ? (
+            <div className="flex gap-2 mt-2">
+              <DeltaBadge label="어제 대비" value={delta1dTotal} />
+              <DeltaBadge label="7일 증가" value={delta7dTotal} />
+            </div>
+          ) : (
+            <p className="text-[10px] text-muted-foreground mt-2">증감 추적은 일일 스냅샷 누적 후 표시됩니다</p>
+          )}
           <p className="text-[10px] text-muted-foreground mt-2">
-            조회 {new Date(ebooks.fetchedAt).toLocaleString('ko-KR')}
+            조회 {formatKst(ebooks.fetchedAt)}
           </p>
         </CardContent>
       </Card>
@@ -1776,12 +1834,22 @@ function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number
         {ebooks.ebooks.map(e => {
           const title = String(e.title).replace(/\[무료\/26년 최신버전\]\s*/g, '')
           const effective = Math.floor(e.students * EBOOK_EFFECTIVE_RATE)
+          const prev1d = lookupBefore(String(e.id), yesterday)
+          const prev7d = lookupBefore(String(e.id), weekAgo)
+          const d1 = prev1d !== null ? e.students - prev1d : null
+          const d7 = prev7d !== null ? e.students - prev7d : null
           return (
             <Card key={e.id}>
               <CardHeader className="pb-2">
                 <CardDescription className="line-clamp-2 leading-snug text-sm">{title}</CardDescription>
                 <CardTitle className="text-4xl font-black tabular-nums">{effective.toLocaleString()}</CardTitle>
                 <CardDescription className="text-xs">원본 {e.students.toLocaleString()}</CardDescription>
+                {(d1 !== null || d7 !== null) && (
+                  <div className="flex gap-1.5 pt-1">
+                    {d1 !== null && <DeltaBadge label="1일" value={d1} compact />}
+                    {d7 !== null && <DeltaBadge label="7일" value={d7} compact />}
+                  </div>
+                )}
               </CardHeader>
             </Card>
           )

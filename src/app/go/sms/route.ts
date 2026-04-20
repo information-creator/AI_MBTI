@@ -1,5 +1,6 @@
-import { redirect } from 'next/navigation'
+import type { NextRequest } from 'next/server'
+import { redirectWithUtm } from '@/lib/shortlink'
 
-export function GET() {
-  redirect('/?utm_source=sms&utm_medium=text&utm_campaign=promotion')
+export function GET(req: NextRequest) {
+  redirectWithUtm(req, '/', { source: 'sms', medium: 'text', campaign: 'promotion' })
 }

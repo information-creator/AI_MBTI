@@ -792,7 +792,7 @@ export default function ResultClient({
 
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <a href="https://mcodegc.com/" className="text-slate-900 font-bold text-lg" onClick={() => gtagEvent('exit_click', { destination: 'https://mcodegc.com/', label: 'home_logo', type_code: typeCode })}>
-          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-MBTI</span>
+          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI-역량진단</span>
         </a>
         <Link
           href="/test"
