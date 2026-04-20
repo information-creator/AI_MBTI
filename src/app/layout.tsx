@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ko_KR',
   },
+  other: {
+    'facebook-domain-verification': 'kzgiof2kuzedxeo2x0o7pcxr5oki58',
+  },
 }
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
