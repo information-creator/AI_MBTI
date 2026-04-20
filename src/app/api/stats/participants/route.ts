@@ -1,5 +1,6 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data'
 import { NextResponse } from 'next/server'
+import path from 'path'
 
 const PROPERTY_ID = '531252719'
 const START_DATE = '2026-01-01'
@@ -11,7 +12,6 @@ function getClient() {
     const credentials = JSON.parse(process.env.GA4_SERVICE_ACCOUNT_KEY)
     return new BetaAnalyticsDataClient({ credentials })
   }
-  const path = require('path')
   return new BetaAnalyticsDataClient({
     keyFilename: path.join(process.cwd(), 'cred', 'ga4-key.json'),
   })

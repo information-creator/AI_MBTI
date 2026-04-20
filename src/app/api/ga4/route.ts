@@ -1,5 +1,6 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data'
 import { NextResponse } from 'next/server'
+import path from 'path'
 
 const PROPERTY_ID = '531252719'
 
@@ -10,7 +11,6 @@ function getClient() {
     return new BetaAnalyticsDataClient({ credentials })
   }
   // 로컬: 파일에서 읽기
-  const path = require('path')
   return new BetaAnalyticsDataClient({
     keyFilename: path.join(process.cwd(), 'cred', 'ga4-key.json'),
   })
