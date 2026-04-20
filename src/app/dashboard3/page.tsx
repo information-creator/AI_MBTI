@@ -498,7 +498,7 @@ function OverviewTab(p: {
       {/* KPI 4개 */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KpiCard label="총 방문" value={p.totalUsers.toLocaleString()} sub={`결과 확인 ${p.resultView.toLocaleString()}명`} />
-        <KpiCard label="2차 전환" value={p.secondaryTotal.toLocaleString()} sub={`E2E ${p.e2e.toFixed(2)}%`} highlight />
+        <KpiCard label={<><span>2차 전환</span><span className="block text-xs font-normal text-muted-foreground">(단톡·전자책·공유 클릭)</span></>} value={p.secondaryTotal.toLocaleString()} sub={`E2E ${p.e2e.toFixed(2)}%`} highlight />
         <KpiCard label="유효 CPA (전환당 비용)" value={p.effectiveCPA > 0 ? `₩${p.effectiveCPA.toLocaleString()}` : '-'} sub={p.cpaCmp ? `목표 대비 ${p.cpaCmp.label}` : '목표 ₩5,000'} statusColor={p.cpaCmp?.level} />
         <KpiCard label="전자책 수강" value={p.ebooksTotal.toLocaleString()} sub="메타코드 실등록" />
       </div>
@@ -565,7 +565,10 @@ function OverviewTab(p: {
       {/* 2차 전환 분해 */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">2차 전환 분해</CardTitle>
+          <CardTitle className="text-lg">
+            2차 전환 분해
+            <span className="block text-sm font-normal text-muted-foreground">(단톡·전자책·공유 클릭)</span>
+          </CardTitle>
           <CardDescription className="text-sm">결과 확인 {p.resultViewCount.toLocaleString()}명 중 각 채널 클릭 비율</CardDescription>
         </CardHeader>
         <CardContent>
@@ -1179,7 +1182,7 @@ function _BenchmarkSidebarUnused() {
   )
 }
 
-function KpiCard({ label, value, sub, highlight, statusColor }: { label: string; value: string; sub?: string; highlight?: boolean; statusColor?: DiagLevel | null }) {
+function KpiCard({ label, value, sub, highlight, statusColor }: { label: React.ReactNode; value: string; sub?: string; highlight?: boolean; statusColor?: DiagLevel | null }) {
   return (
     <Card className={highlight ? 'ring-primary/50' : ''}>
       <CardHeader className="pb-2">

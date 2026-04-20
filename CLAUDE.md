@@ -14,6 +14,15 @@ npm run lint     # ESLint
 
 테스트 프레임워크 없음. 수동 확인 또는 브라우저 콘솔로 검증.
 
+## 사용자 트리거 키워드
+
+- **`push`** (단독) 또는 **`/push`** → `.claude/commands/push.md` 절차 실행:
+  1. `git status` 확인
+  2. `npm run lint` + `npm run build` 병렬 검증 (하나라도 실패 시 중단)
+  3. 변경사항 기반 커밋 메시지 작성 (Conventional Commits, 한국어 본문 OK)
+  4. `git add` (민감 파일 체크) → `git commit` (Co-Authored-By 포함) → `git push`
+  5. 실패 시 자동 수정 금지, 사용자에게 에러 보고
+
 ## 프로젝트 개요
 
 AI 시대 생존력 진단 서비스 (AIMBTI). 20문항 테스트 → 16가지 유형 → 결과 페이지 + 부트캠프 추천.
