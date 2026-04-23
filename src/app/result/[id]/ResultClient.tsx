@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent, gtagConversion } from '@/lib/ga'
-import { fbqEvent } from '@/lib/meta'
+import { fbqLeadOnce } from '@/lib/meta'
 import { trackEvent } from '@/lib/track'
 
 type Scores = { a: number; b: number; c: number; d: number; e: number }
@@ -99,6 +99,8 @@ export default function ResultClient({
   useEffect(() => {
     gtagEvent('result_view', { type_code: typeCode, ai_score: aiScore })
     trackEvent('result_view', typeCode, { ai_score: aiScore })
+    // 결과 페이지 진입 시 Lead 1회 발사 (세션당 1회 제한)
+    fbqLeadOnce({ content_name: 'result_view', type_code: typeCode })
   }, [typeCode, aiScore])
 
   // 결과 페이지 이탈 추적 (뒤로가기 / 탭 닫기)
@@ -117,7 +119,6 @@ export default function ResultClient({
   const [copied, setCopied] = useState(false)
   const [shareLoading, setShareLoading] = useState(false)
   const [displayScore, setDisplayScore] = useState(0)
-  const [instaToast, setInstaToast] = useState(false)
   const [ebookPage, setEbookPage] = useState(0)
 
   useEffect(() => {
@@ -136,10 +137,10 @@ export default function ResultClient({
 
   const testImages = Array.from({ length: 10 }, (_, i) => `/zunza/DE/DE_테스트_${String(i + 1).padStart(2, '0')}.png`)
 
-  const daImages = Array.from({ length: 6 }, (_, i) => `/zunza/DA/${i + 1}.png`)
-  const deImages = Array.from({ length: 6 }, (_, i) => `/zunza/DE/${i + 1}.png`)
-  const llmImages = Array.from({ length: 8 }, (_, i) => `/zunza/AILLM/${i + 1}.png`)
-  const aiServiceImages = Array.from({ length: 6 }, (_, i) => `/zunza/AISERVICE/${i + 1}.png`)
+  const daImages = Array.from({ length: 3 }, (_, i) => `/zunza/DA/${i + 1}.png`)
+  const deImages = Array.from({ length: 4 }, (_, i) => `/zunza/DE/${i + 1}.png`)
+  const llmImages = Array.from({ length: 3 }, (_, i) => `/zunza/AILLM/${i + 1}.png`)
+  const aiServiceImages = Array.from({ length: 3 }, (_, i) => `/zunza/AISERVICE/${i + 1}.png`)
 
   const ebookImageMap: Record<string, string[]> = {
     '데이터 엔지니어': deImages,
@@ -531,225 +532,6 @@ export default function ResultClient({
     setShareLoading(false)
   }
 
-  async function handleInstagramShare() {
-    gtagEvent('exit_click', { label: 'share_instagram', type_code: typeCode })
-    setShareLoading(true)
-
-    const dataUrl = await drawShareCard()
-    if (!dataUrl) { alert('이미지 생성 실패'); setShareLoading(false); return }
-
-    // 이미지 다운로드
-    const a = document.createElement('a')
-    a.href = dataUrl
-    a.download = `AIMBTI_${info.title}.jpg`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-
-    setInstaToast(true)
-    setShareLoading(false)
-  }
-
-  async function drawKakaoCard(): Promise<string> {
-    const canvas = canvasRef.current
-    if (!canvas) return ''
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return ''
-
-    try {
-      const font = new FontFace('NotoSansKR', 'url(https://fonts.gstatic.com/s/notosanskr/v36/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.0.woff2) format("woff2")')
-      document.fonts.add(await font.load())
-    } catch { /* 시스템 폰트 폴백 */ }
-
-    type CtxWithRoundRect = CanvasRenderingContext2D & { roundRect?: (x: number, y: number, w: number, h: number, r: number) => void }
-    const ctxR = ctx as CtxWithRoundRect
-    if (!ctxR.roundRect) {
-      ctxR.roundRect = function(x: number, y: number, w: number, h: number, r: number) {
-        ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
-        ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
-        ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
-        ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
-        ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-      }
-    }
-
-    const W = 800, H = 1070
-    canvas.width = W; canvas.height = H
-    const KR = '"NotoSansKR", "Apple SD Gothic Neo", "Malgun Gothic", Arial'
-
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H)
-
-    const topBand = ctx.createLinearGradient(0, 0, W, 0)
-    topBand.addColorStop(0, info.color); topBand.addColorStop(1, '#6366f1')
-    ctx.fillStyle = topBand; ctx.fillRect(0, 0, W, 10)
-
-    ctx.beginPath(); ctx.arc(W - 50, 220, 140, 0, Math.PI * 2)
-    ctx.fillStyle = info.color + '12'; ctx.fill()
-    ctx.beginPath(); ctx.arc(50, 1000, 100, 0, Math.PI * 2)
-    ctx.fillStyle = '#6366f110'; ctx.fill()
-
-    ctx.font = `bold 22px ${KR}`; ctx.fillStyle = '#6366f1'
-    ctx.fillText('AIMBTI', 50, 98)
-
-    try {
-      const charImg = new window.Image()
-      charImg.crossOrigin = 'anonymous'
-      charImg.src = `/characters/${encodeURIComponent(info.title)}.png`
-      await new Promise<void>((resolve) => {
-        charImg.onload = () => resolve(); charImg.onerror = () => resolve(); setTimeout(resolve, 3000)
-      })
-      ctx.drawImage(charImg, W - 270, 56, 230, 230)
-    } catch { /* 폴백 */ }
-
-    const titleLines = info.title.length > 12 ? [info.title.slice(0, 12), info.title.slice(12)] : [info.title]
-    ctx.font = `bold 46px ${KR}`; ctx.fillStyle = '#0f172a'; ctx.textAlign = 'left'
-    titleLines.forEach((line, i) => ctx.fillText(line, 50, 148 + i * 54))
-    const titleBottom = 148 + titleLines.length * 54
-
-    ctx.font = `18px ${KR}`; ctx.fillStyle = '#64748b'
-    ctx.fillText(info.subtitle, 50, titleBottom + 20)
-
-    // 성향 5각형 (유형명 바로 아래)
-    const pentaStartY = titleBottom + 50
-    ctx.font = `bold 18px ${KR}`; ctx.fillStyle = '#94a3b8'
-    ctx.fillText('나의 성향 DNA', 50, pentaStartY)
-
-    const pCx = W / 2, pCy = pentaStartY + 160, pR = 120
-    const pN = 5
-    const pAngles = Array.from({ length: pN }, (_, i) => -Math.PI / 2 + i * 2 * Math.PI / pN)
-    const pVals = [scores.a / 4, scores.b / 4, scores.c / 4, scores.d / 4, scores.e / 4]
-    const pLabelsHi = ['AI 활용도', 'AI 민감도', '독립성', '논리력', '실행력']
-    const pLabelsLo = ['', '', '', '', '']
-
-    // 그리드
-    for (const level of [0.25, 0.5, 0.75, 1.0]) {
-      ctx.beginPath()
-      pAngles.forEach((a, i) => {
-        const x = pCx + pR * level * Math.cos(a), y = pCy + pR * level * Math.sin(a)
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
-      })
-      ctx.closePath(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; ctx.stroke()
-    }
-    // 축선
-    pAngles.forEach(a => {
-      ctx.beginPath(); ctx.moveTo(pCx, pCy)
-      ctx.lineTo(pCx + pR * Math.cos(a), pCy + pR * Math.sin(a))
-      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; ctx.stroke()
-    })
-    // 데이터 다각형
-    ctx.beginPath()
-    pVals.forEach((v, i) => {
-      const r = pR * Math.max(v, 0.05)
-      const x = pCx + r * Math.cos(pAngles[i]), y = pCy + r * Math.sin(pAngles[i])
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
-    })
-    ctx.closePath(); ctx.fillStyle = info.color + '30'; ctx.fill()
-    ctx.strokeStyle = info.color; ctx.lineWidth = 3; ctx.stroke()
-    // 꼭짓점 점
-    pVals.forEach((v, i) => {
-      const r = pR * Math.max(v, 0.05)
-      ctx.beginPath(); ctx.arc(pCx + r * Math.cos(pAngles[i]), pCy + r * Math.sin(pAngles[i]), 6, 0, Math.PI * 2)
-      ctx.fillStyle = info.color; ctx.fill()
-    })
-    // 레이블
-    const labelR = pR + 42
-    pAngles.forEach((a, i) => {
-      const lx = pCx + labelR * Math.cos(a), ly = pCy + labelR * Math.sin(a)
-      const dominant = pVals[i] >= 0.5
-      const main = dominant ? pLabelsHi[i] : (pLabelsLo[i] || pLabelsHi[i])
-      const sub = dominant ? pLabelsLo[i] : pLabelsHi[i]
-      const cosA = Math.cos(a)
-      ctx.textAlign = cosA > 0.1 ? 'left' : cosA < -0.1 ? 'right' : 'center'
-      ctx.font = `bold 16px ${KR}`; ctx.fillStyle = '#1e293b'; ctx.fillText(main, lx, ly - 2)
-      if (sub) { ctx.font = `13px ${KR}`; ctx.fillStyle = '#94a3b8'; ctx.fillText(sub, lx, ly + 16) }
-    })
-    ctx.textAlign = 'left'
-
-    // AI 점수 (pentagon 아래)
-    const scoreY = pCy + pR + 56
-    ctx.beginPath(); ctx.fillStyle = '#f8fafc'; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.fill()
-    ctx.beginPath(); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; ctxR.roundRect!(50, scoreY, W - 100, 116, 16); ctx.stroke()
-    ctx.font = `bold 15px ${KR}`; ctx.fillStyle = '#64748b'; ctx.fillText('AI 대체 가능성', 80, scoreY + 26)
-    ctx.font = `bold 50px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(`${aiScore}%`, 80, scoreY + 78)
-    ctx.font = `17px ${KR}`; ctx.fillStyle = scoreColor; ctx.fillText(scoreLabel, 220, scoreY + 78)
-    const barY = scoreY + 92
-    ctx.beginPath(); ctx.fillStyle = '#e2e8f0'; ctxR.roundRect!(80, barY, W - 160, 12, 6); ctx.fill()
-    const bg = ctx.createLinearGradient(80, 0, W - 160, 0)
-    bg.addColorStop(0, '#6366f1'); bg.addColorStop(1, scoreColor)
-    ctx.beginPath(); ctx.fillStyle = bg; ctxR.roundRect!(80, barY, (W - 160) * (aiScore / 100), 12, 6); ctx.fill()
-
-    // 인사이트 카드
-    const insightItems = [
-      { emoji: '💪', label: '강점', text: info.insight.strength, bg: '#f0fdf4', border: '#bbf7d0', labelColor: '#15803d', textColor: '#166534' },
-      { emoji: '🚨', label: '현실', text: info.insight.crisis, bg: '#fff1f2', border: '#fecdd3', labelColor: '#dc2626', textColor: '#9f1239' },
-      { emoji: '🎯', label: '할 것', text: info.insight.direction, bg: info.color + '0d', border: info.color + '30', labelColor: info.color, textColor: info.color },
-    ]
-    let iy = scoreY + 128
-    for (const item of insightItems) {
-      ctx.beginPath(); ctx.fillStyle = item.bg; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.fill()
-      ctx.beginPath(); ctx.strokeStyle = item.border; ctx.lineWidth = 1.5; ctxR.roundRect!(50, iy, W - 100, 68, 12); ctx.stroke()
-      ctx.font = `20px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(item.emoji, 74, iy + 26)
-      ctx.font = `bold 13px ${KR}`; ctx.fillStyle = item.labelColor; ctx.fillText(item.label, 110, iy + 20)
-      const short = item.text.length > 32 ? item.text.slice(0, 32) + '…' : item.text
-      ctx.font = `14px ${KR}`; ctx.fillStyle = item.textColor; ctx.fillText(short, 110, iy + 42)
-      iy += 78
-    }
-
-    ctx.font = `15px ${KR}`; ctx.fillStyle = '#94a3b8'
-    ctx.fillText('aimbti.vercel.app', W - 195, iy + 40)
-
-    return canvas.toDataURL('image/jpeg', 0.95)
-  }
-
-    async function handleKakaoShare() {
-    gtagEvent('exit_click', { label: 'share_kakao', type_code: typeCode })
-    setShareLoading(true)
-    const K = window.Kakao
-    if (!K) {
-      const url = window.location.href
-      await navigator.clipboard.writeText(`${window.location.origin}/go/ks`)
-      alert('링크가 복사됐습니다! 카카오톡에 붙여넣기 해주세요.')
-      setShareLoading(false)
-      return
-    }
-    if (!K.isInitialized()) K.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY ?? '')
-    const shareUrl = `${window.location.origin}/go/ks`
-    try {
-      const dataUrl = await drawKakaoCard()
-      if (!dataUrl) throw new Error('no image')
-      const blob = await (await fetch(dataUrl)).blob()
-      const file = new File([blob], 'aimbti.jpg', { type: 'image/jpeg' })
-      const uploaded = await K.Share.uploadImage({ file: [file] })
-      K.Share.sendDefault({
-        objectType: 'feed',
-        content: {
-          title: `나는 "${info.title}"`,
-          description: `AI 대체 가능성 ${aiScore}%`,
-          imageUrl: uploaded.infos.original.url,
-          imageWidth: 800,
-          imageHeight: 1200,
-          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
-        },
-        buttons: [{ title: '결과 보러가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } }],
-      })
-    } catch {
-      const IMAGE_BASE = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
-      K.Share.sendDefault({
-        objectType: 'feed',
-        content: {
-          title: `나는 "${info.title}"`,
-          description: `AI 대체 가능성 ${aiScore}%`,
-          imageUrl: `${IMAGE_BASE}/result/${resultId}/opengraph-image`,
-          imageWidth: 800,
-          imageHeight: 1600,
-          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
-        },
-        buttons: [{ title: '결과 보러가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } }],
-      })
-    }
-    setShareLoading(false)
-  }
-
   async function handleCopyLink() {
     const url = `${window.location.origin}/go/ls`
     await navigator.clipboard.writeText(url)
@@ -762,33 +544,6 @@ export default function ResultClient({
   return (
     <div className="min-h-screen bg-white">
       <canvas ref={canvasRef} className="hidden" />
-
-      {/* 인스타 다운로드 안내 모달 */}
-      {instaToast && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-center pb-8 px-4"
-          style={{ background: 'rgba(0,0,0,0.5)' }}
-          onClick={() => setInstaToast(false)}
-        >
-          <div
-            className="w-full max-w-sm rounded-3xl p-6 space-y-4 animate-fade-in-up bg-white"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-center space-y-2">
-              <div className="text-4xl">📸</div>
-              <p className="text-slate-900 font-bold text-lg">이미지가 저장됐어요!</p>
-              <p className="text-slate-500 text-sm">인스타 앱에서 갤러리 열고 업로드해주세요</p>
-            </div>
-            <button
-              onClick={() => setInstaToast(false)}
-              className="block w-full text-center font-bold text-white py-3.5 rounded-2xl text-sm"
-              style={{ background: 'linear-gradient(135deg, #f09433 0%, #dc2743 50%, #bc1888 100%)' }}
-            >
-              확인
-            </button>
-          </div>
-        </div>
-      )}
 
       <header className="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <a href="https://mcodegc.com/" className="text-slate-900 font-bold text-lg" onClick={() => gtagEvent('exit_click', { destination: 'https://mcodegc.com/', label: 'home_logo', type_code: typeCode })}>
@@ -982,7 +737,7 @@ export default function ResultClient({
                       gtagEvent('ebook_click', { type_code: typeCode, action: 'unlock' })
                       gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
                       trackEvent('ebook_click', typeCode, { action: 'unlock' })
-                      fbqEvent('Lead', { content_name: 'ebook_unlock', type_code: typeCode })
+                      fbqLeadOnce({ content_name: 'ebook_unlock', type_code: typeCode })
                       gtagConversion('ebook_unlock')
                       window.open(ebookLink, '_blank')
                     } else {
@@ -1015,7 +770,7 @@ export default function ResultClient({
               gtagEvent('ebook_click', { type_code: typeCode, action: 'download' })
               gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })
               trackEvent('ebook_click', typeCode, { action: 'download' })
-              fbqEvent('Lead', { content_name: 'ebook_download', type_code: typeCode })
+              fbqLeadOnce({ content_name: 'ebook_download', type_code: typeCode })
               gtagConversion('ebook_download')
             }}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
@@ -1046,7 +801,7 @@ export default function ResultClient({
               gtagEvent('openchat_click', { type_code: typeCode })
               gtagEvent('exit_click', { label: 'openchat', destination: process.env.NEXT_PUBLIC_OPENCHAT_SURVEY_URL ?? process.env.NEXT_PUBLIC_OPENCHAT_URL ?? 'https://metacodes.co.kr', type_code: typeCode })
               trackEvent('openchat_click', typeCode)
-              fbqEvent('Lead', { content_name: 'openchat', type_code: typeCode })
+              fbqLeadOnce({ content_name: 'openchat', type_code: typeCode })
               gtagConversion('openchat_click')
             }}
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90"
@@ -1065,26 +820,6 @@ export default function ResultClient({
           <p className="text-slate-900 font-black text-xl mb-1">친구들한테 공유하고 놀래켜줘!</p>
           <p className="text-slate-500 text-sm mb-5">AI 대체 가능성 {aiScore}% — 친구는 몇 %일까? 😏</p>
           <div className="flex flex-col gap-3">
-            <button
-              onClick={handleKakaoShare}
-              disabled={shareLoading}
-              className="flex items-center justify-center gap-2 rounded-2xl font-bold text-base transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
-              style={{ background: '#FEE500', color: '#3C1E1E', height: 47 }}
-            >
-              💛 {shareLoading ? '준비 중...' : '카카오톡으로 공유하기'}
-            </button>
-            <button
-              onClick={handleInstagramShare}
-              disabled={shareLoading}
-              className="flex items-center justify-center gap-2 rounded-2xl font-bold text-base transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
-              style={{
-                background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                color: '#fff',
-                height: 47,
-              }}
-            >
-              📷 {shareLoading ? '준비 중...' : '인스타그램에 공유하기'}
-            </button>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleDownloadCard}

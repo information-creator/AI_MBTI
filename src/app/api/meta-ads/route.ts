@@ -20,14 +20,13 @@ export async function GET(req: Request) {
   const until = searchParams.get('until') || new Date().toISOString().slice(0, 10)
 
   try {
-    // 캠페인별 성과 조회
+    // 캠페인별 성과 조회 (서버측 CONTAIN은 대소문자 구분 → 클라이언트측에서 필터)
     const url = `https://graph.facebook.com/v21.0/act_${accountId}/insights?` + new URLSearchParams({
       access_token: accessToken,
       level: 'campaign',
       fields: 'campaign_name,impressions,clicks,spend,ctr,cpc,cpm,actions',
       time_range: JSON.stringify({ since, until }),
-      filtering: JSON.stringify([{ field: 'campaign.name', operator: 'CONTAIN', value: 'ai-mbti' }]),
-      limit: '50',
+      limit: '100',
     })
 
     const res = await fetch(url)
@@ -38,7 +37,12 @@ export async function GET(req: Request) {
     }
 
     const json = await res.json()
-    const campaigns = (json.data ?? []).map((row: Record<string, unknown>) => {
+    const campaigns = (json.data ?? [])
+      .filter((row: Record<string, unknown>) => {
+        const name = String(row.campaign_name ?? '').toLowerCase()
+        return name.includes('mbti') || name.includes('aimbti')
+      })
+      .map((row: Record<string, unknown>) => {
       const actions = (row.actions as Array<{ action_type: string; value: string }>) ?? []
       const getAction = (type: string) => Number(actions.find(a => a.action_type === type)?.value ?? 0)
 
@@ -50,7 +54,7 @@ export async function GET(req: Request) {
         ctr: Number(Number(row.ctr ?? 0).toFixed(2)),
         cpc: Number(Number(row.cpc ?? 0).toFixed(0)),
         cpm: Number(Number(row.cpm ?? 0).toFixed(0)),
-        conversions: getAction('offsite_conversion.fb_pixel_lead'),
+        conversions: getAction('lead'),
         linkClicks: getAction('link_click'),
         pageViews: getAction('landing_page_view'),
       }
