@@ -4,8 +4,12 @@
   "outputDirectory": ".next",
   "crons": [
     {
-      "path": "/api/snapshot?pass=720972",
-      "schedule": "0 15 * * *"
+      "path": "/api/snapshot?pass=720972&write=1",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/snapshot?pass=720972&write=1",
+      "schedule": "0 16 * * *"
     }
   ]
 }

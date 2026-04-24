@@ -107,6 +107,15 @@ const EBOOK_EFFECTIVE_RATE = 0.7
 type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic' | 'benchmarks'
 type EbookItem = { id: number | string; title: string; students: number }
 type EbooksData = { ebooks: EbookItem[]; fetchedAt: string }
+type EbookHistoryRow = {
+  date: string
+  ebook_id: string
+  title: string
+  students: number
+  delta?: number
+  raw_delta?: number
+  is_baseline?: boolean
+}
 
 type TrafficSource = { source: string; medium: string; users: number; sessions: number; engaged: number }
 type TrafficCountry = { country: string; users: number; sessions: number; engaged: number }
@@ -222,17 +231,19 @@ function DashboardShell() {
   const [google, setGoogle] = useState<GoogleAdsData | null>(null)
   const [ab, setAb] = useState<ABTestData[] | null>(null)
   const [ebooks, setEbooks] = useState<EbooksData | null>(null)
+  const [ebookHistory, setEbookHistory] = useState<EbookHistoryRow[] | null>(null)
   const [traffic, setTraffic] = useState<TrafficData | null>(null)
   const [loading, setLoading] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [g, m, goog, abr, eb, tr] = await Promise.allSettled([
+    const [g, m, goog, abr, eb, ebHist, tr] = await Promise.allSettled([
       fetchGA4(startDate, endDate),
       fetchMetaAds(startDate, endDate),
       fetchGoogleAds(startDate, endDate),
       fetchABTest(startDate, endDate),
       fetch(`/api/metacode-ebooks?pass=${PASS}`).then(r => (r.ok ? r.json() : null)),
+      fetch(`/api/snapshot?pass=${PASS}&since=${startDate}&until=${endDate}`).then(r => (r.ok ? r.json() : null)),
       fetch(`/api/ga4-traffic?pass=${PASS}&start=${startDate}&end=${endDate}`).then(r => (r.ok ? r.json() : null)),
     ])
     if (g.status === 'fulfilled') setGa4(g.value)
@@ -240,6 +251,7 @@ function DashboardShell() {
     if (goog.status === 'fulfilled') setGoogle(goog.value)
     if (abr.status === 'fulfilled') setAb(abr.value.variants)
     if (eb.status === 'fulfilled' && eb.value) setEbooks(eb.value)
+    if (ebHist.status === 'fulfilled' && ebHist.value) setEbookHistory(ebHist.value.ebooks ?? [])
     if (tr.status === 'fulfilled' && tr.value) setTraffic(tr.value)
     setLoading(false)
   }, [startDate, endDate])
@@ -431,7 +443,7 @@ function DashboardShell() {
           {view === 'meta' && <AdsTab title="Meta" totals={meta?.totals} campaigns={meta?.campaigns ?? []} benchmark={BENCHMARKS.ads.meta} />}
           {view === 'google' && <AdsTab title="Google" totals={google?.totals} campaigns={google?.campaigns ?? []} benchmark={BENCHMARKS.ads.google} />}
           {view === 'abtest' && <ABTestTab variants={ab ?? []} />}
-          {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} />}
+          {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} history={ebookHistory} ebookClick={ebookClick} since={startDate} until={endDate} />}
           {view === 'benchmarks' && <BenchmarksTab />}
         </div>
       </SidebarInset>
@@ -1816,7 +1828,14 @@ function ABTestTab({ variants }: { variants: ABTestData[] }) {
 }
 
 /* ========== 전자책 뷰 ========== */
-function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number }) {
+function EbooksTab({ ebooks, total, history, ebookClick, since, until }: {
+  ebooks: EbooksData | null
+  total: number
+  history: EbookHistoryRow[] | null
+  ebookClick: number
+  since: string
+  until: string
+}) {
   if (!ebooks) {
     return (
       <Card>
@@ -1828,8 +1847,99 @@ function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number
     )
   }
 
+  // 기간 내 일별 delta 합산 (API에서 이미 delta 계산됨)
+  const byEbook = new Map<string, EbookHistoryRow[]>()
+  for (const r of history ?? []) {
+    const arr = byEbook.get(r.ebook_id) ?? []
+    arr.push(r)
+    byEbook.set(r.ebook_id, arr)
+  }
+  let deltaTotal = 0
+  const deltaRows: Array<{ ebook_id: string; title: string; start: number; end: number; delta: number }> = []
+  for (const [id, rows] of byEbook) {
+    rows.sort((a, b) => a.date.localeCompare(b.date))
+    const sumDelta = rows.reduce((s, r) => s + (r.delta ?? 0), 0)
+    const first = rows[0]
+    const last = rows[rows.length - 1]
+    deltaTotal += sumDelta
+    deltaRows.push({ ebook_id: id, title: last.title, start: first.students, end: last.students, delta: sumDelta })
+  }
+  const conversionRate = ebookClick > 0 ? (deltaTotal / ebookClick) * 100 : 0
+  // 기간 내 delta가 의미 있으려면 각 ebook별 최소 2 스냅샷 필요 (baseline + 최소 1 변화)
+  const hasEnoughData = deltaRows.length >= 4 && deltaRows.some(r => r.delta > 0 || r.end !== r.start)
+
   return (
     <div className="space-y-4">
+      {/* NEW · Lead 품질 (전자책 클릭 vs 실등록) */}
+      <Card className="border-indigo-200 bg-indigo-50/50">
+        <CardHeader>
+          <CardDescription className="text-base font-semibold text-indigo-900">
+            🎯 Lead 품질 — 클릭 vs 실등록 (기간: {since} ~ {until})
+          </CardDescription>
+          {hasEnoughData ? (
+            <>
+              <div className="mt-3 grid grid-cols-3 gap-4">
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">AIMBTI 전자책 클릭</div>
+                  <div className="text-3xl font-black tabular-nums">{ebookClick.toLocaleString()}</div>
+                  <div className="text-[10px] text-muted-foreground">GA4 ebook_click</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">metacode 실등록 증가</div>
+                  <div className="text-3xl font-black tabular-nums text-indigo-700">+{deltaTotal.toLocaleString()}</div>
+                  <div className="text-[10px] text-muted-foreground">4개 전자책 증가분 합</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground mb-1">추정 전환율</div>
+                  <div className="text-3xl font-black tabular-nums text-green-700">{conversionRate.toFixed(1)}%</div>
+                  <div className="text-[10px] text-muted-foreground">상한치 · 다른 유입 포함</div>
+                </div>
+              </div>
+              <CardDescription className="text-[11px] mt-3 leading-relaxed">
+                ⚠ metacode 등록자 증가분에는 AIMBTI 외 유입(오가닉·직접·다른 광고)도 포함되어 있어 <b>상한치</b> 기준. 실제 AIMBTI 기여 전환율은 이보다 낮을 수 있음.
+                캠페인별(Simple/Social/Fear) 쪼개기는 metacode UTM 미지원으로 현재 불가.
+              </CardDescription>
+            </>
+          ) : (
+            <CardDescription className="text-sm mt-2 text-amber-700">
+              ⏳ 스냅샷 데이터 누적 중 — 현재 {(history?.length ?? 0)}개 레코드. 2일 이상 수집되면 증가분 비교 가능. 기간을 늘려 조회하거나 내일 다시 확인하세요.
+            </CardDescription>
+          )}
+        </CardHeader>
+      </Card>
+
+      {/* 기간별 증가분 상세 */}
+      {hasEnoughData && (
+        <Card>
+          <CardHeader>
+            <CardDescription className="text-sm font-semibold">전자책별 증가분 상세</CardDescription>
+          </CardHeader>
+          <div className="px-6 pb-4 text-xs">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b text-left">
+                  <th className="py-2">전자책</th>
+                  <th className="text-right">시작 ({since})</th>
+                  <th className="text-right">끝 ({until})</th>
+                  <th className="text-right">증가</th>
+                </tr>
+              </thead>
+              <tbody>
+                {deltaRows.map(r => (
+                  <tr key={r.ebook_id} className="border-b">
+                    <td className="py-2">{r.title.replace(/\[무료\/26년 최신버전\]\s*/g, '')}</td>
+                    <td className="text-right tabular-nums">{r.start}</td>
+                    <td className="text-right tabular-nums">{r.end}</td>
+                    <td className="text-right tabular-nums font-semibold text-indigo-700">+{r.delta}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* 기존: 누적 수강생 */}
       <Card>
         <CardHeader>
           <CardDescription className="text-base font-semibold">총 전자책 수강생 (실질)</CardDescription>

@@ -151,12 +151,23 @@ export async function POST(req: Request) {
   })
 }
 
-// 과거 스냅샷 조회
+// GET: 과거 스냅샷 조회, 또는 write=1 시 저장 (Vercel Cron 호환)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const pass = searchParams.get('pass')
-  if (pass !== PASS) {
+  const write = searchParams.get('write')
+
+  // Vercel Cron은 CRON_SECRET 헤더로 인증 + 자동으로 저장
+  const cronSecret = req.headers.get('authorization')?.replace('Bearer ', '')
+  const isCron = cronSecret && cronSecret === process.env.CRON_SECRET
+
+  if (pass !== PASS && !isCron) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+
+  // 저장 모드: POST 로직 재사용 (Vercel Cron 또는 ?write=1)
+  if (isCron || write === '1') {
+    return POST(req)
   }
 
   const supabase = getSupabaseServer()
@@ -166,6 +177,11 @@ export async function GET(req: Request) {
 
   const since = searchParams.get('since') || '2026-03-03'
   const until = searchParams.get('until') || todayKst()
+
+  // since 하루 전부터 조회 → 기간 첫날의 delta도 계산 가능
+  const sinceMinus1 = new Date(since + 'T00:00:00Z')
+  sinceMinus1.setUTCDate(sinceMinus1.getUTCDate() - 1)
+  const sinceExtended = sinceMinus1.toISOString().slice(0, 10)
 
   const [adsResult, funnelResult, ebooksResult] = await Promise.all([
     supabase
@@ -183,15 +199,33 @@ export async function GET(req: Request) {
     supabase
       .from('daily_ebook_metrics')
       .select('*')
-      .gte('date', since)
+      .gte('date', sinceExtended)
       .lte('date', until)
       .order('date', { ascending: true }),
   ])
 
+  // ebook delta 계산: 같은 ebook_id의 이전 날 students와 비교
+  type EbookRow = { date: string; ebook_id: string; title: string; students: number }
+  const rawEbooks = (ebooksResult.data ?? []) as EbookRow[]
+  const prevByEbook = new Map<string, number>()
+  const ebooksWithDelta = rawEbooks.map((r) => {
+    const prev = prevByEbook.get(r.ebook_id)
+    const rawDelta = prev !== undefined ? r.students - prev : 0
+    prevByEbook.set(r.ebook_id, r.students)
+    return {
+      ...r,
+      raw_delta: rawDelta,
+      delta: Math.max(0, rawDelta),
+      is_baseline: prev === undefined,
+    }
+  })
+  // 요청한 since 이후만 반환 (since-1 baseline 행은 제외)
+  const ebooksInRange = ebooksWithDelta.filter((r) => r.date >= since)
+
   return NextResponse.json({
     ads: adsResult.data ?? [],
     funnel: funnelResult.data ?? [],
-    ebooks: ebooksResult.data ?? [],
+    ebooks: ebooksInRange,
     since,
     until,
   })

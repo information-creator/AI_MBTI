@@ -367,6 +367,25 @@ def build() -> None:
         "small_gray",
     ))
 
+    story.append(Spacer(1, 5 * mm))
+    story.append(P("캠페인별 · 일별 Lead · CPL 변화 (학습 속도 비교)", "h3"))
+    story.append(data_table(
+        ["캠페인", "4/22 (부분)", "4/23 (Full)", "4/24 (진행중)", "3일 누적", "해석"],
+        [
+            ["Simple", "Lead 6 · ₩1,770", "Lead 9 · ₩2,493",  "Lead 19 · ₩640 🚀",  "Lead 34 · ₩1,330 🏆", "학습 가속 · 최우수"],
+            ["Social", "Lead 5 · ₩2,299", "Lead 4 · ₩5,178",  "Lead 7 · ₩1,715",    "Lead 16 · ₩2,763",    "변동 큼 · 안정화 필요"],
+            ["Fear",   "Lead 0 · —",       "Lead 6 · ₩3,945",  "Lead 7 · ₩1,323",    "Lead 13 · ₩3,466",    "Day1 0건 → 반등"],
+        ],
+        col_widths_cm=[2.2, 2.8, 2.8, 2.8, 3.0, 3.4],
+        highlight_rows=[1],
+    ))
+    story.append(Spacer(1, 2 * mm))
+    story.append(P(
+        "각 셀 형식: <b>Lead명 · CPL</b>. <b>Simple이 3개 캠페인 중 유일하게 매일 CPL 하락</b> "
+        "(₩1,770 → ₩2,493 → ₩640) — 학습 속도 압도적. Social은 변동, Fear는 Day1 미전환 후 회복.",
+        "small_gray",
+    ))
+
     story.append(PageBreak())
     story.append(P("캠페인 구조 — 여성 이미지(고정) × 첫페이지 3종 비교", "h3"))
     story.append(P(
