@@ -102,6 +102,7 @@ import {
 } from '@/components/ui/chart'
 
 const PASS = '720972'
+const EBOOK_EFFECTIVE_RATE = 0.7
 
 type View = 'overview' | 'funnel' | 'meta' | 'google' | 'abtest' | 'ebooks' | 'traffic' | 'benchmarks'
 type EbookItem = { id: number | string; title: string; students: number }
@@ -264,7 +265,8 @@ function DashboardShell() {
   const ebookClick = getEv('ebook_click')
   const share = getEv('share_click')
   const secondaryTotal = openchat + ebookClick + share
-  const ebooksTotal = ebooks?.ebooks.reduce((s, e) => s + e.students, 0) ?? 0
+  const ebooksRawTotal = ebooks?.ebooks.reduce((s, e) => s + e.students, 0) ?? 0
+  const ebooksTotal = Math.floor(ebooksRawTotal * EBOOK_EFFECTIVE_RATE)
 
   const totalSpend = (meta?.totals.spend ?? 0) + (google?.totals.spend ?? 0)
   const totalClicks = (meta?.totals.clicks ?? 0) + (google?.totals.clicks ?? 0)
@@ -498,7 +500,7 @@ function OverviewTab(p: {
         <KpiCard label="총 방문" value={p.totalUsers.toLocaleString()} sub={`결과 확인 ${p.resultView.toLocaleString()}명`} />
         <KpiCard label={<><span>2차 전환</span><span className="block text-xs font-normal text-muted-foreground">(단톡·전자책·공유 클릭)</span></>} value={p.secondaryTotal.toLocaleString()} sub={`E2E ${p.e2e.toFixed(2)}%`} highlight />
         <KpiCard label="유효 CPA (전환당 비용)" value={p.effectiveCPA > 0 ? `₩${p.effectiveCPA.toLocaleString()}` : '-'} sub={p.cpaCmp ? `목표 대비 ${p.cpaCmp.label}` : '목표 ₩5,000'} statusColor={p.cpaCmp?.level} />
-        <KpiCard label="전자책 수강" value={p.ebooksTotal.toLocaleString()} sub="메타코드 실등록" />
+        <KpiCard label="전자책 수강" value={p.ebooksTotal.toLocaleString()} sub={`실질 인원 × ${EBOOK_EFFECTIVE_RATE}`} />
       </div>
 
       {/* 3컬럼: 퍼널 차트 | 광고 요약 | 진단 */}
@@ -1830,24 +1832,24 @@ function EbooksTab({ ebooks, total }: { ebooks: EbooksData | null; total: number
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardDescription className="text-base font-semibold">총 전자책 수강생</CardDescription>
+          <CardDescription className="text-base font-semibold">총 전자책 수강생 (실질)</CardDescription>
           <CardTitle className="text-6xl font-black tabular-nums">{total.toLocaleString()}</CardTitle>
+          <CardDescription className="text-xs mt-1">
+            메타코드 공식 API 크롤링 · 실질 인원은 원본 × {EBOOK_EFFECTIVE_RATE} (중복·이탈 보정) · 조회 {new Date(ebooks.fetchedAt).toLocaleString('ko-KR')}
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            메타코드 공식 API에서 크롤링 · 조회 {new Date(ebooks.fetchedAt).toLocaleString('ko-KR')}
-          </p>
-        </CardContent>
       </Card>
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
         {ebooks.ebooks.map(e => {
           const title = String(e.title).replace(/\[무료\/26년 최신버전\]\s*/g, '')
+          const effective = Math.floor(e.students * EBOOK_EFFECTIVE_RATE)
           return (
             <Card key={e.id}>
               <CardHeader className="pb-2">
                 <CardDescription className="line-clamp-2 leading-snug text-sm">{title}</CardDescription>
-                <CardTitle className="text-4xl font-black tabular-nums">{e.students.toLocaleString()}</CardTitle>
+                <CardTitle className="text-4xl font-black tabular-nums">{effective.toLocaleString()}</CardTitle>
+                <CardDescription className="text-[10px] text-muted-foreground">원본 {e.students.toLocaleString()} × {EBOOK_EFFECTIVE_RATE}</CardDescription>
               </CardHeader>
             </Card>
           )
