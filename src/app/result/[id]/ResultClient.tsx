@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent, gtagConversion } from '@/lib/ga'
-import { fbqLeadOnce } from '@/lib/meta'
+import { fbqEvent, fbqLeadOnce } from '@/lib/meta'
 import { trackEvent } from '@/lib/track'
 
 type Scores = { a: number; b: number; c: number; d: number; e: number }
@@ -99,8 +99,8 @@ export default function ResultClient({
   useEffect(() => {
     gtagEvent('result_view', { type_code: typeCode, ai_score: aiScore })
     trackEvent('result_view', typeCode, { ai_score: aiScore })
-    // 결과 페이지 진입 시 Lead 1회 발사 (세션당 1회 제한)
-    fbqLeadOnce({ content_name: 'result_view', type_code: typeCode })
+    // 결과 페이지 진입은 ViewContent (Lead는 이북/오픈챗 클릭에서만 발화)
+    fbqEvent('ViewContent', { content_name: 'result_view', type_code: typeCode })
   }, [typeCode, aiScore])
 
   // 결과 페이지 이탈 추적 (뒤로가기 / 탭 닫기)
