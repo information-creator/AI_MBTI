@@ -2,441 +2,327 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>AI-MBTI 캠페인 성과 상세 분석</title>
+<title>AI-MBTI 캠페인 성과 분석</title>
 <style>
-@page { size: A4; margin: 16mm 12mm; }
-body { font-family: 'NanumGothic','Malgun Gothic',sans-serif; color: #1a1a1a; line-height: 1.45; font-size: 9.5pt; }
-h1 { font-size: 22pt; margin: 0 0 4pt; color: #0d2042; }
-.date { color: #888; font-size: 9.5pt; margin-bottom: 18pt; }
-h2 { font-size: 13pt; margin: 22pt 0 8pt; color: #0d2042; padding-bottom: 3pt; border-bottom: 2px solid #0d2042; }
-h3 { font-size: 10.5pt; margin: 12pt 0 5pt; color: #2a4870; }
-.section-intro { font-size: 9pt; color: #666; margin: 0 0 6pt; }
+@page { size: A4; margin: 13mm 10mm; }
+body { font-family: 'NanumGothic','Malgun Gothic',sans-serif; color: #1a1a1a; line-height: 1.4; font-size: 9pt; }
+h1 { font-size: 17pt; margin: 0 0 2pt; color: #0d2042; }
+.date { color: #888; font-size: 8pt; margin-bottom: 8pt; }
+h2 { font-size: 10.5pt; margin: 12pt 0 4pt; color: #0d2042; padding-bottom: 2pt; border-bottom: 2px solid #0d2042; }
 
-.headline {
-  background: #f0f6ff; border-left: 6px solid #2a6ee0;
-  padding: 14pt 18pt; margin: 0 0 14pt; border-radius: 4pt;
-}
-.headline-label { font-size: 9pt; color: #555; margin-bottom: 4pt; }
-.headline-text { font-size: 13pt; font-weight: 700; color: #0d2042; line-height: 1.4; }
-
-.kpi-grid { display: flex; gap: 10pt; margin: 12pt 0 8pt; }
-.kpi { flex: 1; text-align: center; padding: 12pt 8pt; border-radius: 5pt; background: #f8fafc; border: 1px solid #e0e6ee; }
-.kpi-label { font-size: 8.5pt; color: #666; margin-bottom: 4pt; }
-.kpi-value { font-size: 17pt; font-weight: 800; color: #0d2042; line-height: 1; }
-.kpi-unit { font-size: 9.5pt; font-weight: 500; color: #555; }
-.kpi-sub { font-size: 8pt; color: #888; margin-top: 4pt; }
+.kpi-grid { display: flex; gap: 7pt; margin: 6pt 0 10pt; }
+.kpi { flex: 1; text-align: center; padding: 7pt 5pt; border-radius: 4pt; background: #f8fafc; border: 1px solid #e0e6ee; }
+.kpi-label { font-size: 7.5pt; color: #666; margin-bottom: 2pt; }
+.kpi-value { font-size: 13pt; font-weight: 800; color: #0d2042; line-height: 1; }
+.kpi-unit { font-size: 8pt; font-weight: 500; color: #555; }
+.kpi-sub { font-size: 7pt; color: #888; margin-top: 2pt; }
 .kpi-good { background: #ecf7ed; border-color: #86c98c; }
 .kpi-good .kpi-value { color: #1b5e20; }
-.kpi-bad { background: #fdecea; border-color: #e6a4a4; }
-.kpi-bad .kpi-value { color: #b71c1c; }
+.kpi-warn { background: #fff5e6; border-color: #f0b44a; }
 
-table { width: 100%; border-collapse: collapse; margin: 4pt 0; font-size: 8.5pt; }
-th { background: #0d2042; color: white; padding: 5pt 6pt; text-align: left; font-weight: 600; font-size: 8.5pt; }
-td { padding: 4.5pt 6pt; border-bottom: 1px solid #e8ebf0; }
+table { width: 100%; border-collapse: collapse; margin: 3pt 0; font-size: 7.8pt; }
+th { background: #0d2042; color: white; padding: 4pt 5pt; text-align: left; font-weight: 600; font-size: 7.5pt; }
+th.group { background: #1e4080; text-align: center; }
+th.sub { background: #2a5aad; font-size: 7pt; padding: 3pt 4pt; }
+td { padding: 3.5pt 5pt; border-bottom: 1px solid #e8ebf0; }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
-.center { text-align: center; }
-tr.best td { background: #ecf7ed; font-weight: 600; }
-tr.dead td { color: #888; background: #fafafa; }
-tr.warn td { background: #fff5e6; }
+tr.best td { background: #ecf7ed; }
+tr.dead td { color: #999; background: #fafafa; }
+tr.warn td { background: #fffaed; }
 tr.total td { background: #eef4ff; font-weight: 700; border-top: 2px solid #0d2042; }
-tr.subtotal td { background: #f5f5f5; font-weight: 600; }
-.tag { display: inline-block; padding: 1pt 5pt; border-radius: 2pt; font-size: 7.5pt; font-weight: 600; }
+
+.tag { display: inline-block; padding: 0pt 4pt; border-radius: 2pt; font-size: 7pt; font-weight: 700; }
 .tag-paused { background: #ffe0e0; color: #b71c1c; }
 .tag-active { background: #d8f0d8; color: #1b5e20; }
 
-.caveat {
-  background: #fff8e1; border-left: 4px solid #f9a825;
-  padding: 8pt 12pt; margin: 6pt 0; border-radius: 3pt;
-  font-size: 8.5pt; line-height: 1.5;
-}
-.method {
-  background: #f3f6fc; border: 1px solid #c7d3e6;
-  padding: 8pt 12pt; margin: 6pt 0; border-radius: 3pt;
-  font-size: 8.5pt; line-height: 1.5;
-}
-.method code { background: #fff; padding: 1pt 3pt; border-radius: 2pt; font-family: 'Consolas', monospace; font-size: 8pt; }
+.note-box { background: #f3f6fc; border: 1px solid #c7d3e6; padding: 5pt 9pt; margin: 5pt 0; border-radius: 2pt; font-size: 7.5pt; line-height: 1.5; }
+.warn-box { background: #fff8e1; border-left: 4px solid #f9a825; padding: 5pt 9pt; margin: 5pt 0; border-radius: 2pt; font-size: 7.5pt; line-height: 1.5; }
 
-.timeline { margin: 8pt 0; padding-left: 0; list-style: none; font-size: 9pt; }
-.timeline li { padding: 4pt 0 4pt 16pt; border-left: 2px solid #d0d7e0; margin-left: 6pt; position: relative; }
-.timeline li::before { content: '●'; position: absolute; left: -7pt; color: #2a6ee0; background: white; font-size: 11pt; }
-.timeline .stop::before { color: #c62828; }
-.timeline .start::before { color: #2e7d32; }
-.timeline .date { display: inline-block; width: 50pt; color: #555; font-weight: 600; }
-
-.action { display: flex; gap: 12pt; margin: 8pt 0; padding: 10pt 14pt; border-radius: 5pt; background: #fafbfd; border-left: 4px solid #2a6ee0; }
-.action-num { font-size: 18pt; font-weight: 800; color: #2a6ee0; width: 28pt; flex-shrink: 0; line-height: 1; }
+.action { display: flex; gap: 7pt; margin: 4pt 0; padding: 6pt 9pt; border-radius: 3pt; background: #fafbfd; border-left: 4px solid #2a6ee0; }
+.action-num { font-size: 13pt; font-weight: 800; color: #2a6ee0; width: 18pt; flex-shrink: 0; line-height: 1.1; }
 .action-body { flex: 1; }
-.action-title { font-size: 10.5pt; font-weight: 700; margin-bottom: 2pt; }
-.action-detail { font-size: 9pt; color: #555; }
+.action-title { font-size: 9pt; font-weight: 700; margin-bottom: 1pt; }
+.action-detail { font-size: 7.5pt; color: #555; }
 
-.note { font-size: 8pt; color: #888; margin-top: 16pt; padding-top: 6pt; border-top: 1px solid #ddd; line-height: 1.5; }
 .page-break { page-break-before: always; }
-
-.legend { font-size: 8pt; color: #666; margin: 4pt 0; }
-.legend-box { display: inline-block; width: 10pt; height: 10pt; vertical-align: middle; margin-right: 3pt; border-radius: 2pt; }
+.footer { font-size: 7.5pt; color: #888; margin-top: 8pt; padding-top: 5pt; border-top: 1px solid #ddd; line-height: 1.5; }
 </style>
 </head>
 <body>
 
-<h1>AI-MBTI 캠페인 성과 상세 분석</h1>
-<div class="date">2026.04.26 보고 · 측정 기간 04-20 ~ 04-26 (7일) · 내부 의사결정용 · 자료: Meta Ads API + Supabase events + 메타코드 실측 크롤링</div>
+<!-- ═══════════ PAGE 1 ═══════════ -->
 
-<!-- ===== 목차 ===== -->
-<h2 style="margin-top: 18pt;">목차</h2>
-<table style="font-size: 9.5pt;">
-<thead><tr><th style="width: 8%;">§</th><th>섹션</th><th class="num" style="width: 12%;">페이지</th></tr></thead>
-<tbody>
-<tr><td>—</td><td><b>결론 & 핵심 KPI</b></td><td class="num">2</td></tr>
-<tr><td><b>1</b></td><td>종합 일자별 마스터 테이블</td><td class="num">2</td></tr>
-<tr><td></td><td style="padding-left: 24pt; color: #555;">1-A. 광고에서 본 숫자 / 1-B. 실제 일어난 일</td><td class="num"></td></tr>
-<tr><td><b>2</b></td><td>Meta Ads 일자별 × 캠페인별 상세</td><td class="num">3</td></tr>
-<tr><td></td><td style="padding-left: 24pt; color: #555;">2-1. simple-v2 / 2-2. social-v2 / 2-3. fear-v2 / 2-4. 데이터 분석 홍보 / 2-5. ai-mbti(구)</td><td class="num"></td></tr>
-<tr><td><b>3</b></td><td>자체 측정 (Supabase events) — 일자×캠페인</td><td class="num">4</td></tr>
-<tr><td></td><td style="padding-left: 24pt; color: #555;">3-1. ebook_click / 3-2. openchat_click</td><td class="num"></td></tr>
-<tr><td><b>4</b></td><td>메타코드 외부 사이트 실등록 (크롤링)</td><td class="num">4</td></tr>
-<tr><td><b>5</b></td><td>메트릭 4종 비교 (실측 funnel)</td><td class="num">5</td></tr>
-<tr><td><b>6</b></td><td>캠페인별 누계 성과 비교</td><td class="num">6</td></tr>
-<tr><td><b>7</b></td><td>CPA 계산 방식 & 한계</td><td class="num">6</td></tr>
-<tr><td><b>8</b></td><td>캠페인 타임라인</td><td class="num">7</td></tr>
-<tr><td><b>9</b></td><td>액션 (4개)</td><td class="num">7</td></tr>
-<tr><td>—</td><td>출처 & caveat</td><td class="num">7</td></tr>
-</tbody>
-</table>
-
-<div class="page-break"></div>
-
-<!-- ===== 결론 ===== -->
-<div class="headline">
-  <div class="headline-label">한 줄 결론</div>
-  <div class="headline-text">
-    AI-MBTI 다운로드 79건 → 메타코드 실등록 +12 → 가입 64명. 클릭→실등록 전환 27%, 가입과의 직접 attribution은 미측정.
-  </div>
-</div>
+<h1>AI-MBTI 캠페인 성과 분석</h1>
+<div class="date">2026.04.26 보고 · 측정 기간 04-20~04-26 (7일) · Meta Ads API + Supabase ebook_click + 메타코드 가입자 수동 집계</div>
 
 <div class="kpi-grid">
   <div class="kpi kpi-good">
-    <div class="kpi-label">simple 다운로드 단가</div>
-    <div class="kpi-value">4,222<span class="kpi-unit">원/건</span></div>
-    <div class="kpi-sub">152k 지출 / 36건 (utm 정확)</div>
+    <div class="kpi-label">simple CPA (가입 1명)</div>
+    <div class="kpi-value">5,947<span class="kpi-unit">원</span></div>
+    <div class="kpi-sub">귀속 25.5명 / 151k spend</div>
+  </div>
+  <div class="kpi kpi-good">
+    <div class="kpi-label">AI-MBTI 통합 CPA</div>
+    <div class="kpi-value">6,094<span class="kpi-unit">원</span></div>
+    <div class="kpi-sub">귀속 47명 / 286k spend</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">클릭 → 실등록 전환율</div>
-    <div class="kpi-value">27<span class="kpi-unit">%</span></div>
-    <div class="kpi-sub">4/24~26: ebook_click 45 / 등록 +12</div>
+    <div class="kpi-label">데이터분석 CPL (폼)</div>
+    <div class="kpi-value">4,700<span class="kpi-unit">원</span></div>
+    <div class="kpi-sub">46건 / 216k · funnel 다름</div>
   </div>
-  <div class="kpi kpi-bad">
-    <div class="kpi-label">데이터분석 정지 후 가입</div>
-    <div class="kpi-value">17 → 4<span class="kpi-unit">명</span></div>
-    <div class="kpi-sub">상관 관찰 (인과 단정 X)</div>
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">총 메타코드 가입</div>
+    <div class="kpi-value">64<span class="kpi-unit">명</span></div>
+    <div class="kpi-sub">4/21~26 · 전 채널 합산</div>
   </div>
 </div>
 
-<!-- ===== 1. 종합 마스터 테이블 ===== -->
-<h2>1. 종합 일자별 마스터 테이블</h2>
-<p class="section-intro">광고 매니저에서 본 숫자(표 1-A)와 실제 일어난 일(표 1-B)을 분리 표시.</p>
+<!-- TABLE 1 -->
+<h2>표 1. 날짜별 캠페인 × 지출 × Lead × 가입 마스터</h2>
+<table>
+<thead>
+<tr>
+  <th rowspan="2" style="width:14%;">날짜</th>
+  <th colspan="2" class="group">데이터분석 홍보</th>
+  <th colspan="2" class="group">simple-v2</th>
+  <th colspan="2" class="group">social-v2</th>
+  <th colspan="2" class="group">fear-v2</th>
+  <th rowspan="2" class="num" style="width:8%;">메타코드<br>가입</th>
+</tr>
+<tr>
+  <th class="num sub">spend</th><th class="num sub">Lead(폼)</th>
+  <th class="num sub">spend</th><th class="num sub">Lead(클릭)</th>
+  <th class="num sub">spend</th><th class="num sub">Lead(클릭)</th>
+  <th class="num sub">spend</th><th class="num sub">Lead(클릭)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="dead">
+  <td>4/20 구+데분</td>
+  <td class="num">42,049</td><td class="num">10</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">—</td>
+</tr>
+<tr>
+  <td>4/21 데분 단독</td>
+  <td class="num">50,584</td><td class="num">8</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">17</td>
+</tr>
+<tr>
+  <td>4/22 v2 런칭</td>
+  <td class="num">55,149</td><td class="num">20</td>
+  <td class="num">34,236</td><td class="num">5</td>
+  <td class="num">11,495</td><td class="num">4</td>
+  <td class="num">12,124</td><td class="num">1</td>
+  <td class="num">17</td>
+</tr>
+<tr>
+  <td>4/23</td>
+  <td class="num">46,680</td><td class="num">2</td>
+  <td class="num">22,439</td><td class="num">2</td>
+  <td class="num">20,711</td><td class="num">3</td>
+  <td class="num">23,669</td><td class="num">3</td>
+  <td class="num">11</td>
+</tr>
+<tr class="warn">
+  <td>4/24 fear·데분 ▶정지</td>
+  <td class="num">21,731</td><td class="num">6</td>
+  <td class="num">48,629</td><td class="num">16</td>
+  <td class="num">21,899</td><td class="num">4</td>
+  <td class="num">9,682</td><td class="num">0</td>
+  <td class="num">10</td>
+</tr>
+<tr class="warn">
+  <td>4/25 AI-MBTI 단독</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">25,122</td><td class="num">9</td>
+  <td class="num">12,287</td><td class="num">1</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">5</td>
+</tr>
+<tr>
+  <td>4/26</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">44,839</td><td class="num">3</td>
+  <td class="num">22,896</td><td class="num">4</td>
+  <td class="num">—</td><td class="num">—</td>
+  <td class="num">4</td>
+</tr>
+<tr class="total">
+  <td>합계</td>
+  <td class="num">216,193</td><td class="num">46</td>
+  <td class="num">151,646</td><td class="num">35</td>
+  <td class="num">89,288</td><td class="num">16</td>
+  <td class="num">45,475</td><td class="num">4</td>
+  <td class="num">64</td>
+</tr>
+</tbody>
+</table>
 
-<h3>1-A. 광고에서 본 숫자 (지출 + Lead)</h3>
+<div class="note-box">
+<b>Lead 정의 차이</b> — 데이터분석: 이름·연락처 폼 제출(Meta Pixel 기준). AI-MBTI 3종: utm 기반 ebook_click 자체 측정. 단위 다름, 직접 비교 불가.<br>
+<b>메타코드 가입</b> — 일별 신규 가입자 수동 제공 (4/21~26 전 채널 합산). 4/20 부재.
+</div>
+
+
+<!-- ═══════════ PAGE 2 ═══════════ -->
+<div class="page-break"></div>
+
+<!-- TABLE 2 -->
+<h2>표 2. 캠페인별 누계 성과 — CPL · CPA</h2>
+<table>
+<thead>
+<tr>
+  <th style="width:16%;">캠페인</th>
+  <th style="width:9%;">상태</th>
+  <th class="num">spend</th>
+  <th class="num">노출</th>
+  <th class="num">클릭</th>
+  <th class="num">CTR</th>
+  <th class="num">CPC</th>
+  <th class="num">Lead</th>
+  <th class="num">CPL</th>
+  <th class="num">가입 추정</th>
+  <th class="num">CPA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="dead">
+  <td>데이터분석 홍보</td>
+  <td><span class="tag tag-paused">PAUSED</span></td>
+  <td class="num">216,193</td>
+  <td class="num">7,650</td>
+  <td class="num">175</td>
+  <td class="num">2.29%</td>
+  <td class="num">1,238</td>
+  <td class="num">46 <small style="color:#aaa;">(폼)</small></td>
+  <td class="num">4,700</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+</tr>
+<tr class="best">
+  <td>AIMBTI-simple</td>
+  <td><span class="tag tag-active">ACTIVE</span></td>
+  <td class="num">151,646</td>
+  <td class="num">13,522</td>
+  <td class="num">427</td>
+  <td class="num">3.16%</td>
+  <td class="num">355</td>
+  <td class="num">35 <small style="color:#aaa;">(클릭)</small></td>
+  <td class="num">4,333</td>
+  <td class="num">25.5명</td>
+  <td class="num"><b>5,947원</b></td>
+</tr>
+<tr>
+  <td>AIMBTI-social</td>
+  <td><span class="tag tag-active">ACTIVE</span></td>
+  <td class="num">89,288</td>
+  <td class="num">6,683</td>
+  <td class="num">187</td>
+  <td class="num">2.80%</td>
+  <td class="num">478</td>
+  <td class="num">16 <small style="color:#aaa;">(클릭)</small></td>
+  <td class="num">5,581</td>
+  <td class="num">15.7명</td>
+  <td class="num">5,687원</td>
+</tr>
+<tr class="dead">
+  <td>AIMBTI-fear</td>
+  <td><span class="tag tag-paused">PAUSED</span></td>
+  <td class="num">45,475</td>
+  <td class="num">2,780</td>
+  <td class="num">70</td>
+  <td class="num">2.52%</td>
+  <td class="num">650</td>
+  <td class="num">4 <small style="color:#aaa;">(클릭)</small></td>
+  <td class="num">11,369</td>
+  <td class="num">5.8명</td>
+  <td class="num">7,841원</td>
+</tr>
+<tr class="total">
+  <td>AI-MBTI 통합</td>
+  <td>—</td>
+  <td class="num">286,409</td>
+  <td class="num">22,985</td>
+  <td class="num">684</td>
+  <td class="num">2.98%</td>
+  <td class="num">419</td>
+  <td class="num">55</td>
+  <td class="num">5,207</td>
+  <td class="num">47.0명</td>
+  <td class="num"><b>6,094원</b></td>
+</tr>
+</tbody>
+</table>
+
+<h2>표 2-1. 일자별 가입 추정 배분 (Lead 비율 기준)</h2>
 <table>
 <thead>
 <tr>
   <th>날짜</th>
-  <th>운영 캠페인</th>
-  <th class="num">데이터분석<br>spend</th>
-  <th class="num">데이터분석<br>Meta Lead</th>
-  <th class="num">AI-MBTI<br>spend</th>
-  <th class="num">AI-MBTI<br>실 다운 *</th>
+  <th class="num">메타코드<br>가입</th>
+  <th class="num">simple<br>Lead</th>
+  <th class="num">social<br>Lead</th>
+  <th class="num">fear<br>Lead</th>
+  <th class="num">Lead<br>합</th>
+  <th class="num">simple<br>가입 추정</th>
+  <th class="num">social<br>가입 추정</th>
+  <th class="num">fear<br>가입 추정</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>4/20</td><td>구버전 + 데이터분석</td><td class="num">42,049</td><td class="num">10</td><td class="num">5,115</td><td class="num">—</td></tr>
-<tr><td>4/21</td><td>데이터분석 단독</td><td class="num">50,584</td><td class="num">8</td><td class="num">—</td><td class="num">—</td></tr>
-<tr><td>4/22 (v2 런칭)</td><td>둘 다</td><td class="num">55,149</td><td class="num">20</td><td class="num">34,236</td><td class="num">13</td></tr>
-<tr><td>4/23</td><td>둘 다</td><td class="num">46,680</td><td class="num">2</td><td class="num">66,819</td><td class="num">10</td></tr>
-<tr class="warn"><td>4/24 (fear/데이터 마지막)</td><td>둘 다</td><td class="num">21,731</td><td class="num">6</td><td class="num">80,210</td><td class="num">23</td></tr>
-<tr class="warn"><td>4/25</td><td>AI-MBTI 단독</td><td class="num">—</td><td class="num">—</td><td class="num">37,409</td><td class="num">10</td></tr>
-<tr><td>4/26 (오늘)</td><td>AI-MBTI 단독</td><td class="num">—</td><td class="num">—</td><td class="num">67,735</td><td class="num">8</td></tr>
-<tr class="total"><td>합계</td><td>—</td><td class="num">216,193</td><td class="num">46</td><td class="num">291,524</td><td class="num">64</td></tr>
+<tr><td>4/22</td><td class="num">17</td><td class="num">5</td><td class="num">4</td><td class="num">1</td><td class="num">10</td><td class="num">8.5</td><td class="num">6.8</td><td class="num">1.7</td></tr>
+<tr><td>4/23</td><td class="num">11</td><td class="num">2</td><td class="num">3</td><td class="num">3</td><td class="num">8</td><td class="num">2.8</td><td class="num">4.1</td><td class="num">4.1</td></tr>
+<tr class="best"><td>4/24</td><td class="num">10</td><td class="num">16</td><td class="num">4</td><td class="num">0</td><td class="num">20</td><td class="num">8.0</td><td class="num">2.0</td><td class="num">0</td></tr>
+<tr><td>4/25</td><td class="num">5</td><td class="num">9</td><td class="num">1</td><td class="num">0</td><td class="num">10</td><td class="num">4.5</td><td class="num">0.5</td><td class="num">0</td></tr>
+<tr><td>4/26</td><td class="num">4</td><td class="num">3</td><td class="num">4</td><td class="num">0</td><td class="num">7</td><td class="num">1.7</td><td class="num">2.3</td><td class="num">0</td></tr>
+<tr class="total"><td>합계</td><td class="num">47</td><td class="num">35</td><td class="num">16</td><td class="num">4</td><td class="num">55</td><td class="num">25.5</td><td class="num">15.7</td><td class="num">5.8</td></tr>
 </tbody>
 </table>
 
-<div class="caveat">
-<b>* AI-MBTI 실 다운</b> — Supabase events의 utm 기반 ebook_click + openchat_click 합. Meta가 잡은 픽셀 Lead (658건)는 결과 페이지 도달 등 부풀려진 수치라 제외하고, 실제 다운로드/오픈챗 버튼 클릭만 카운트.<br>
-<b>데이터분석 Meta Lead</b>는 이름·연락처 폼 제출 (실제 sales lead). 두 캠페인의 funnel 정의가 다르므로 단순 비교 금지.
+<div class="warn-box">
+<b>가입 추정 산출</b> — 일자별 메타코드 가입자 × (캠페인 Lead / 당일 3캠페인 Lead 합). 4/21 가입 17명은 AI-MBTI v2 미런칭으로 미포함. 4/22~24 데이터분석 병행 기간 일부 중복 귀속 가능 → 실제 CPA는 다소 높을 수 있음.
 </div>
 
-<h3>1-B. 실제 일어난 일 (자체 측정 + 외부 측정)</h3>
-<table>
-<thead>
-<tr>
-  <th>날짜</th>
-  <th class="num">ebook_click<br>(다운 버튼 클릭)</th>
-  <th class="num">openchat_click<br>(오픈챗 입장)</th>
-  <th class="num">전자책 등록자<br>(메타코드 크롤링)</th>
-  <th class="num">일 가입자<br>(전체 채널)</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>4/20</td><td class="num">12</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
-<tr><td>4/21</td><td class="num">10</td><td class="num">3</td><td class="num">—</td><td class="num">17</td></tr>
-<tr><td>4/22</td><td class="num">17</td><td class="num">3</td><td class="num">—</td><td class="num">17</td></tr>
-<tr><td>4/23</td><td class="num">8</td><td class="num">2</td><td class="num">—</td><td class="num">11</td></tr>
-<tr class="warn"><td>4/24</td><td class="num">24</td><td class="num">3</td><td class="num">128 (cron 시작)</td><td class="num">10</td></tr>
-<tr class="warn"><td>4/25</td><td class="num">10</td><td class="num">0</td><td class="num">— (snapshot 누락)</td><td class="num">5</td></tr>
-<tr><td>4/26 (오늘)</td><td class="num">10</td><td class="num">1</td><td class="num">140 (실시간)</td><td class="num">4</td></tr>
-<tr class="total"><td>합계</td><td class="num">91</td><td class="num">12</td><td class="num">+12 (4/24~26)</td><td class="num">64</td></tr>
-</tbody>
-</table>
-
-<div class="method">
-<b>전자책 등록자 (메타코드 크롤링) 정의</b> — 메타코드 사이트(외부)에서 <code>cnt_join</code> 필드 = 각 전자책별 학생 등록 누적 수. 사용자가 메타코드 페이지에서 이름·연락처 폼 제출 완료해야 +1. 4종 이북(데이터분석/Data Eng/AI LLM/AI 서비스)의 cnt_join 합계. 우리 cron이 4/24부터 매일 크롤링.<br>
-<b>ebook_click과의 차이</b> — ebook_click = AI-MBTI 결과 페이지 "다운받기" 버튼 클릭(의도). 전자책 등록자 = 메타코드에서 실제 폼 제출 완료(실행).
-</div>
-
-<!-- ===== 2. Meta Ads 일자×캠페인 ===== -->
-<h2 class="page-break">2. Meta Ads 일자별 × 캠페인별 상세</h2>
-<p class="section-intro">광고 매니저 기준 노출/클릭/지출 + 자체 측정 실 다운로드 기반 CPL.</p>
-
-<div class="method">
-<b>용어 정의</b><br>
-· <b>LPV</b> (Landing Page View) = 광고 클릭 후 랜딩 페이지 로드 완료. 클릭만 하고 페이지 로딩 전 이탈 시 카운트 안 됨.<br>
-· <b>실 다운</b> = utm 기반 ebook_click + openchat_click 합 (Supabase 자체 측정).<br>
-· <b>실 CPL (다운 클릭)</b> = spend / 실 다운. 다운 버튼 누른 1건당 비용.<br>
-· <b>실 CPL (등록 추정)</b> = spend / (실 다운 × 27%). 메타코드 실등록 1명당 비용 (클릭→등록 27% 전환률 적용).
-</div>
-
-<h3>2-1. simple-v2</h3>
-<table>
-<thead><tr><th>날짜</th><th class="num">노출</th><th class="num">클릭</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">spend</th><th class="num">LPV</th><th class="num">실 다운</th><th class="num">실 CPL<br>(다운)</th><th class="num">실 CPL<br>(등록)</th></tr></thead>
-<tbody>
-<tr><td>4/22</td><td class="num">789</td><td class="num">28</td><td class="num">3.55%</td><td class="num">379</td><td class="num">10,617</td><td class="num">26</td><td class="num">6</td><td class="num">1,770</td><td class="num">6,554</td></tr>
-<tr><td>4/23</td><td class="num">1,520</td><td class="num">40</td><td class="num">2.63%</td><td class="num">561</td><td class="num">22,439</td><td class="num">39</td><td class="num">2</td><td class="num">11,220</td><td class="num">41,556</td></tr>
-<tr class="best"><td>4/24</td><td class="num">4,042</td><td class="num">122</td><td class="num">3.02%</td><td class="num">399</td><td class="num">48,629</td><td class="num">123</td><td class="num">19</td><td class="num">2,560</td><td class="num">9,478</td></tr>
-<tr><td>4/25</td><td class="num">2,510</td><td class="num">79</td><td class="num">3.15%</td><td class="num">318</td><td class="num">25,122</td><td class="num">72</td><td class="num">9</td><td class="num">2,791</td><td class="num">10,338</td></tr>
-<tr><td>4/26</td><td class="num">4,661</td><td class="num">158</td><td class="num">3.39%</td><td class="num">284</td><td class="num">44,839</td><td class="num">137</td><td class="num">4</td><td class="num">11,210</td><td class="num">41,517</td></tr>
-<tr class="total"><td>합계 (5일)</td><td class="num">13,522</td><td class="num">427</td><td class="num">3.16%</td><td class="num">355</td><td class="num">151,646</td><td class="num">397</td><td class="num">41</td><td class="num">3,699</td><td class="num">13,700</td></tr>
-</tbody>
-</table>
-
-<h3>2-2. social-v2</h3>
-<table>
-<thead><tr><th>날짜</th><th class="num">노출</th><th class="num">클릭</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">spend</th><th class="num">LPV</th><th class="num">실 다운</th><th class="num">실 CPL<br>(다운)</th><th class="num">실 CPL<br>(등록)</th></tr></thead>
-<tbody>
-<tr><td>4/22</td><td class="num">620</td><td class="num">22</td><td class="num">3.55%</td><td class="num">523</td><td class="num">11,495</td><td class="num">16</td><td class="num">6</td><td class="num">1,916</td><td class="num">7,096</td></tr>
-<tr><td>4/23</td><td class="num">1,011</td><td class="num">31</td><td class="num">3.07%</td><td class="num">668</td><td class="num">20,711</td><td class="num">27</td><td class="num">5</td><td class="num">4,142</td><td class="num">15,341</td></tr>
-<tr><td>4/24</td><td class="num">1,437</td><td class="num">47</td><td class="num">3.27%</td><td class="num">466</td><td class="num">21,899</td><td class="num">37</td><td class="num">4</td><td class="num">5,475</td><td class="num">20,278</td></tr>
-<tr><td>4/25</td><td class="num">1,257</td><td class="num">28</td><td class="num">2.23%</td><td class="num">439</td><td class="num">12,287</td><td class="num">21</td><td class="num">1</td><td class="num">12,287</td><td class="num">45,508</td></tr>
-<tr><td>4/26</td><td class="num">2,358</td><td class="num">59</td><td class="num">2.50%</td><td class="num">388</td><td class="num">22,896</td><td class="num">45</td><td class="num">4</td><td class="num">5,724</td><td class="num">21,200</td></tr>
-<tr class="total"><td>합계 (5일)</td><td class="num">6,683</td><td class="num">187</td><td class="num">2.80%</td><td class="num">478</td><td class="num">89,288</td><td class="num">146</td><td class="num">20</td><td class="num">4,464</td><td class="num">16,535</td></tr>
-</tbody>
-</table>
-
-<h3>2-3. fear-v2 (4/24 정지)</h3>
-<table>
-<thead><tr><th>날짜</th><th class="num">노출</th><th class="num">클릭</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">spend</th><th class="num">LPV</th><th class="num">실 다운</th><th class="num">실 CPL<br>(다운)</th><th class="num">실 CPL<br>(등록)</th></tr></thead>
-<tbody>
-<tr><td>4/22</td><td class="num">745</td><td class="num">16</td><td class="num">2.15%</td><td class="num">758</td><td class="num">12,124</td><td class="num">10</td><td class="num">1</td><td class="num">12,124</td><td class="num">44,904</td></tr>
-<tr><td>4/23</td><td class="num">1,326</td><td class="num">39</td><td class="num">2.94%</td><td class="num">607</td><td class="num">23,669</td><td class="num">34</td><td class="num">3</td><td class="num">7,890</td><td class="num">29,221</td></tr>
-<tr><td>4/24</td><td class="num">709</td><td class="num">15</td><td class="num">2.12%</td><td class="num">645</td><td class="num">9,682</td><td class="num">17</td><td class="num">0</td><td class="num">—</td><td class="num">—</td></tr>
-<tr class="total dead"><td>합계 (3일, 정지)</td><td class="num">2,780</td><td class="num">70</td><td class="num">2.52%</td><td class="num">650</td><td class="num">45,475</td><td class="num">61</td><td class="num">4</td><td class="num">11,369</td><td class="num">42,107</td></tr>
-</tbody>
-</table>
-
-<h3>2-4. 데이터 분석 홍보 (4/24 마지막)</h3>
-<table>
-<thead><tr><th>날짜</th><th class="num">노출</th><th class="num">클릭</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">spend</th><th class="num">LPV</th><th class="num">Meta Lead</th><th class="num">Meta CPL</th></tr></thead>
-<tbody>
-<tr><td>4/20</td><td class="num">1,860</td><td class="num">35</td><td class="num">1.88%</td><td class="num">1,201</td><td class="num">42,049</td><td class="num">27</td><td class="num">10</td><td class="num">4,205</td></tr>
-<tr><td>4/21</td><td class="num">1,858</td><td class="num">55</td><td class="num">2.96%</td><td class="num">920</td><td class="num">50,584</td><td class="num">32</td><td class="num">8</td><td class="num">6,323</td></tr>
-<tr><td>4/22</td><td class="num">1,630</td><td class="num">44</td><td class="num">2.70%</td><td class="num">1,253</td><td class="num">55,149</td><td class="num">5</td><td class="num">20</td><td class="num">2,757</td></tr>
-<tr><td>4/23</td><td class="num">1,650</td><td class="num">26</td><td class="num">1.58%</td><td class="num">1,795</td><td class="num">46,680</td><td class="num">1</td><td class="num">2</td><td class="num">23,340</td></tr>
-<tr><td>4/24</td><td class="num">652</td><td class="num">15</td><td class="num">2.30%</td><td class="num">1,449</td><td class="num">21,731</td><td class="num">0</td><td class="num">6</td><td class="num">3,622</td></tr>
-<tr class="total dead"><td>합계 (5일, 정지)</td><td class="num">7,650</td><td class="num">175</td><td class="num">2.29%</td><td class="num">1,238</td><td class="num">216,193</td><td class="num">65</td><td class="num">46</td><td class="num">4,700</td></tr>
-</tbody>
-</table>
-
-<h3>2-5. ai-mbti(구) (4/20 정지)</h3>
-<table>
-<thead><tr><th>날짜</th><th class="num">노출</th><th class="num">클릭</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">spend</th><th class="num">LPV</th><th class="num">Meta Lead</th><th class="num">Meta CPL</th></tr></thead>
-<tbody>
-<tr class="dead"><td>4/14~4/20 누계</td><td class="num">5,767</td><td class="num">130</td><td class="num">2.25%</td><td class="num">859</td><td class="num">111,619</td><td class="num">1</td><td class="num">2</td><td class="num">55,810</td></tr>
-</tbody>
-</table>
-
-<!-- ===== 3. Supabase 자체 측정 ===== -->
-<h2 class="page-break">3. 자체 측정 (Supabase events) — 일자×캠페인</h2>
-<p class="section-intro">utm_campaign으로 분배. AI-MBTI 사이트 결과 페이지에서 발화한 실 클릭 건수.</p>
-
-<h3>3-1. ebook_click (전자책 다운로드 버튼 클릭)</h3>
-<table>
-<thead><tr><th>날짜</th><th class="num">simple</th><th class="num">social</th><th class="num">fear</th><th class="num">자연/기타</th><th class="num">합계</th></tr></thead>
-<tbody>
-<tr><td>4/20</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">12 (구 출처)</td><td class="num">12</td></tr>
-<tr><td>4/21</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">9</td><td class="num">10</td></tr>
-<tr><td>4/22</td><td class="num">5</td><td class="num">4</td><td class="num">1</td><td class="num">7</td><td class="num">17</td></tr>
-<tr><td>4/23</td><td class="num">2</td><td class="num">3</td><td class="num">3</td><td class="num">0</td><td class="num">8</td></tr>
-<tr class="best"><td>4/24</td><td class="num">16</td><td class="num">4</td><td class="num">0</td><td class="num">4</td><td class="num">24</td></tr>
-<tr><td>4/25</td><td class="num">9</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">10</td></tr>
-<tr><td>4/26</td><td class="num">3</td><td class="num">4</td><td class="num">0</td><td class="num">3</td><td class="num">10</td></tr>
-<tr class="total"><td>합계</td><td class="num">36</td><td class="num">16</td><td class="num">4</td><td class="num">35</td><td class="num">91</td></tr>
-</tbody>
-</table>
-
-<h3>3-2. openchat_click (오픈챗 입장 버튼 클릭)</h3>
-<table>
-<thead><tr><th>날짜</th><th class="num">simple</th><th class="num">social</th><th class="num">fear</th><th class="num">자연/기타</th><th class="num">합계</th></tr></thead>
-<tbody>
-<tr><td>4/21</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">3</td><td class="num">3</td></tr>
-<tr><td>4/22</td><td class="num">1</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">3</td></tr>
-<tr><td>4/23</td><td class="num">0</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">2</td></tr>
-<tr><td>4/24</td><td class="num">3</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">3</td></tr>
-<tr><td>4/25</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
-<tr><td>4/26</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">1</td></tr>
-<tr class="total"><td>합계</td><td class="num">5</td><td class="num">4</td><td class="num">0</td><td class="num">3</td><td class="num">12</td></tr>
-</tbody>
-</table>
-
-<!-- ===== 4. 메타코드 실등록 ===== -->
-<h2>4. 메타코드 외부 사이트 실등록 (크롤링)</h2>
-<p class="section-intro">cron 4/24 시작. <code>cnt_join</code> 필드 일자별 스냅샷. 4/21~23 데이터 부재.</p>
-
-<table>
-<thead><tr><th>날짜</th><th class="num">데이터분석</th><th class="num">Data Eng</th><th class="num">AI LLM</th><th class="num">AI 서비스</th><th class="num">합계</th><th class="num">전일 대비</th></tr></thead>
-<tbody>
-<tr><td>4/24 (cron 시작)</td><td class="num">29</td><td class="num">26</td><td class="num">37</td><td class="num">36</td><td class="num">128</td><td class="num">— (baseline)</td></tr>
-<tr class="dead"><td>4/25</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">— (snapshot 누락)</td><td class="num">—</td></tr>
-<tr class="best"><td>4/26 22:55 (실시간 크롤)</td><td class="num">35</td><td class="num">28</td><td class="num">39</td><td class="num">38</td><td class="num">140</td><td class="num">+12 (vs 4/24)</td></tr>
-</tbody>
-</table>
-
-<div class="caveat">
-<b>한계</b> — cron이 4/24에 시작되어 그 이전 baseline 없음. 4/25 daily snapshot이 어떤 이유로 누락 → 4/24~26 단일 구간(+12) 외 분리 불가. 메타코드 측 로그 또는 admin 조회 시 4/21~23 cnt_join 복원 가능.
-</div>
-
-<!-- ===== 5. 메트릭 비교 ===== -->
-<h2 class="page-break">5. 메트릭 4종 비교 (실측 funnel)</h2>
-<p class="section-intro">동일 기간(4/24~26) 측정 가능한 4개 layer 비교.</p>
-
-<table>
-<thead><tr><th>메트릭</th><th>출처</th><th class="num">건수</th><th>의미</th></tr></thead>
-<tbody>
-<tr><td>1. Meta Lead</td><td>광고 매니저 픽셀</td><td class="num">450</td><td>simple+social Meta Lead 합 (4/24~26 = 178+92+190+48+26+50)</td></tr>
-<tr><td>2. ebook_click</td><td>Supabase events</td><td class="num">45</td><td>이북 다운로드 버튼 클릭 (4/24:24 + 4/25:10 + 4/26:11)</td></tr>
-<tr><td>3. 메타코드 실등록</td><td>외부 크롤링</td><td class="num">+12</td><td>실제로 메타코드 사이트에 학생 등록 완료</td></tr>
-<tr><td>4. 회원 가입</td><td>수동 카운트</td><td class="num">19</td><td>4/24:10 + 4/25:5 + 4/26:4 (전체 채널 합산)</td></tr>
-</tbody>
-</table>
-
-<h3>전환율 추정</h3>
-<table>
-<thead><tr><th>단계</th><th class="num">건수</th><th class="num">전환율</th><th>해석</th></tr></thead>
-<tbody>
-<tr><td>Meta Lead → ebook_click</td><td class="num">450 → 45</td><td class="num">10%</td><td>Meta Lead 대부분이 결과 페이지 도달이라 직접 다운로드 비율 낮음 (Lead 정의 차이)</td></tr>
-<tr class="best"><td>ebook_click → 메타코드 실등록</td><td class="num">45 → 12</td><td class="num">27%</td><td>버튼 클릭 후 외부 도메인에서 학생 등록 완료까지 비율</td></tr>
-<tr><td>메타코드 실등록 → 가입(추정)</td><td class="num">12 → ?</td><td class="num">?</td><td>실등록과 회원가입 관계 불명. 가입 19명 중 AI-MBTI 출신 attribution 불가</td></tr>
-</tbody>
-</table>
-
-<!-- ===== 6. 캠페인별 누계 ===== -->
-<h2 class="page-break">6. 캠페인별 누계 성과 비교</h2>
-
-<table>
-<thead><tr><th>캠페인</th><th>상태</th><th class="num">운영일</th><th class="num">spend</th><th class="num">노출</th><th class="num">클릭</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">실 ebook<br>+openchat</th><th class="num">실 단가</th></tr></thead>
-<tbody>
-<tr class="best"><td>AIMBTI-simple</td><td><span class="tag tag-active">ACTIVE</span></td><td class="num">5</td><td class="num">151,646</td><td class="num">13,522</td><td class="num">427</td><td class="num">3.16%</td><td class="num">355</td><td class="num">41</td><td class="num">3,699</td></tr>
-<tr><td>AIMBTI-social</td><td><span class="tag tag-active">ACTIVE</span></td><td class="num">5</td><td class="num">89,288</td><td class="num">6,683</td><td class="num">187</td><td class="num">2.80%</td><td class="num">478</td><td class="num">20</td><td class="num">4,464</td></tr>
-<tr class="dead"><td>AIMBTI-fear</td><td><span class="tag tag-paused">PAUSED 4/24</span></td><td class="num">3</td><td class="num">45,475</td><td class="num">2,780</td><td class="num">70</td><td class="num">2.52%</td><td class="num">650</td><td class="num">4</td><td class="num">11,369</td></tr>
-<tr class="dead"><td>ai-mbti(구)</td><td><span class="tag tag-paused">PAUSED 4/20</span></td><td class="num">7</td><td class="num">111,619</td><td class="num">5,767</td><td class="num">130</td><td class="num">2.25%</td><td class="num">859</td><td class="num">12 (자연 분류)</td><td class="num">9,302</td></tr>
-<tr class="dead"><td>데이터 분석 홍보</td><td><span class="tag tag-paused">PAUSED 4/24</span></td><td class="num">5 (4/20~24)</td><td class="num">216,193</td><td class="num">7,650</td><td class="num">175</td><td class="num">2.29%</td><td class="num">1,238</td><td class="num">— (외부)</td><td class="num">— *</td></tr>
-<tr class="total"><td>AI-MBTI 통합 (3종)</td><td>—</td><td class="num">—</td><td class="num">286,409</td><td class="num">22,985</td><td class="num">684</td><td class="num">2.98%</td><td class="num">419</td><td class="num">65</td><td class="num">4,406</td></tr>
-</tbody>
-</table>
-<div style="font-size:8pt; color:#888; margin-top:4pt;">* 데이터 분석 홍보는 외부 도메인이라 자체 측정 불가. Meta Lead 단가 5,207원/건 (이름·연락처 수집 폼 기준).</div>
-
-<!-- ===== 7. CPA 계산 방식 ===== -->
-<h2>7. CPA 계산 방식 & 한계</h2>
-
-<div class="method">
-<b>다운로드 단가 (정확)</b> — <code>spend / utm 기반 ebook_click+openchat_click</code><br>
-simple 4,222원 (152k/36) · social 5,563원 (89k/16) · fear 11,250원 (45k/4) · AI-MBTI 통합 4,406원 (286k/65)
-</div>
-
-<div class="method">
-<b>Meta Lead 단가</b> — Meta가 광고 매니저에 표시하는 픽셀 Lead 기준<br>
-simple 309원 (152k/490) · 데이터분석 4,700원 (216k/46). <b>두 캠페인의 Lead 정의가 다름:</b> 데이터분석=이름·연락처 폼, AI-MBTI=결과페이지 도달(4/24까지)+이북·오픈챗 클릭(4/25~). 직접 비교 부적절.
-</div>
-
-<div class="method">
-<b>회원 유치 단가 (CPA)</b> — <span style="color:#b71c1c;">현재 측정 불가</span><br>
-회원 가입 64명의 채널별 attribution 인프라 부재. 데이터분석 정지 후 가입 17→4 감소는 상관 관찰일 뿐 인과 단정 불가 (요일 효과·n=2 표본·자연 유입·시차 Lead 등 교란 다수).
-</div>
-
-<div class="caveat">
-<b>측정 한계 4가지</b>
-<ol style="margin:4pt 0 0 16pt; padding:0;">
-<li><b>회원 attribution 부재</b> — 메타코드 가입 시 utm/referrer 추적 안 됨. 외부 도메인이라 직접 측정 불가.</li>
-<li><b>표본 부족</b> — AI-MBTI 단독 운영기 단 2일(4/25~26). 통계 안정성 낮음.</li>
-<li><b>cron 누락</b> — 4/25 메타코드 daily snapshot 부재로 일자별 등록 추세 분리 불가.</li>
-<li><b>Lead 정의 비대칭</b> — Meta CPL은 캠페인마다 다른 Lead 이벤트 카운트. 단순 비교 위험.</li>
-</ol>
-</div>
-
-<!-- ===== 8. 타임라인 ===== -->
-<h2 class="page-break">8. 캠페인 타임라인</h2>
-
-<ul class="timeline">
-  <li class="start"><span class="date">3/17</span> 데이터 분석 홍보 시작 (메인 부트캠프 캠페인 — Lead 폼)</li>
-  <li class="start"><span class="date">4/14</span> ai-mbti(구) 시작 — 7일간 11만원 / 다운로드 12건 / Meta Lead 2건</li>
-  <li class="stop"><span class="date">4/20</span> ai-mbti(구) 정지 — CPL 55,810원으로 비효율</li>
-  <li class="start"><span class="date">4/22</span> AI-MBTI v2 3종 동시 런칭 (simple, social, fear)</li>
-  <li class="stop"><span class="date">4/24</span> fear 정지 (3일/45k/다운로드 4건) + 데이터 분석 홍보 마지막 운영</li>
-  <li><span class="date">4/24</span> simple 폭증 — 다운로드 16건/일 (학습 완료 분기점), cron 시작</li>
-  <li class="stop"><span class="date">4/25</span> 데이터 분석 정지 → Meta Pixel Lead 정의 재설계 (commit 046a44d)</li>
-  <li><span class="date">4/26</span> 오늘 — AI-MBTI v2 (simple+social) 운영 중. 메타코드 등록 +12 누적</li>
-</ul>
-
-<!-- ===== 9. 액션 ===== -->
-<h2>9. 액션</h2>
-
+<h2>액션</h2>
 <div class="action">
   <div class="action-num">1</div>
   <div class="action-body">
-    <div class="action-title">메타코드 가입 attribution 인프라 (최우선)</div>
-    <div class="action-detail">결과 페이지에서 발급한 쿠폰 코드를 가입 시 입력 또는 가입 webhook으로 utm/referrer 매칭. 현 측정 한계 4가지 모두 해소. 이게 없으면 회원 유치 단가 영원히 추정치.</div>
+    <div class="action-title">메타코드 가입 attribution 인프라 구축 (최우선)</div>
+    <div class="action-detail">결과 페이지 쿠폰 코드 또는 가입 webhook으로 utm 매칭 → 비율 배분 추정 → 실측 CPA 전환. 이게 없으면 CPA 항상 추정치.</div>
   </div>
 </div>
-
 <div class="action">
   <div class="action-num">2</div>
   <div class="action-body">
-    <div class="action-title">cron 안정화 + 메타코드 4/21~23 baseline 복원</div>
-    <div class="action-detail">4/25 daily snapshot 누락 원인 파악. 메타코드 admin에서 4/21~23 cnt_join 조회해 baseline 채워 일자별 등록 추세 완성.</div>
+    <div class="action-title">simple 일예산 단계 증액</div>
+    <div class="action-detail">CPA 5,947원·CTR 3.16%로 3캠페인 최우수. attribution 확인 전까지 +30~50% 보수적 증액 권장.</div>
   </div>
 </div>
-
 <div class="action">
   <div class="action-num">3</div>
   <div class="action-body">
-    <div class="action-title">simple 일예산 +50% 증액, social·fear 보수적 운영</div>
-    <div class="action-detail">simple 다운로드 단가 4,222원으로 양호하나 가입 전환 검증 전까지 보수적 단계 증액. social은 효율 모니터링, fear는 정지 유지.</div>
+    <div class="action-title">social 모니터링, fear 정지 유지</div>
+    <div class="action-detail">social CPA 5,687원 양호. fear CPL 11,369원 비효율 확인 → 정지 유지. CTR 2.52%로 소재 매력도 낮음.</div>
   </div>
 </div>
-
 <div class="action">
   <div class="action-num">4</div>
   <div class="action-body">
-    <div class="action-title">데이터 분석 홍보 vs AI-MBTI 역할 분리 인지</div>
-    <div class="action-detail">데이터분석=Lead 폼(이름·연락처)→sales funnel→일부 회원. AI-MBTI=다운로드→실등록→가입. funnel 다르므로 단순 효율 비교 위험. 두 채널 병행 시 시너지 측정 필요.</div>
+    <div class="action-title">데이터분석 홍보 재개 시점 검토</div>
+    <div class="action-detail">attribution 인프라 확보 후 AI-MBTI와 가입자 중복 측정. 시너지 확인 시 병행 재개.</div>
   </div>
 </div>
 
-<!-- ===== 푸터 ===== -->
-<div class="note">
-<b>출처</b><br>
-· Meta Marketing API v19.0 (캠페인·일자별 spend, clicks, impressions, actions) — 4/14~4/26<br>
-· Supabase events 테이블 (ebook_click 79건, openchat_click 12건) — 4/20~4/26<br>
-· Supabase daily_ebook_metrics + 실시간 메타코드 크롤링 (4/24 baseline 128, 4/26 실시간 140)<br>
-· 메타코드 일자별 신규 가입자 수동 제공: 17/17/11/10/5/4 (4/21~4/26)<br><br>
-<b>caveat</b> — 회원 가입 attribution 인프라 부재로 캠페인별 가입 단가 산정 불가. 가입 감소 인과는 상관 관찰일 뿐 단정 못 함. 다운로드 단가만 정확 측정 가능. cron 누락 보완 + 외부 등록 추적 강화 필요.
+<div class="footer">
+<b>출처</b> · Meta Marketing API v19.0 (spend · clicks · impressions 4/14~4/26) · Supabase events ebook_click (utm 기반, 자연유입 제외) · 메타코드 일별 신규 가입자 수동 제공 (4/21~4/26)<br>
+<b>caveat</b> · CPA는 Lead 비율 배분 추정치. 데이터분석 홍보 병행 기간(4/22~24) 가입자 일부 중복 귀속 가능성 있음.
 </div>
 
 </body>
