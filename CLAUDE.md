@@ -23,6 +23,27 @@ npm run lint     # ESLint
   4. `git add` (민감 파일 체크) → `git commit` (Co-Authored-By 포함) → `git push`
   5. 실패 시 자동 수정 금지, 사용자에게 에러 보고
 
+## variant 약속어 (결과 페이지 진입 경로별 UI 분기)
+
+결과 페이지(`/result/[id]`)는 모든 진입자가 공유하지만, `ab_variant` 쿠키로 UI를 분기한다. 사용자가 다음처럼 짧게 말하면 해당 분기로 이해:
+
+| 약속어 | 의미 | 쿠키 값 |
+|---|---|---|
+| **메인 결과** / **M** | `/`로 진입한 사용자 | `ab_variant=main` |
+| **v1 결과** | `/v1` (fear) 진입자 | `ab_variant=v1` |
+| **v3 결과** | `/v3` (social) 진입자 | `ab_variant=v3` |
+| **v4 결과** | `/v4` (simple) 진입자 | `ab_variant=v4` |
+| **공통 결과** | 모든 진입자에게 동일 | — |
+
+**구현 방식**: `ResultClient.tsx`에서 `document.cookie` 파싱 → `useState` 플래그(`showFloating` 등) → `{flag && (...)}` 또는 `{!flag && (...)}` 로 감싸기.
+
+**예시**:
+- "메인 결과에 긴급 배너 추가" → `variant === 'main'`일 때만 노출
+- "v3 결과에 후기 카드" → `variant === 'v3'`일 때만 노출
+- "공통 결과에서 점수 키우기" → 분기 없이 전체 수정
+
+**테스트**: 브라우저 콘솔에서 `document.cookie = 'ab_variant=main; path=/'` 후 새로고침.
+
 ## 프로젝트 개요
 
 AI 시대 생존력 진단 서비스 (AIMBTI). 20문항 테스트 → 16가지 유형 → 결과 페이지 + 부트캠프 추천.

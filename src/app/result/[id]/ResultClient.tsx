@@ -7,6 +7,7 @@ import { TypeCode, typeInfo, bootcampInfo } from '@/lib/quiz'
 import { gtagEvent, gtagConversion } from '@/lib/ga'
 import { fbqEvent, fbqLeadOnce } from '@/lib/meta'
 import { trackEvent } from '@/lib/track'
+import LeadForm from '@/components/LeadForm'
 
 type Scores = { a: number; b: number; c: number; d: number; e: number }
 
@@ -101,6 +102,10 @@ export default function ResultClient({
     trackEvent('result_view', typeCode, { ai_score: aiScore })
     // 결과 페이지 진입은 ViewContent (Lead는 이북/오픈챗 클릭에서만 발화)
     fbqEvent('ViewContent', { content_name: 'result_view', type_code: typeCode })
+
+    // 메인 랜딩에서 진입한 경우에만 플로팅 노출
+    const variant = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('ab_variant='))?.split('=')[1]
+    if (variant === 'main') setShowFloating(true)
   }, [typeCode, aiScore])
 
   // 결과 페이지 이탈 추적 (뒤로가기 / 탭 닫기)
@@ -120,6 +125,8 @@ export default function ResultClient({
   const [shareLoading, setShareLoading] = useState(false)
   const [displayScore, setDisplayScore] = useState(0)
   const [ebookPage, setEbookPage] = useState(0)
+  const [showFloating, setShowFloating] = useState(false)
+  const bottomLeadFormRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (ebookScrollRef.current) ebookScrollRef.current.scrollTop = 0
@@ -558,7 +565,7 @@ export default function ResultClient({
         </Link>
       </header>
 
-      <main className="px-5 py-6 space-y-5">
+      <main className="px-5 py-6 space-y-5 max-w-[440px] mx-auto">
         {/* 캐릭터 이미지 */}
         <div className="flex justify-center float-animation">
           <Image
@@ -686,12 +693,12 @@ export default function ResultClient({
             <p className="text-base font-bold text-slate-500 mb-3">대체 안 되는 포지션의 공식</p>
             <div className="flex flex-col gap-2.5">
               {info.jobSection.transitions.map((t) => (
-                <div key={t.from} className="flex items-center gap-1.5 overflow-x-auto">
-                  <span className="px-2 py-1 rounded-lg bg-white text-slate-500 font-medium text-sm border border-slate-200 whitespace-nowrap">{t.from}</span>
-                  <span className="font-black text-slate-300 text-base">+</span>
-                  <span className="px-2 py-1 rounded-lg text-white font-bold text-sm whitespace-nowrap" style={{ background: info.color }}>{t.via}</span>
-                  <span className="font-black text-slate-300 text-base">=</span>
-                  <span className="px-2 py-1 rounded-lg font-black text-sm whitespace-nowrap" style={{ background: info.color + '15', color: info.color }}>{t.to}</span>
+                <div key={t.from} className="flex flex-wrap items-center gap-1.5">
+                  <span className="px-2 py-1 rounded-lg bg-white text-slate-500 font-medium text-xs border border-slate-200">{t.from}</span>
+                  <span className="font-black text-slate-300 text-sm">+</span>
+                  <span className="px-2 py-1 rounded-lg text-white font-bold text-xs" style={{ background: info.color }}>{t.via}</span>
+                  <span className="font-black text-slate-300 text-sm">=</span>
+                  <span className="px-2 py-1 rounded-lg font-black text-xs" style={{ background: info.color + '15', color: info.color }}>{t.to}</span>
                 </div>
               ))}
             </div>
@@ -735,11 +742,16 @@ export default function ResultClient({
                   onClick={() => {
                     if (ebookPage + 1 >= ebookImages.length) {
                       gtagEvent('ebook_click', { type_code: typeCode, action: 'unlock' })
-                      gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
-                      trackEvent('ebook_click', typeCode, { action: 'unlock' })
-                      fbqLeadOnce({ content_name: 'ebook_unlock', type_code: typeCode })
-                      gtagConversion('ebook_unlock')
-                      window.open(ebookLink, '_blank')
+                      trackEvent('ebook_click', typeCode, { action: 'unlock', variant: showFloating ? 'main' : 'other' })
+                      // 메인 진입자는 외부 사이트로 안 넘어가고 페이지 하단 리드 폼으로 스크롤
+                      if (showFloating) {
+                        bottomLeadFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                      } else {
+                        gtagEvent('exit_click', { label: 'ebook_metacode', destination: ebookLink, type_code: typeCode })
+                        fbqLeadOnce({ content_name: 'ebook_unlock', type_code: typeCode })
+                        gtagConversion('ebook_unlock')
+                        window.open(ebookLink, '_blank')
+                      }
                     } else {
                       setEbookPage(ebookPage + 1)
                     }
@@ -762,22 +774,37 @@ export default function ResultClient({
             </div>
           )}
 
-          <a
-            href={ebookLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => {
-              gtagEvent('ebook_click', { type_code: typeCode, action: 'download' })
-              gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })
-              trackEvent('ebook_click', typeCode, { action: 'download' })
-              fbqLeadOnce({ content_name: 'ebook_download', type_code: typeCode })
-              gtagConversion('ebook_download')
-            }}
-            className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
-            style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
-          >
-            (50페이지 분량) 전자책 무료 다운받기
-          </a>
+          {showFloating ? (
+            <button
+              type="button"
+              onClick={() => {
+                gtagEvent('ebook_click', { type_code: typeCode, action: 'scroll_to_form' })
+                trackEvent('ebook_click', typeCode, { action: 'scroll_to_form', variant: 'main' })
+                bottomLeadFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }}
+              className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
+              style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
+            >
+              (50페이지 분량) 전자책 무료 다운받기
+            </button>
+          ) : (
+            <a
+              href={ebookLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                gtagEvent('ebook_click', { type_code: typeCode, action: 'download' })
+                gtagEvent('exit_click', { label: 'ebook_download', type_code: typeCode })
+                trackEvent('ebook_click', typeCode, { action: 'download' })
+                fbqLeadOnce({ content_name: 'ebook_download', type_code: typeCode })
+                gtagConversion('ebook_download')
+              }}
+              className="block w-full text-center py-3.5 rounded-xl font-bold text-base transition-all hover:opacity-90 mt-4"
+              style={{ background: 'linear-gradient(to right, #6366f1, #8b5cf6)', color: '#fff' }}
+            >
+              (50페이지 분량) 전자책 무료 다운받기
+            </a>
+          )}
         </div>
 
         {/* 무료 특강 단톡방 */}
@@ -811,8 +838,8 @@ export default function ResultClient({
           </a>
         </div>
 
-        {/* 공유 섹션 */}
-        <div
+        {/* 공유 섹션 — main variant 진입자에게는 숨김 (플로팅 CTA로 대체) */}
+        {!showFloating && <div
 
           className="rounded-3xl p-6 animate-fade-in-up bg-white"
           style={{ border: '1px solid #e2e8f0', animationDelay: '0.45s' }}
@@ -842,10 +869,10 @@ export default function ResultClient({
               </button>
             </div>
           </div>
-        </div>
+        </div>}
 
-        {/* 다시 테스트 */}
-        <div className="text-center pb-8">
+        {/* 다시 테스트 — 메인 진입자에게는 숨김 */}
+        {!showFloating && <div className="text-center pb-8">
           <Link
             href="/test"
             className="inline-block text-slate-400 hover:text-slate-700 text-sm transition-colors"
@@ -853,8 +880,39 @@ export default function ResultClient({
           >
             ← 테스트 다시 하기
           </Link>
-        </div>
+        </div>}
+
+        {/* 메인 진입자 전용 — 페이지 하단 리드 폼 (플로팅 버튼 클릭 시 스크롤 타겟) */}
+        {showFloating && (
+          <div ref={bottomLeadFormRef} className="pb-24">
+            <LeadForm
+              bootcampName={bInfo.title}
+              typeCode={typeCode}
+              aiScore={aiScore}
+              source="floating_bottom"
+            />
+          </div>
+        )}
       </main>
+
+      {/* 플로팅 CTA — 메인 랜딩(variant=main) 진입자에게만 노출. 클릭 시 페이지 맨 아래 리드 폼으로 스크롤 */}
+      {showFloating && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-[440px] px-5">
+          <button
+            type="button"
+            className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl font-black text-white text-base transition-opacity active:opacity-80 shadow-lg"
+            style={{ background: '#6c47ff' }}
+            onClick={() => {
+              trackEvent('ebook_click', typeCode, { label: 'floating', variant: 'main' })
+              gtagEvent('ebook_click', { label: 'floating', type_code: typeCode })
+              bottomLeadFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }}
+          >
+            전자책 무료 다운받기
+            <span className="animate-bounce inline-block text-xl">↓</span>
+          </button>
+        </div>
+      )}
     </div>
   )
 }
