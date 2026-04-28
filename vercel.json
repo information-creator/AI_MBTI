@@ -1,15 +1,5 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "crons": [
-    {
-      "path": "/api/snapshot?pass=720972&write=1",
-      "schedule": "0 * * * *"
-    },
-    {
-      "path": "/api/snapshot?pass=720972&write=1",
-      "schedule": "0 16 * * *"
-    }
-  ]
+  "outputDirectory": ".next"
 }
