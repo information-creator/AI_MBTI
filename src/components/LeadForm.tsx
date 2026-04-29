@@ -31,8 +31,8 @@ export default function LeadForm({ bootcampName, typeCode, aiScore, source }: Pr
 
     const cleanPhone = phone.replace(/[^\d]/g, '')
 
-    // 1. Supabase events 기록
-    await trackEvent('lead_submit', typeCode, {
+    // Supabase events — fire-and-forget (trackEvent 자체가 sync void)
+    trackEvent('lead_submit', typeCode, {
       name,
       phone: cleanPhone,
       ai_score: aiScore,
@@ -41,27 +41,21 @@ export default function LeadForm({ bootcampName, typeCode, aiScore, source }: Pr
       variant: 'main',
     })
 
-    // 2. Google Sheets 기록 (Apps Script Web App)
-    //    Content-Type 헤더 생략 → 브라우저가 text/plain 으로 보내서 CORS preflight 회피
-    //    no-cors 모드 — Apps Script는 CORS 헤더 설정 못함. 응답 못 읽지만 행은 추가됨.
-    try {
-      await fetch(SHEET_WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify({
-          name,
-          phone: cleanPhone,
-          typeCode,
-          aiScore,
-          bootcamp: bootcampName,
-          source,
-        }),
-      })
-    } catch (err) {
-      console.warn('[LeadForm] sheet webhook failed', err)
-    }
+    // Google Sheets webhook — fire-and-forget. no-cors라 응답 못 읽음 = await 무의미.
+    // 누락 시 Supabase events에서 복구 가능.
+    fetch(SHEET_WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({
+        name,
+        phone: cleanPhone,
+        typeCode,
+        aiScore,
+        bootcamp: bootcampName,
+        source,
+      }),
+    }).catch(err => console.warn('[LeadForm] sheet webhook failed', err))
 
-    // 3. 트래킹
     gtagEvent('lead_submit', { type_code: typeCode, source, bootcamp: bootcampName })
     gtagConversion('lead_submit')
     fbqLeadOnce({ content_name: `lead_form_${source}`, type_code: typeCode })
