@@ -63,7 +63,7 @@ export async function GET(req: Request) {
         metrics.conversions
       FROM campaign
       WHERE segments.date BETWEEN '${since}' AND '${until}'
-        AND campaign.status != 'REMOVED'
+        AND campaign.status = 'ENABLED'
         AND campaign.name LIKE '%MBTI%'
     `
 
@@ -98,7 +98,7 @@ export async function GET(req: Request) {
         cpc: Math.round(Number(row.metrics?.averageCpc ?? 0) / 1_000_000),
         conversions: Number(Number(row.metrics?.conversions ?? 0).toFixed(0)),
       }
-    })
+    }).filter((c: { spend: number; impressions: number; clicks: number }) => c.spend > 0 || c.impressions > 0 || c.clicks > 0)
 
     const totals = campaigns.reduce(
       (acc: Record<string, number>, c: Record<string, number>) => ({

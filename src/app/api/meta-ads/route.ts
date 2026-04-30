@@ -26,6 +26,9 @@ export async function GET(req: Request) {
       level: 'campaign',
       fields: 'campaign_name,impressions,clicks,spend,ctr,cpc,cpm,actions',
       time_range: JSON.stringify({ since, until }),
+      filtering: JSON.stringify([
+        { field: 'campaign.effective_status', operator: 'IN', value: ['ACTIVE'] },
+      ]),
       limit: '100',
     })
 
@@ -59,6 +62,7 @@ export async function GET(req: Request) {
         pageViews: getAction('landing_page_view'),
       }
     })
+    .filter((c: { spend: number; impressions: number; clicks: number }) => c.spend > 0 || c.impressions > 0 || c.clicks > 0)
 
     // 합계
     const totals = campaigns.reduce(

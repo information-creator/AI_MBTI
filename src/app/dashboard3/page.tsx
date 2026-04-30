@@ -440,8 +440,8 @@ function DashboardShell() {
           )}
           {view === 'funnel' && <FunnelTab funnel={funnel} />}
           {view === 'traffic' && <TrafficTab data={traffic} />}
-          {view === 'meta' && <AdsTab title="Meta" totals={meta?.totals} campaigns={meta?.campaigns ?? []} benchmark={BENCHMARKS.ads.meta} />}
-          {view === 'google' && <AdsTab title="Google" totals={google?.totals} campaigns={google?.campaigns ?? []} benchmark={BENCHMARKS.ads.google} />}
+          {view === 'meta' && <AdsTab title="Meta" totals={meta?.totals} campaigns={meta?.campaigns ?? []} benchmark={BENCHMARKS.ads.meta} signups={secondaryTotal} since={startDate} until={endDate} />}
+          {view === 'google' && <AdsTab title="Google" totals={google?.totals} campaigns={google?.campaigns ?? []} benchmark={BENCHMARKS.ads.google} signups={secondaryTotal} since={startDate} until={endDate} />}
           {view === 'abtest' && <ABTestTab variants={ab ?? []} />}
           {view === 'ebooks' && <EbooksTab ebooks={ebooks} total={ebooksTotal} history={ebookHistory} ebookClick={ebookClick} since={startDate} until={endDate} />}
           {view === 'benchmarks' && <BenchmarksTab />}
@@ -1519,7 +1519,7 @@ type Campaign = {
   [k: string]: unknown
 }
 
-function AdsTab({ title, totals, campaigns, benchmark }: { title: string; totals?: AdTotalsLite; campaigns: Campaign[]; benchmark: { ctr: number; cpc: number; cpm: number; cvr: number } }) {
+function AdsTab({ title, totals, campaigns, benchmark, signups, since, until }: { title: string; totals?: AdTotalsLite; campaigns: Campaign[]; benchmark: { ctr: number; cpc: number; cpm: number; cvr: number }; signups?: number; since?: string; until?: string }) {
   if (!totals || totals.spend === 0) {
     return (
       <Card>
@@ -1690,7 +1690,17 @@ function AdsTab({ title, totals, campaigns, benchmark }: { title: string; totals
 
       <Card>
         <CardHeader>
-          <CardTitle>{title} 캠페인별 성과</CardTitle>
+          <CardTitle>
+            {title} 캠페인별 성과
+            {since && until && (
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                ({since === until ? since : `${since} ~ ${until}`})
+              </span>
+            )}
+          </CardTitle>
+          <CardDescription className="text-sm">
+            CPL = 비용 / Pixel Lead · CPA = 비용 / 2차 전환(단톡·전자책·공유 클릭). 캠페인별 2차 전환 귀속 데이터가 없어 CPA는 합계 행에만 표시.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {campaigns.length === 0 ? <p className="text-sm text-muted-foreground">캠페인 데이터 없음</p> : (
@@ -1704,6 +1714,8 @@ function AdsTab({ title, totals, campaigns, benchmark }: { title: string; totals
                   <TableHead className="text-right">CPC</TableHead>
                   <TableHead className="text-right">비용</TableHead>
                   <TableHead className="text-right">전환</TableHead>
+                  <TableHead className="text-right">CPL</TableHead>
+                  <TableHead className="text-right">CPA</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -1716,8 +1728,23 @@ function AdsTab({ title, totals, campaigns, benchmark }: { title: string; totals
                     <TableCell className="text-right font-mono">₩{c.cpc.toLocaleString()}</TableCell>
                     <TableCell className="text-right font-mono">₩{c.spend.toLocaleString()}</TableCell>
                     <TableCell className="text-right font-mono font-bold">{c.conversions}</TableCell>
+                    <TableCell className="text-right font-mono">{c.conversions > 0 ? `₩${Math.round(c.spend / c.conversions).toLocaleString()}` : '—'}</TableCell>
+                    <TableCell className="text-right font-mono text-muted-foreground">—</TableCell>
                   </TableRow>
                 ))}
+                {totals && (
+                  <TableRow className="border-t-2 bg-muted/40 font-bold">
+                    <TableCell>합계</TableCell>
+                    <TableCell className="text-right font-mono">{totals.impressions.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">{totals.clicks.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">{totals.ctr}%</TableCell>
+                    <TableCell className="text-right font-mono">₩{totals.cpc.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">₩{totals.spend.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-mono">{totals.conversions}</TableCell>
+                    <TableCell className="text-right font-mono">{totals.conversions > 0 ? `₩${Math.round(totals.spend / totals.conversions).toLocaleString()}` : '—'}</TableCell>
+                    <TableCell className="text-right font-mono">{signups && signups > 0 ? `₩${Math.round(totals.spend / signups).toLocaleString()}` : '—'}</TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           )}
